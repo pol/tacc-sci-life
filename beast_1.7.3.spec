@@ -6,7 +6,7 @@ Name:      beast
 Version:   1.7.3
 Release:   1
 License:   GNU Lesser GPL
-Group:     Life Science Computing
+Group: Applications/Life Sciences
 Source:    BEASTv1.7.3.tgz
 Packager:  TACC - gendlerk@tacc.utexas.edu
 
@@ -25,7 +25,7 @@ Packager:  TACC - gendlerk@tacc.utexas.edu
 
 %package -n %{name}
 Summary:   BEAST - a program for Bayesian MCMC of Evolution & Phylogenetics using Molecular Sequences
-Group:     Life Science Computing
+Group: Applications/Life Sciences
 
 %description
 %description -n %{name}

@@ -9,7 +9,7 @@ Version: 2.1.10
 Release: 1
 License: Public Domain
 Vendor: National Center for Biotechnology Information
-Group: Life Science Computing
+Group: Applications/Life Sciences
 Source0:  %{name}.%{version}-centos_linux64.tar.gz
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot

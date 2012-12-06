@@ -4,7 +4,7 @@ Version:    1.01
 Release:    1
 License:    GPLv3
 Vendor:     BGI
-Group: Life Sciences Computing/genomics
+Group: Applications/Life Sciences
 Source:     SOAPdenovo-Trans_1.01.tar
 Packager:   TACC - vaughn@tacc.utexas.edu
 # This is the actual installation directory - Careful
@@ -32,7 +32,7 @@ Packager:   TACC - vaughn@tacc.utexas.edu
 # Summary and Group are required.
 # %package -n %{name}-%{comp_fam_ver}
 # Summary: 
-# Group:   Applications/Biology
+# Group: Applications/Life Sciences
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION

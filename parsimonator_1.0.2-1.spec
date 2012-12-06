@@ -6,7 +6,7 @@ Name:      parsimonator
 Version:   1.0.2
 Release:   1
 License:   GPL
-Group:     Life Science Computing
+Group: Applications/Life Sciences
 Source:    %{name}-%{version}.tar.gz
 Packager:  TACC - gendlerk@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
@@ -24,7 +24,7 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 %package -n %{name}-%{comp_fam_ver}
 Summary:   Parsimonator is a lightweight serial code to produce a starting tree using the parsimony technique
-Group:     Life Science Computing
+Group: Applications/Life Sciences
 
 %description
 %description -n %{name}-%{comp_fam_ver}

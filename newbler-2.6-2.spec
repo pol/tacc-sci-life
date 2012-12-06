@@ -8,7 +8,7 @@ Version: 2.6
 Release: 2
 License: Commercial (free for academic use)
 Vendor: 454 Life Sciences
-Group: Life Science Computing/genomics
+Group: Applications/Life Sciences
 Source0:  newbler_CLI_2.6.x86_64.tgz
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot

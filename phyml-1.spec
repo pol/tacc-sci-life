@@ -7,7 +7,7 @@ Version: 20120412
 Release: 1
 License: GPL
 Vendor: http://code.google.com/p/phyml/downloads/list 
-Group: Life Science Computing
+Group: Applications/Life Sciences
 Source: phyml-20120412.tar.gz
 Packager: gendlerk@tacc.utexas.edu
 Buildroot: /var/tmp/%{name}-%{version}-buildroot
@@ -24,7 +24,7 @@ Buildroot: /var/tmp/%{name}-%{version}-buildroot
 
 %package -n %{name}-%{comp_fam_ver}
 Summary: PhyML - a tool to estimate maximum likelihood phylogenies from alignments of nucleotide or amino acid sequences
-Group: Life Science Computing
+Group: Applications/Life Sciences
 
 %description
 %description -n %{name}-%{comp_fam_ver}

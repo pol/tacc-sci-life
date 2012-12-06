@@ -9,7 +9,7 @@ Version: 1.5.20
 Release: 1
 License: MIT License
 Vendor: Broad Institute
-Group: Life Science Computing/genomics
+Group: Applications/Life Sciences
 Source0:  GenomeAnalysisTK-1.5-20-gd3f2bc4.tar.bz2
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot

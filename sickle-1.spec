@@ -7,7 +7,7 @@ Name: sickle
 Version: 1.2
 Release: 1
 License: Artistic
-Group: Life Science Computing/genomics
+Group: Applications/Life Sciences
 Source0:  sickle.tgz
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot

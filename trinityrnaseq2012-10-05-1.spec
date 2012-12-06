@@ -11,7 +11,7 @@ Name: trinityrnaseq
 Version: r20121005
 Release: 1
 License: Copyright (c) 2012, The Broad Institute, Inc. All rights reserved.
-Group: Life Sciences Computing/genomics
+Group: Applications/Life Sciences
 Source0:  trinityrnaseq_r2012-10-05.tgz
 Packager: vaughn@tacc.utexas.edu
 # BuildRoot: /var/tmp/%{name}-%{version}-buildroot
@@ -33,7 +33,7 @@ Packager: vaughn@tacc.utexas.edu
 %define PNAME %{name}
 
 %package -n %{name}-%{comp_fam_ver}
-Group: Life Sciences Computing/genomics
+Group: Applications/Life Sciences
 Summary: De novo RNA-Seq Assembler
 
 %description

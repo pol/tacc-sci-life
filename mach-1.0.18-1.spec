@@ -5,7 +5,7 @@ Name:       mach
 Version:    1.0.18
 Release:    1
 License:    Unknown
-Group: Life Sciences Computing/genetics
+Group: Applications/Life Sciences/genetics
 Source:     %{name}.%{version}.source.tgz
 Packager:   TACC - vaughn@tacc.utexas.edu
 # This is the actual installation directory - Careful
@@ -32,7 +32,7 @@ Packager:   TACC - vaughn@tacc.utexas.edu
 # Summary and Group are required.
 # %package -n %{name}-%{comp_fam_ver}
 # Summary: HMMER biosequence analysis using profile hidden Markov models
-# Group:   Applications/Biology
+# Group: Applications/Life Sciences
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION

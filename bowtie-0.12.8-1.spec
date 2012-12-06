@@ -5,7 +5,7 @@ Name: bowtie
 Version: 0.12.8
 Release: 2
 License: GPL
-Group: Life Sciences Computing/genomics
+Group: Applications/Life Sciences
 #Source:  bowtie-0.12.8.tgz # Intel port
 Source: bowtie-0.12.8-src.zip
 Packager: TACC - vaughn@tacc.utexas.edu
@@ -29,7 +29,7 @@ Packager: TACC - vaughn@tacc.utexas.edu
 
 # Compiler-specific packages
 # %package -n %{name}-%{comp_fam_ver}
-# Group: Life Sciences Computing/genomics
+# Group: Applications/Life Sciences
 # Summary: Memory-efficient short read (NGS) aligner
 
 #------------------------------------------------

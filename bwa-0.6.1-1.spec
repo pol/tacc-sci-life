@@ -4,7 +4,7 @@ Version:    0.6.1
 Release:    1
 License:    GPLv3
 Vendor:     Heng Li at the Sanger Institute
-Group:      Life Science Computing/genomics
+Group: Applications/Life Sciences
 Source:     %{name}-%{version}.tar.bz2
 Packager:   TACC - vaughn@tacc.utexas.edu
 # This is the actual installation directory - Careful
@@ -31,7 +31,7 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 # Summary and Group are required.
 # %package -n %{name}-%{comp_fam_ver}
 # Summary: HMMER biosequence analysis using profile hidden Markov models
-# Group:   Applications/Biology
+# Group: Applications/Life Sciences
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION

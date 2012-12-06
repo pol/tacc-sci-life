@@ -5,7 +5,7 @@ Name: samtools
 Version: 0.1.18
 Release: 1
 License: GPL
-Group: Life Science Computing/genomics
+Group: Applications/Life Sciences
 Source0:  samtools-%{version}.tar.bz2
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot

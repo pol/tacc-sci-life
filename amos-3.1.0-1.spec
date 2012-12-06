@@ -4,7 +4,7 @@ Version:    3.1.0
 Release:    1
 License:    Free
 Vendor:     AMOS Consortium
-Group: Life Science Computing
+Group: Applications/Life Sciences
 Source:     %{name}-%{version}.tar.gz
 Packager:   TACC - vaughn@tacc.utexas.edu
 # This is the actual installation directory - Careful

@@ -5,7 +5,7 @@ Name:       cufflinks
 Version:    2.0.2
 Release:    1
 License:    Boost Software License
-Group:      Life Sciences Computing/genomics
+Group: Applications/Life Sciences
 Source:     cufflinks-%{version}.tar.gz
 Packager:   TACC - vaughn@tacc.utexas.edu
 # This is the actual installation directory - Careful
@@ -34,7 +34,7 @@ requires:   boost149-gcc4_4 = 1.49.0
 # Summary and Group are required.
 # %package -n %{name}-%{comp_fam_ver}
 # Summary: HMMER biosequence analysis using profile hidden Markov models
-# Group:   Applications/Biology
+# Group: Applications/Life Sciences
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION

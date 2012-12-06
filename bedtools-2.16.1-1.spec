@@ -6,7 +6,7 @@ Name:       bedtools
 Version:    2.16.1
 Release:    1
 License:    GPLv2
-Group:      Life Science Computing/genomics
+Group: Applications/Life Sciences
 Source:     BEDTools.v%{version}.tar.gz
 Packager:   TACC - vaughn@tacc.utexas.edu
 # This is the actual installation directory - Careful
@@ -33,7 +33,7 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 # Summary and Group are required.
 # %package -n %{name}-%{comp_fam_ver}
 # Summary: HMMER biosequence analysis using profile hidden Markov models
-# Group:   Applications/Biology
+# Group: Applications/Life Sciences
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION

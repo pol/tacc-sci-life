@@ -9,7 +9,7 @@ Version: 1.71
 Release: 1
 License: MIT License
 Vendor: Broad Institute
-Group: Life Science Computing
+Group: Applications/Life Sciences
 Source0:  picard-tools-1.71.zip
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot

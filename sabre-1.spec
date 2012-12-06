@@ -7,7 +7,7 @@ Name: sabre
 Version: 1.00
 Release: 1
 License: Artistic
-Group: Life Science Computing/genomics
+Group: Applications/Life Sciences
 Source0:  sabre.tgz
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot

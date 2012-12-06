@@ -3,7 +3,7 @@ Name:       openbabel
 Version:    2.3.1
 Release:    1
 License:    GNU General Public License
-Group:      Life Science Computing
+Group: Applications/Life Sciences
 Source:     %{name}-%{version}.tar.gz
 Packager:   TACC - jiao@tacc.utexas.edu
 # This is the actual installation directory - Careful
@@ -30,7 +30,7 @@ Packager:   TACC - jiao@tacc.utexas.edu
 # Summary and Group are required.
 # %package -n %{name}-%{comp_fam_ver}
 # Summary: HMMER biosequence analysis using profile hidden Markov models
-# Group:   Applications/Biology
+# Group: Applications/Life Sciences
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION
@@ -38,7 +38,7 @@ Packager:   TACC - jiao@tacc.utexas.edu
 
 %package -n %{name}-%{comp_fam_ver}
 Summary: openbabel
-Group: Life Science Computing
+Group: Applications/Life Sciences
 
 %description
 %description -n %{name}-%{comp_fam_ver}

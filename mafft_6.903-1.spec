@@ -6,7 +6,7 @@ Name:      mafft
 Version:   6.903 
 Release:   1
 License:   BSD
-Group:     Life Science Computing
+Group: Applications/Life Sciences
 Source:    %{name}-%{version}-with-extensions-src.tgz
 Packager:  TACC - jfonner@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot

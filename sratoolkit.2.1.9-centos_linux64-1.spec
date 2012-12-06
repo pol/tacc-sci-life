@@ -8,8 +8,8 @@ Name: sratoolkit
 Version: 2.1.9
 Release: 1
 License: Public Domain
-Vendor: Broad Institute
-Group: National Center for Biotechnology Information
+Group: Applications/Life Sciences
+Vendor: National Center for Biotechnology Information
 Source0:  %{name}.%{version}-centos_linux64.tar.gz
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot

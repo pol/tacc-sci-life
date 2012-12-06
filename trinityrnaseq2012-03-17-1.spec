@@ -7,7 +7,7 @@ Name: trinityrnaseq
 Version: r20120317
 Release: 1
 License: Copyright (c) 2012, The Broad Institute, Inc. All rights reserved.
-Group: Life Science Computing/genomics
+Group: Applications/Life Sciences
 Source0:  trinityrnaseq_r2012-03-17.tgz
 Packager: vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot

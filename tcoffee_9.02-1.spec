@@ -6,7 +6,7 @@ Name:      tcoffee
 Version:   9.02
 Release:   1
 License:   GNU Lesser GPL
-Group:     Life Science Computing
+Group: Applications/Life Sciences
 Source:    T-COFFEE_distribution_Version_9.02.r1228.tar.gz
 Packager:  TACC - gendlerk@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
@@ -25,7 +25,7 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 %package -n %{name}-%{comp_fam_ver}
 Summary:   T-Coffee - A collection of tools for Computing, Evaluating and Manipulating Multiple Alignments of DNA, RNA, Protein Sequences and Structures 
-Group:     Life Science Computing
+Group: Applications/Life Sciences
 
 %description
 %description -n %{name}-%{comp_fam_ver}

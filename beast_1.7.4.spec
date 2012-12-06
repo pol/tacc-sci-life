@@ -6,7 +6,7 @@ Name:      beast
 Version:   1.7.4
 Release:   1
 License:   GNU Lesser GPL
-Group:     Life Science Computing
+Group: Applications/Life Sciences
 Source:    BEASTv1.7.4.tgz
 Packager:  TACC - gendlerk@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
@@ -24,7 +24,7 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 %package -n %{name}-%{comp_fam_ver}
 Summary:   BEAST - a program for Bayesian MCMC of Evolution & Phylogenetics using Molecular Sequences
-Group:     Life Science Computing
+Group: Applications/Life Sciences
 
 %description
 %description -n %{name}-%{comp_fam_ver}

@@ -8,7 +8,7 @@ Name: tophat
 Version: 2.0.6
 Release: 1
 License: GPLv2
-Group: Life Sciences Computing/genomics
+Group: Applications/Life Sciences
 Source:  %{name}-%{version}.tar.gz
 Packager: TACC - vaughn@tacc.utexas.edu
 #BuildRoot: /var/tmp/%{name}_%{version}-buildroot
@@ -32,7 +32,7 @@ Packager: TACC - vaughn@tacc.utexas.edu
 
 # Compiler-specific packages
 # %package -n %{name}-%{comp_fam_ver}
-# Group: Life Sciences Computing/genomics
+# Group: Applications/Life Sciences
 # Summary: Fast splice junction mapper for RNA-Seq reads
 
 #------------------------------------------------

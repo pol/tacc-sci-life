@@ -6,7 +6,7 @@ Name: phyutility
 Version: 2.2.6
 Release: 1
 License: GPL3
-Group:   Life Science Computing
+Group: Applications/Life Sciences
 Source: phyutility_2_2_6.tar.gz
 Packager: TACC - gendlerk@tacc.utexas.edu
 
@@ -30,7 +30,7 @@ Phyutility is a command line program that performs simple analyses or modificati
 
 %package -n %{name}-modulefile
 Summary: Module file for %{name}
-Group: Life Science Computing
+Group: Applications/Life Sciences
 %description -n %{name}-modulefile
 Module file for %{name}
 

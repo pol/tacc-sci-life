@@ -4,7 +4,7 @@ Version:   2.9
 Release:   1
 License:   GPL
 Vendor:    namd
-Group:     Life Science Computing
+Group: Applications/Life Sciences
 Source:    NAMD_%{version}_Source.tar.gz
 Packager:  TACC - jfonner@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
@@ -26,7 +26,7 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 %package     -n %{name}%{version}-%{comp_fam_ver}-%{mpi_fam_ver}
 Summary: NAMD - scalable molecular dynamicss. Uses charm %{charm_version}
-Group:   Life Science Computing
+Group: Applications/Life Sciences
 
 %description
 %description -n %{name}%{version}-%{comp_fam_ver}-%{mpi_fam_ver}

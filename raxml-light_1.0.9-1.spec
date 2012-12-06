@@ -6,7 +6,7 @@ Name:      raxml-light
 Version:   1.0.9
 Release:   1
 License:   GPL
-Group:     Life Science Computing
+Group: Applications/Life Sciences
 Source:    %{name}-%{version}.tgz
 Packager:  TACC - gendlerk@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
@@ -25,7 +25,7 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 %package -n %{name}-%{comp_fam_ver}-%{mpi_fam_ver}
 Summary:   RAxML-Light a lightweight maximum likelihood code to infer phylogenetic trees
-Group:     Life Science Computing
+Group: Applications/Life Sciences
 
 %description
 %description -n %{name}-%{comp_fam_ver}-%{mpi_fam_ver}

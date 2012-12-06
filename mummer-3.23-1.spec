@@ -3,7 +3,7 @@ Name:       mummer
 Version:    3.23
 Release:    1
 License:    OSI Certified Open Source Software
-Group: Life Science Computing
+Group: Applications/Life Sciences
 Source:     MUMmer%{version}.tar.gz
 Packager:   TACC - vaughn@tacc.utexas.edu
 # This is the actual installation directory - Careful

@@ -7,7 +7,7 @@ Name: velvet
 Version: 1.2.07
 Release: 5
 License: GPLv2
-Group: Life Science Computing
+Group: Applications/Life Sciences
 Source0:  velvet_%{version}.tgz
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot
@@ -33,7 +33,7 @@ BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 # Summary and Group are required.
 # %package -n %{name}-%{comp_fam_ver}
 # Summary: HMMER biosequence analysis using profile hidden Markov models
-# Group:   Applications/Biology
+# Group: Applications/Life Sciences
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION

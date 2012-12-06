@@ -4,7 +4,7 @@ Version:    1.07
 Release:    1
 License:    GPLv2
 Vendor:     Shaun Purcell
-Group: Life Science Computing
+Group: Applications/Life Sciences
 Source:     %{name}-%{version}-src.zip
 Packager:   TACC - vaughn@tacc.utexas.edu
 # This is the actual installation directory - Careful
@@ -31,7 +31,7 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 # Summary and Group are required.
 # %package -n %{name}-%{comp_fam_ver}
 # Summary: HMMER biosequence analysis using profile hidden Markov models
-# Group:   Applications/Biology
+# Group: Applications/Life Sciences
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION

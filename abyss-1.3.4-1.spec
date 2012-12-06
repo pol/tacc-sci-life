@@ -7,7 +7,7 @@ Name: abyss
 Version: 1.3.4
 Release: 1
 License: GPL
-Group: Life Science Computing
+Group: Applications/Life Sciences
 Source0:  abyss-%{version}.tar.gz
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
@@ -27,7 +27,7 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 %define MODULE_DIR  %{APPS}/%{comp_fam_ver}/%{mpi_fam_ver}/%{MODULES}/%{PNAME}
 %define MODULE_VAR TACC_ABYSS
 %package -n %{PNAME}-%{comp_fam_ver}-%{mpi_fam_ver}
-Group: Life Science Computing/genomics
+Group: Applications/Life Sciences
 Summary: Assembly By Short Sequences - a de novo, parallel, paired-end sequence assembler.
 
 %description

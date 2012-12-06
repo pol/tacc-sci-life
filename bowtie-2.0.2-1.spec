@@ -4,7 +4,7 @@ Name: bowtie
 Version: 2.0.2
 Release: 1
 License: GPL
-Group: Life Sciences Computing/genomics
+Group: Applications/Life Sciences
 Source:  bowtie2-2.0.2-source.zip
 Packager: TACC - vaughn@tacc.utexas.edu
 Summary: Memory-efficient short read (NGS) aligner
@@ -26,7 +26,7 @@ Summary: Memory-efficient short read (NGS) aligner
 %define PNAME %{name}
 
 #%package -n %{name}-%{comp_fam_ver}
-#Group: Life Sciences Computing/genomics
+#Group: Applications/Life Sciences
 #Summary: Memory-efficient short read (NGS) aligner
 
 #------------------------------------------------

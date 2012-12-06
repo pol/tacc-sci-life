@@ -11,7 +11,7 @@ Version: 07092012
 Release: 1
 License: BSD
 Vendor: Broad Institute
-Group: Life Science Computing
+Group: Applications/Life Sciences
 Source:  scripture-07092012.tgz
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot

@@ -8,7 +8,7 @@ Name: velvet
 Version: 1.2.08
 Release: 1
 License: GPLv2
-Group: Life Sciences Computing/genomics
+Group: Applications/Life Sciences
 Source0:  %{name}_%{version}.tgz
 Packager: TACC - vaughn@tacc.utexas.edu
 # BuildRoot: /var/tmp/%{name}_%{version}-buildroot

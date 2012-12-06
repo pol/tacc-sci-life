@@ -3,7 +3,7 @@ Name:       geant4
 Version:    9.5.p01
 Release:    1
 License:    Geant4 Software License
-Group:      Life Science Computing
+Group: Applications/Life Sciences
 Source:     %{name}.%{version}.tar.gz
 Source1:    G4NDL.4.0.tar.gz
 Source2:    G4ABLA.3.0.tar.gz
@@ -40,7 +40,7 @@ BuildRoot:  /var/tmp/%{name}.%{version}-buildroot
 # Summary and Group are required.
 # %package -n %{name}-%{comp_fam_ver}
 # Summary: HMMER biosequence analysis using profile hidden Markov models
-# Group:   Applications/Biology
+# Group: Applications/Life Sciences
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION

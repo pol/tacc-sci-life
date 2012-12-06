@@ -7,7 +7,7 @@ Name: tophat
 Version: 1.4.1
 Release: 1
 License: GPLv2
-Group: Life Science Computing/genomics
+Group: Applications/Life Sciences
 Source0:  tophat-1.4.1.patched.tar.gz
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot

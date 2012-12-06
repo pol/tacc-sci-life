@@ -5,7 +5,7 @@ Name: fastx_toolkit
 Version: 0.0.13
 Release: 3
 License: GPL
-Group: Life Science Computing/genomics
+Group: Applications/Life Sciences
 Source0:  fastx_toolkit-%{version}.tar.bz2
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot

@@ -7,7 +7,7 @@ Name: allpathslg
 Version: 42179
 Release: 1
 License: MIT
-Group: Life Science Computing
+Group: Applications/Life Sciences
 Source0:  LATEST_VERSION.tar.gz
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot
