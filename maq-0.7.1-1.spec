@@ -6,7 +6,7 @@ License:    GPLv3
 Vendor:     Sanger Institute
 Group: Applications/Life Sciences
 Source:     %{name}-%{version}.tar.bz2
-Packager:   TACC - jfonner@tacc.utexas.edu
+Packager:   TACC - vaughn@tacc.utexas.edu
 # This is the actual installation directory - Careful
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 
