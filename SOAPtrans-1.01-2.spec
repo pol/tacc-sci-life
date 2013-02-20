@@ -16,20 +16,16 @@ Packager:   TACC - vaughn@tacc.utexas.edu
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
-%define debug_package %{nil}
-# This will define the correct _topdir
 %include rpm-dir.inc
+%include ../system-defines.inc
 
 # Compiler Family Definitions
 # %include compiler-defines.inc
 # MPI Family Definitions
 # %include mpi-defines.inc
 # Other defs
-
-%define system linux
-%define APPS    /opt/apps
-%define MODULES modulefiles
 %define PNAME %{name}
+
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 %define MODULE_VAR TACC_SOAPTRANS
@@ -65,13 +61,8 @@ rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 #------------------------------------------------
 %install
 
+%include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
-
-# Start with a clean environment
-if [ -f "$BASH_ENV" ]; then
-   . $BASH_ENV
-   export MODULEPATH=/opt/apps/xsede/modulefiles:/opt/apps/teragrid/modulefiles:/opt/apps/modulefiles:/opt/modulefiles
-fi
 
 # Load correct compiler
 # %include compiler-load.inc

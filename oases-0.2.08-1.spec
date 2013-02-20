@@ -15,17 +15,15 @@ BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
-%define debug_package %{nil}
-# This will define the correct _topdir
 %include rpm-dir.inc
+%include ../system-defines.inc
+
 # Compiler Family Definitions
 # %include compiler-defines.inc
 # MPI Family Definitions
 # %include mpi-defines.inc
 # Other defs
-%define system linux
-%define APPS    /opt/apps
-%define MODULES modulefiles
+
 %define PNAME oases
 
 # Allow for creation of multiple packages with this spec file

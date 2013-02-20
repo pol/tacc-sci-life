@@ -1,15 +1,14 @@
 # $Id$
 
-# You must build Velvet first, then Oases 
-# as it requires the build artifacts from velvet (lame, I know)
+# Downloaded ftp://ftp.broadinstitute.org/pub/crd/ALLPATHS/Release-LG/latest_source_code/LATEST_VERSION.tar.gz on 02/20/2013
 
-Summary: Oases - De novo transcriptome assembler for very short reads
-Name: oases
-Version: 0.2.08
-Release: 3
-License: GPLv2
+Summary: ALLPATHS-LG - Broad Institute assembler for complex eukaryote genomes
+Name: allpathslg
+Version: 45166
+Release: 1
+License: MIT
 Group: Applications/Life Sciences
-Source0:  oases_%{version}.tgz
+Source0:  ftp://ftp.broadinstitute.org/pub/crd/ALLPATHS/Release-LG/latest_source_code/LATEST_VERSION.tar.gz
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 
@@ -25,18 +24,17 @@ BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 # %include mpi-defines.inc
 # Other defs
 
-%define PNAME oases
+%define PNAME %{name}
+
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
-%define MODULE_VAR TACC_OASES
+%define MODULE_VAR TACC_ALLPATHS
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION
 #------------------------------------------------
 %description
-Oases is a de novo transcriptome assembler designed to produce transcripts from short read sequencing technologies, such as Illumina, SOLiD, or 454 in the absence of any genomic assembly. It was developed by Marcel Schulz (MPI for Molecular Genomics) and Daniel Zerbino (previously at the European Bioinformatics Institute (EMBL-EBI), now at UC Santa Cruz).
-
-Oases uploads a preliminary assembly produced by Velvet, and clusters the contigs into small groups, called loci. It then exploits the paired-end read and long read information, when available, to construct transcript isoforms.
+ALLPATHS‐LG is a short‐read assembler. It has been designed to use reads produced by new sequencing technology machines such as the Illumina Genome Analyzer. The version described here has been optimized for, but not necessarily limited to, reads of length 100 bases. ALLPATHS is not designed to assemble Sanger or 454 FLX reads, or a mix of these with short reads.
 
 #------------------------------------------------
 # PREPARATION SECTION
@@ -49,7 +47,7 @@ rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # Unpack source
 # This will unpack the source to /tmp/BUILD/***
-%setup -n %{name}_%{version}
+%setup -n %{name}-%{version}
 
 #------------------------------------------------
 # BUILD SECTION
@@ -73,15 +71,13 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 module purge
 module load TACC
-#module load gcc/4.4.5
+module swap $TACC_FAMILY_COMPILER gcc/4.7.1
 
-#-----------------------------
-# Build parallel version
-#-----------------------------
+./configure --prefix=%{INSTALL_DIR} 
+make -j 12 LDFLAGS="-Wl,-rpath,$GCC_LIB"
 
-make 'VELVET_DIR=%{_topdir}/BUILD/velvet_1.2.08/' 'CFLAGS=-openmp -m64' 'MAXKMERLENGTH=64' 'LONGSEQUENCES=1' 'CATEGORIES=4'
-
-cp -R ./oases ./data ./doc ./scripts ./OasesManual.pdf $RPM_BUILD_ROOT/%{INSTALL_DIR}
+# strip is important - otherwise the binaries sum to > 500 MB and packaging will fail
+make DESTDIR=$RPM_BUILD_ROOT install-strip
 
 # ADD ALL MODULE STUFF HERE
 # TACC module
@@ -91,23 +87,26 @@ mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help (
 [[
-This module loads %{name} built with gcc and makes available the Oases meta-assembler
-Documentation is available online at http://www.ebi.ac.uk/~zerbino/oases/
-Velvet/Oases is configured as such: MAXKMERLENGTH=64 LONGSEQUENCES CATEGORIES=4 OPENMP
-The oases executable can be found in %{MODULE_VAR}_DIR
+This module loads %{name} built with gcc.
+This module makes available the ALLPATHS-LG assembler. Documentation for %{name} is available online at the publisher\'s website: http://www.broadinstitute.org/software/allpaths-lg/
+The ALLPATHS-LG executables can be found in %{MODULE_VAR}_DIR. 
+
+ALLPATHS-LG requires Picard tools for data preparation, and Graphviz dot for plotting assembly graphs. The former is provided as a module, the latter may be self-installed in the user's $HOME directory.
 
 Version %{version}
 ]])
 
-whatis("Name: oases")
+whatis("Name: ALLPATHS-LG")
 whatis("Version: %{version}")
 whatis("Category: computational biology, genomics")
-whatis("Keywords: Biology, Genomics, Sequencing, Assembly")
-whatis("Description: De novo transcriptome assembler for very short reads")
-whatis("URL: http://www.ebi.ac.uk/~zerbino/oases/")
+whatis("Keywords:  Biology, Genomics, Sequencing, Assembly")
+whatis("Description: ALLPATHS-LG - Broad Institute assembler for complex eukaryote genomes")
+whatis("URL: http://www.broadinstitute.org/software/allpaths-lg/")
 
-setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}")
-prepend_path("PATH"       ,"%{INSTALL_DIR}")
+prereq ("picard")
+
+setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
+prepend_path("PATH"       ,"%{INSTALL_DIR}/bin")
 
 EOF
 
