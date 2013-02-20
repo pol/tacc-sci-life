@@ -11,12 +11,16 @@ Packager: TACC - vaughn@tacc.utexas.edu jfonner@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 # Requires: libgtextutils-0.6-2 = 0.6
 
-%define debug_package %{nil}
 %include rpm-dir.inc
+%include ../system-defines.inc
+
+# Compiler Family Definitions
+# %include compiler-defines.inc
+# MPI Family Definitions
+# %include mpi-defines.inc
+# Other defs
 
 %define PNAME fastx_toolkit
-%define APPS /opt/apps
-%define MODULES modulefiles
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
 %define MODULE_VAR TACC_FASTX
@@ -33,12 +37,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %install
 
+%include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
-
-if [ -f "$BASH_ENV" ]; then
-  export MODULEPATH=/opt/apps/modulefiles:/opt/modulefiles
-  . $BASH_ENV
-fi
 
 module purge
 module load TACC

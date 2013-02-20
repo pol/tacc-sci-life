@@ -13,13 +13,16 @@ Source0:  newbler_CLI_2.6.x86_64.tgz
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 
-%define debug_package %{nil}
 %include rpm-dir.inc
+%include ../system-defines.inc
 
-%define PNAME newbler
-%define APPS /opt/apps
-%define MODULES modulefiles
+# Compiler Family Definitions
+# %include compiler-defines.inc
+# MPI Family Definitions
+# %include mpi-defines.inc
+# Other defs
 
+%define PNAME %{name}
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
 %define MODULE_VAR TACC_NEWBLER
@@ -36,12 +39,8 @@ rm   -rf $RPM_BUILD_ROOT
 
 %install
 
-mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
-
-if [ -f "$BASH_ENV" ]; then
-  export MODULEPATH=/opt/apps/modulefiles:/opt/modulefiles
-  . $BASH_ENV
-fi
+%include ../system-load.inc
+mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 module purge
 module load TACC

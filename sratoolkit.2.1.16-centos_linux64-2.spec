@@ -19,15 +19,19 @@ BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 # BASIC DEFINITIONS
 #------------------------------------------------
 # This will define the correct _topdir and turn of building a debug package
-%define debug_package %{nil}
 %include rpm-dir.inc
+%include ../system-defines.inc
 
-%define PNAME sratoolkit
-%define APPS /opt/apps
-%define MODULES modulefiles
+# Compiler Family Definitions
+# %include compiler-defines.inc
+# MPI Family Definitions
+# %include mpi-defines.inc
+# Other defs
+
+%define PNAME %{name}
+
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
-
 %define MODULE_VAR TACC_SRATOOLKIT
 
 %description
@@ -49,12 +53,9 @@ rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %build
 
 %install
-mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
 
-if [ -f "$BASH_ENV" ]; then
-  export MODULEPATH=/opt/apps/modulefiles:/opt/modulefiles
-  . $BASH_ENV
-fi
+%include ../system-load.inc
+mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 echo "SRA Toolkit is distributed as compiled binary for Centos 64bit. No compilation necessary."
 
