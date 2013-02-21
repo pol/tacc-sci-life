@@ -1,11 +1,11 @@
-Summary:    bwa - Burrows-Wheeler Alignment Tool
-Name:       bwa
-Version:    0.6.2
-Release:    2
+Summary:    Stacks - short-read genomics pipeline
+Name:       stacks
+Version:    0.99994
+Release:    1
 License:    GPLv3
 Vendor:     Heng Li at the Sanger Institute
 Group: Applications/Life Sciences
-Source:     %{name}-%{version}.tar.bz2
+Source:     %{name}-%{version}.tar.gz
 Packager:   TACC - vaughn@tacc.utexas.edu
 Buildroot: /var/tmp/%{name}-%{version}-buildroot
 

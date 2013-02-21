@@ -1,40 +1,48 @@
-# $Id$
-
-## Cloned from https://github.com/ucdavis-bioinformatics/sabre.git and packaged as sabre.tgz
-
-Summary: A barcode demultiplexing and trimming tool for FastQ files
-Name: sabre
-Version: 1.00
-Release: 2
-License: Artistic
+Summary:    HTSeq
+Name:       htseq
+Version:    0.5.3p9
+Release:    1
+License:    GPL
+Vendor:     EMBL
 Group: Applications/Life Sciences
-Source0:  sabre.tgz
-Packager: TACC - vaughn@tacc.utexas.edu
-BuildRoot: /var/tmp/%{name}_%{version}-buildroot
+Source:     HTSeq-%{version}.tar.gz
+Packager:   TACC - wonaya@tacc.utexas.edu
+# This is the actual installation directory - Careful
+BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 
-%include rpm-dir.inc
+#------------------------------------------------
+# BASIC DEFINITIONS
+#------------------------------------------------
+# This will define the correct _topdir
 %include ../system-defines.inc
-
+%include rpm-dir.inc
 # Compiler Family Definitions
 # %include compiler-defines.inc
 # MPI Family Definitions
 # %include mpi-defines.inc
 # Other defs
+%define PNAME htseq
 
-%define PNAME %{name}
-%define INSTALL_DIR %{APPS}/%{name}/%{version}
-%define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
-%define MODULE_VAR TACC_SABRE
+# Allow for creation of multiple packages with this spec file
+# Any tags right after this line apply only to the subpackage
+# Summary and Group are required.
+# %package -n %{name}-%{comp_fam_ver}
+# Summary: Provides infrastructure to process data from high-throughput sequencing assays
+# Group:   Applications/Biology
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION
 #------------------------------------------------
 %description
-Sabre is a tool that will demultiplex barcoded reads into separate files. It will work on both single-end and paired-end data in fastq format. It simply compares the provided barcodes with each read and separates the read into its appropriate barcode file, after stripping the barcode from the read (and also stripping the quality values of the barcode bases). If a read does not have a recognized barcode, then it is put into the unknown file. Sabre also has an option (-m) to allow mismatches of the barcodes.
+HTSeq is a Python package that provides infrastructure to process data from high-throughput sequencing assays
 
 #------------------------------------------------
 # INSTALLATION DIRECTORY
 #------------------------------------------------
+# Buildroot: defaults to null if not included here
+%define INSTALL_DIR %{APPS}/%{name}/%{version}
+%define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
+%define MODULE_VAR TACC_HTSEQ
 
 #------------------------------------------------
 # PREPARATION SECTION
@@ -46,8 +54,8 @@ Sabre is a tool that will demultiplex barcoded reads into separate files. It wil
 rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # Unpack source
-# This will unpack the source to /tmp/BUILD/*
-%setup -n %{name}
+# This will unpack the source
+%setup -n HTSeq-%{version}
 
 #------------------------------------------------
 # BUILD SECTION
@@ -59,47 +67,47 @@ rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 #------------------------------------------------
 %install
 
-%include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
+%include ../system-load.inc
 
-# Load correct compiler
-# %include compiler-load.inc
-# Load correct mpi stack
-# %include mpi-load.inc
-# %include mpi-env-vars.inc
-# Load additional modules here (as needed)
+module load python
 
-module purge
-module load TACC
+python setup.py build
+mkdir -p $PWD/lib/python2.7/site-packages/
+export PYTHONPATH=$PWD/lib/python2.7/site-packages/:$PYTHONPATH
+python setup.py install --prefix=$PWD
 
-make
+cp -r lib bin doc LICENSE VERSION README $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
-cp -R ./sabre $RPM_BUILD_ROOT/%{INSTALL_DIR}
- 
 # ADD ALL MODULE STUFF HERE
 # TACC module
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
+
 help (
 [[
-The %{PNAME} module file defines the following environment variables:
-%{MODULE_VAR}_DIR for the location of the %{PNAME}
-distribution. Documentation can be found online at http://bowtie-bio.sourceforge.net/
+This module loads %{PNAME}, which depends on python and numpy.
+To call this function, use "import HTSeq" within python. 
+Documentation for %{PNAME} is available online at the publisher website: http://www-huber.embl.de/users/anders/HTSeq/doc/overview.html
+For convenience %{MODULE_VAR}_DIR points to the installation directory. 
+PYTHONPATH has been prepended to include the HTSeq library.
 
 Version %{version}
 ]])
 
-whatis("Name: Sabre")
+whatis("Name: ${PNAME}")
 whatis("Version: %{version}")
 whatis("Category: computational biology, genomics")
-whatis("Keywords: Biology, Genomics, Quality Control, Utility, Sequencing")
-whatis("URL: https://github.com/ucdavis-bioinformatics/sabre")
-whatis("Description: barcode demultiplexing and trimming tool for FastQ files")
+whatis("Keywords: Biology, Genomics, High-throughput Sequencing")
+whatis("Description: HTSeq - Analysing high-throughput sequencing data with Python")
+whatis("URL: https://pypi.python.org/pypi/HTSeq")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
-prepend_path("PATH"       ,"%{INSTALL_DIR}/")
+prepend_path("PYTHONPATH"       ,"%{INSTALL_DIR}/lib/python2.7/site-packages/")
+
+prereq("python")
 
 EOF
 

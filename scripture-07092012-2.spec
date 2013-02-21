@@ -19,13 +19,16 @@ BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 # Disable Java jar repacking
 %define __jar_repack %{nil}
 
-%define debug_package %{nil}
 %include rpm-dir.inc
+%include ../system-defines.inc
+
+# Compiler Family Definitions
+# %include compiler-defines.inc
+# MPI Family Definitions
+# %include mpi-defines.inc
+# Other defs
 
 %define PNAME %{name}
-%define APPS /opt/apps
-%define MODULES modulefiles
-
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
 %define MODULE_VAR TACC_SCRIPTURE
@@ -42,13 +45,8 @@ rm   -rf $RPM_BUILD_ROOT
 
 %install
 
+%include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
-
-# Start with a clean environment
-if [ -f "$BASH_ENV" ]; then
-   . $BASH_ENV
-   export MODULEPATH=/opt/apps/xsede/modulefiles:/opt/apps/teragrid/modulefiles:/opt/apps/modulefiles:/opt/modulefiles
-fi
 
 module purge
 module load TACC

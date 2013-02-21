@@ -10,17 +10,17 @@ Source0:  samtools-%{version}.tar.bz2
 Packager: TACC - vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
-%define debug_package %{nil}
 %include rpm-dir.inc
+%include ../system-defines.inc
+
 # Compiler Family Definitions
 # %include compiler-defines.inc
 # MPI Family Definitions
 # %include mpi-defines.inc
 # Other defs
 
-%define APPS        /opt/apps
-%define PKG_BASE    /opt/apps/%{name}
-%define MODULES     modulefiles
+%define PNAME %{name}
+
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 %define MODULE_VAR TACC_SAMTOOLS
@@ -49,15 +49,10 @@ rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 ##
 %install
 
+%include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}/lib
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}/include
-
-# Start with a clean environment
-if [ -f "$BASH_ENV" ]; then
-   . $BASH_ENV
-   export MODULEPATH=/opt/apps/xsede/modulefiles:/opt/apps/modulefiles:/opt/modulefiles
-fi
 
 module purge
 module load TACC
@@ -102,6 +97,9 @@ whatis("Description: SAM Tools provide various utilities for manipulating alignm
 
 
 prepend_path("PATH",              "%{INSTALL_DIR}")
+prepend_path("PATH",              "%{INSTALL_DIR}/bcftools")
+prepend_path("PATH",              "%{INSTALL_DIR}/misc")
+
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}/")
 setenv (     "%{MODULE_VAR}_INC", "%{INSTALL_DIR}/include")
 setenv (     "%{MODULE_VAR}_LIB", "%{INSTALL_DIR}/lib")
