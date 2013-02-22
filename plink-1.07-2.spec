@@ -14,18 +14,19 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
-%define debug-package %{nil}
+#------------------------------------------------
+# BASIC DEFINITIONS
+#------------------------------------------------
 %include rpm-dir.inc
+%include ../system-defines.inc
 
 # Compiler Family Definitions
 # %include compiler-defines.inc
 # MPI Family Definitions
 # %include mpi-defines.inc
 # Other defs
-%define system linux
-%define APPS    /opt/apps
-%define MODULES modulefiles
-%define PNAME plink
+
+%define PNAME %{name}
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 %define MODULE_VAR TACC_PLINK
@@ -62,13 +63,8 @@ rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 ##
 %install
 
+%include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
-
-# Start with a clean environment
-if [ -f "$BASH_ENV" ]; then
-   . $BASH_ENV
-   export MODULEPATH=/opt/apps/xsede/modulefiles:/opt/apps/modulefiles:/opt/modulefiles
-fi
 
 # Load correct compiler
 # %include compiler-load.inc
@@ -81,9 +77,10 @@ module purge
 module load TACC
 module load mkl
 
-#make CC=icc CXX=icpc WITH_ZLIB=/usr/lib64/libz.so WITH_WEBCHECK=0
-make 'LIBS=-ldl' 'WITH_ZLIB=/usr/lib64/libz.so' WITH_WEBCHECK=0
-make CXXFLAGS='-L /usr/lib -L/usr/lib64 -lz' 'WITH_WEBCHECK=0'
+# The Makefile doesn't like overrides of CXXFLAGS needed to build with MKL
+# so need to force all the macros like DUNIX, etc to be sent in
+# Have not confirmed that plink is able to take advantage of the MKL linkage
+make CC=icc CXX=icpc 'LIBS=-ldl' CXXFLAGS='-O3 -I. -DUNIX -DWITH_R_PLUGINS -DWITH_ZLIB -Wl,-rpath,${TACC_MKL_LIB} -L${TACC_MKL_LIB} -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread'
 
 cp ./plink ./README.txt $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
