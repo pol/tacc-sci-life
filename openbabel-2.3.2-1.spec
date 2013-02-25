@@ -4,7 +4,7 @@ Version:    2.3.2
 Release:    1
 License:    GNU General Public License
 Group: Applications/Life Sciences
-Source:     %{name}-%{version}.tar.gz
+Source:     openbabel-2.3.2.tar.gz
 Packager:   TACC - jiao@tacc.utexas.edu
 # This is the actual installation directory - Careful
 #BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
@@ -16,7 +16,7 @@ Packager:   TACC - jiao@tacc.utexas.edu
 # This will define the correct _topdir
 %include rpm-dir.inc
 # Compiler Family Definitions
-%include compiler-defines.inc
+# %include compiler-defines.inc
 # MPI Family Definitions
 # %include mpi-defines.inc
 # Other defs
@@ -34,20 +34,16 @@ Packager:   TACC - jiao@tacc.utexas.edu
 # PACKAGE DESCRIPTION
 #------------------------------------------------
 
-%package -n %{name}-%{comp_fam_ver}
-Summary: openbabel
-Group: Applications/Life Sciences
-
 %description
-%description -n %{name}-%{comp_fam_ver}
+# %description -n %{name}-%{comp_fam_ver}
 Open Babel is a chemical toolbox designed to speak the many languages of chemical data. It's an open, collaborative project allowing anyone to search, convert, analyze, or store data from molecular modeling, chemistry, solid-state materials, biochemistry, or related areas.
 
 #------------------------------------------------
 # INSTALLATION DIRECTORY
 #------------------------------------------------
 # Buildroot: defaults to null if not included here
-%define INSTALL_DIR %{APPS}/%{comp_fam_ver}/%{name}/%{version}
-%define MODULE_DIR  %{APPS}/%{comp_fam_ver}/%{MODULES}/%{name}
+%define INSTALL_DIR %{APPS}/%{name}/%{version}
+%define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 %define MODULE_VAR TACC_OPENBABEL
 
 #------------------------------------------------
@@ -70,8 +66,8 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %build   
 
 %install 
-%include system-load.inc         
-%include compiler-load.inc
+%include ../system-load.inc         
+# %include compiler-load.inc
 module purge 
 module load TACC
 #module swap $TACC_FAMILY_COMPILER gcc
@@ -132,8 +128,8 @@ EOF
 #------------------------------------------------
 # FILES SECTION
 #------------------------------------------------
-%files -n %{name}-%{comp_fam_ver}
-
+# %files -n %{name}-%{comp_fam_ver}
+%files
 # Define files permisions, user and group
 %defattr(755,root,root,-)
 %{INSTALL_DIR}

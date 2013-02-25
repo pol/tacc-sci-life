@@ -27,9 +27,7 @@ BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 Picard comprises Java-based command-line utilities that manipulate SAM files, and a Java API (SAM-JDK) for creating new programs that read and write SAM files. Both SAM text format and SAM binary (BAM) format are supported.
 
 %prep
-rm   -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
-
+rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %setup -n picard-tools-1.85
 
 %build
@@ -47,7 +45,6 @@ cp -R ./* $RPM_BUILD_ROOT/%{INSTALL_DIR}
 #-----------------
 # Modules Section
 #-----------------
-
 rm -rf $RPM_BUILD_ROOT%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT%{MODULE_DIR}
 cat   >  $RPM_BUILD_ROOT%{MODULE_DIR}/%{version}.lua << 'EOF'

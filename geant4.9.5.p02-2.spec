@@ -8,12 +8,11 @@ Source:     %{name}.%{version}.tar.gz
 Source1:    G4NDL.4.0.tar.gz
 Source2:    G4ABLA.3.0.tar.gz
 Source3:    G4EMLOW.6.23.tar.gz
-Source4:    G4NDL.0.2.tar.gz
-Source5:    G4PhotonEvaporation.2.2.tar.gz
-Source6:    G4RadioactiveDecay.3.4.tar.gz
-Source7:    G4NEUTRONXS.1.1.tar.gz
-Source8:    G4PII.1.3.tar.gz
-Source9:    RealSurface.1.0.tar.gz
+Source4:    G4PhotonEvaporation.2.2.tar.gz
+Source5:    G4RadioactiveDecay.3.4.tar.gz
+Source6:    G4NEUTRONXS.1.1.tar.gz
+Source7:    G4PII.1.3.tar.gz
+Source8:    RealSurface.1.0.tar.gz
 
 Packager:   TACC - jiao@tacc.utexas.edu
 # This is the actual installation directory - Careful
@@ -25,7 +24,7 @@ BuildRoot:  /var/tmp/%{name}.%{version}-buildroot
 %define debug-package %{nil}
 # This will define the correct _topdir
 %include rpm-dir.inc
-%include system-defines.inc
+%include ../system-defines.inc
 
 # Allow for creation of multiple packages with this spec file
 # Any tags right after this line apply only to the subpackage
@@ -75,7 +74,6 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %setup -n %{name}.%{version} -T -D -a 6
 %setup -n %{name}.%{version} -T -D -a 7
 %setup -n %{name}.%{version} -T -D -a 8
-%setup -n %{name}.%{version} -T -D -a 9
 
 #------------------------------------------------
 # BUILD SECTION
@@ -95,7 +93,7 @@ cd $MY_GEANT4_DIR
 
 #make a directory for all the data folders, the whole directory will be moved to the install_dir 
 mkdir data
-mv G4ABLA3.0 G4EMLOW6.23 G4NDL0.2 G4NDL4.0 G4NEUTRONXS1.1 G4PII1.3 PhotonEvaporation2.2 RadioactiveDecay3.4 RealSurface1.0 data/
+mv G4ABLA3.0 G4EMLOW6.23 G4NDL4.0 G4NEUTRONXS1.1 G4PII1.3 PhotonEvaporation2.2 RadioactiveDecay3.4 RealSurface1.0 data/
  
 mkdir install
 cd install
