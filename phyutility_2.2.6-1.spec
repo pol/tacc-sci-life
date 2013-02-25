@@ -1,108 +1,121 @@
-#
-# Spec file for phyutility
-#
-Summary: phyutility is java utility to analyze and modify phylogenetic trees
+Summary: phyutility is a java utility to analyze and modify phylogenetic trees
 Name: phyutility
 Version: 2.2.6
 Release: 1
-License: GPL3
+License: GPLv3
+Vendor: Stephen Smith and Casey Dunn
 Group: Applications/Life Sciences
 Source: phyutility_2_2_6.tar.gz
 Packager: TACC - gendlerk@tacc.utexas.edu
+#Buildroot: /var/tmp/%{name}-%{version}-buildroot
 
 %include rpm-dir.inc
-%define _unpack_name phyutility_2_2_6
+%include ../system-defines.inc
 
-%define APPS /opt/apps
-%define MODULES modulefiles
+%define _unpack_name phyutility
+
+# Compiler Family Definitions
+# %include compiler-defines.inc
+# MPI Family Definitions
+# %include mpi-defines.inc
+# Other defs
 
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
+%define MODULE_VAR TACC_PHYUTILITY
 
-%define PKG_INSTALL_DIR /opt/apps/%{name}/%{version}
-%define MOD_INSTALL_DIR /opt/apps/modulefiles/%{name}
-
-# %define licenses ddt-license
-# BuildRoot: /tmp/%{name}-%{version}-buildroot
 %description
-
 Phyutility is a command line program that performs simple analyses or modifications on both trees and data matrices. 
-
-%package -n %{name}-modulefile
-Summary: Module file for %{name}
-Group: Applications/Life Sciences
-%description -n %{name}-modulefile
-Module file for %{name}
-
 %prep
 rm -rf  $RPM_BUILD_ROOT/%INSTALL_DIR
-mkdir -p $RPM_BUILD_ROOT/%INSTALL_DIR/bin
-pwd
 
-%setup -n phyutility_2_2_6
+%setup -n phyutility
 
 %build
 
-cp -r * $RPM_BUILD_ROOT/%{INSTALL_DIR}/bin
+%install
+
+%include ../system-load.inc
+
+module purge
+module load TACC
+
+mkdir -p $RPM_BUILD_ROOT/%INSTALL_DIR/bin
+pwd
+
+cp -r * $RPM_BUILD_ROOT/%INSTALL_DIR/bin
 ### Edit phyutility to reflect installation directory
 
-sed -i -e 's@INSTALL_DIR@%{INSTALL_DIR}/bin@' $RPM_BUILD_ROOT/%{INSTALL_DIR}/bin/phyutility
+#sed -i -e 's@INSTALL_DIR@%{INSTALL_DIR}/bin@' $RPM_BUILD_ROOT/%{INSTALL_DIR}/bin/phyutility
+/bin/rm $RPM_BUILD_ROOT/%{INSTALL_DIR}/bin/phyutility
+echo "java -Xmx2g -jar %{INSTALL_DIR}/bin/phyutility.jar \$\*" > $RPM_BUILD_ROOT/%{INSTALL_DIR}/bin/phyutility
 
 #
 #
 chmod -R a+rX $RPM_BUILD_ROOT/%INSTALL_DIR
 
-## Module for phyutility
-rm -rf  $RPM_BUILD_ROOT/%MODULE_DIR
+# ADD ALL MODULE STUFF HERE
+# TACC module
+
+rm   -rf $RPM_BUILD_ROOT/%MODULE_DIR
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
-local help_message = [[
+
+help (
+[[
 The phyutility modulefile defines the following environment variables,
 TACC_PHYUTILITY_DIR and TACC_PHYUTILITY_BIN for the location of the 
 phyutility directory and binary.  The modulefile also appends 
 TACC_PHYUTILITY_BIN directory to PATH.
 
-Since this utility is based on Java, it requires the 64-bit Java 
-module to be loaded. To load the phyutility module, use this command:
+To load the phyutility module, use this command:
 
-module load jdk64 phyutility
+module load phyutility
 
 Version %{version}
-]]
+]])
 
-help(help_message,"\n")
 
 whatis("Name: phyutility")
 whatis("Version: %{version}")
 whatis("Category: application, biology")
-whatis("Keywords: Biology, Genomics, Phylogentics, 2012Q3")
+whatis("Keywords: Biology, Genomics, Phylogentics")
 whatis("URL:  http://code.google.com/p/phyutility/")
-whatis("Description: Program to manipulate phylogenetic trees")
+whatis("Description: phyutility - Program to manipulate phylogenetic trees")
 
--- Prerequisites
-prereq("jdk64")
-
-setenv("TACC_PHYUTILITY_DIR"       ,"%{INSTALL_DIR}")
-setenv("TACC_PHYUTILITY_BIN"      ,"%{INSTALL_DIR}/bin")
+setenv("%{MODULE_VAR}_DIR"       ,"%{INSTALL_DIR}")
+setenv("%{MODULE_VAR}_BIN"      ,"%{INSTALL_DIR}/bin")
 
 prepend_path("PATH","%{INSTALL_DIR}/bin")
 
 EOF
 
-cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/.version.%{version} << 'EOF'
+#--------------
+#  Version file.
+#--------------
+
+cat > $RPM_BUILD_ROOT%{MODULE_DIR}/.version.%{version} << 'EOF'
 #%Module3.1.1#################################################
 ##
-## version file for phyutility
+## version file for %{name}-%{version}
 ##
- 
+
 set     ModulesVersion      "%{version}"
 EOF
 
+#------------------------------------------------
+# FILES SECTION
+#------------------------------------------------
 %files
-%defattr(-,root,root)
+
+# Define files permisions, user and group
+%defattr(755,root,root,-)
 %{INSTALL_DIR}
 %{MODULE_DIR}
 
+#------------------------------------------------
+# CLEAN UP SECTION
+#------------------------------------------------
 %post
-
 %clean
+rm -rf $RPM_BUILD_ROOT
