@@ -13,12 +13,12 @@ BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 %define debug_package %{nil}
 %include rpm-dir.inc
 %include ../system-defines.inc
-%define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
-%define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
-%define MODULE_VAR TACC_GATK
 
 %description
 The GATK is a structured software library that makes writing efficient analysis tools using next-generation sequencing data very easy, and second it's a suite of tools for working with human medical resequencing projects such as 1000 Genomes and The Cancer Genome Atlas. These tools include things like a depth of coverage analyzers, a quality score recalibrator, a SNP/indel caller and a local realigner.
+%define INSTALL_DIR %{APPS}/%{name}/%{version}
+%define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
+%define MODULE_VAR TACC_GATK
 
 %prep
 rm   -rf $RPM_BUILD_ROOT
