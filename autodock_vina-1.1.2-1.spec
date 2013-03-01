@@ -40,17 +40,17 @@ module purge
 module load TACC
 module swap $TACC_FAMILY_COMPILER intel 
 module load boost
+MY_BOOST_VERSION=$(basename $TACC_BOOST_DIR)
 
 cd ./build/linux/release
 
 %if "%{PLATFORM}" == "stampede"
   # "makedepend" is not on Stampede.  I used "-MMD" in CPPFLAGS to try to make all the dependencies. It looks like it worked
-  make BASE=$TACC_BOOST_DIR BOOST_VERSION=1.51.0 GPP=icpc CPPFLAGS="$CPPFLAGS -MMD" LDFLAGS="-L$TACC_BOOST_LIB" LIBS="-Wl,-Bstatic -lboost_system -lboost_thread -lboost_serialization -lboost_filesystem -lboost_program_options -Wl,-Bdynamic" C_PLATFORM="-pthread"
+  make GPP=icpc BASE=$TACC_BOOST_DIR BOOST_VERSION=$MY_BOOST_VERSION CPPFLAGS="$CPPFLAGS -MMD" LDFLAGS="-L$TACC_BOOST_LIB" LIBS="-Wl,-Bstatic -lboost_system -lboost_thread -lboost_serialization -lboost_filesystem -lboost_program_options -Wl,-Bdynamic" C_PLATFORM="-pthread"
 %endif
 
 %if "%{PLATFORM}" == "lonestar"
-  make depend
-  make
+  make GPP=icpc BASE=$TACC_BOOST_DIR BOOST_VERSION=$MY_BOOST_VERSION CPPFLAGS="$CPPFLAGS -MMD" LDFLAGS="-L$TACC_BOOST_LIB" LIBS="-lboost_system -lboost_thread -lboost_serialization -lboost_filesystem -lboost_program_options" C_PLATFORM="-static -pthread"
 %endif
 
 %if %{undefined PLATFORM}
@@ -90,8 +90,6 @@ whatis("Description: Open-source program for drug discovery, molecular docking a
 prepend_path("PATH",              "%{INSTALL_DIR}/bin")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}/")
 setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
-
-prereq ("boost", "intel")
 
 EOF
 
