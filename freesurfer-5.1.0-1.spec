@@ -68,13 +68,13 @@ EOF
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
-help { 
+help ( 
 [[
 This module loads %{name}. This module makes available the %{name} executables. Documentation for %{name} is available online at the publisher\'s website: http://surfer.nmr.mgh.harvard.edu/fswiki/FreeSurferWiki 
 These executables can be found in %{MODULE_VAR}_DIR, e.g. recon-all. Need to run SetUpFreeSurfer.sh before running anything.
 
 Version %{version}
-]]}
+]])
 
 whatis("Name: FreeSurfer")
 whatis("Version: %{version}")

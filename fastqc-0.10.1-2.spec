@@ -2,7 +2,7 @@
 Summary: FastQC - A quality control application for high throughput sequence data
 Name:	fastqc	
 Version:  0.10.1	
-Release:   1	
+Release:   2	
 Group:	Applications/Life Sceinces
 License:  GPL 
 Source0:  %{name}_v%{version}.zip	

@@ -1,11 +1,11 @@
-##SPIDER
-Summary: SPIDER - System for Processing Image Data from Electron microscopy and Related fields is an image processing system for electron microscopy. 
-Name:	spider
-Version:  21.01	
-Release:   1	
+##freesurfer syntax error fixed
+Summary: FreeSurfer - a set of tools for analysis and visualization of structural and functional brain imaging data. 
+Name:	freesurfer
+Version:  5.1.0
+Release:   2	
 Group:	Applications/Life Sceinces
-License:  GPL 
-Source0: http://www.wadsworth.org/spider_doc/spider/download/spiderweb.21.01.tar.gz	
+License:  MGH
+Source0:  ftp://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/5.1.0/freesurfer-Linux-centos4_x86_64-stable-pub-v5.1.0.tar.gz
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 #------------------------------------------------
@@ -16,29 +16,22 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 %include rpm-dir.inc
 
 %include ../system-defines.inc
-%define PNAME spider
+%define PNAME freesurfer
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION
 #------------------------------------------------
 %description
-FastQC is an application which takes a FastQ file and runs a series
-of tests on it to generate a comprehensive QC report.  This will
-tell you if there is anything unusual about your sequence.  Each
-test is flagged as a pass, warning or fail depending on how far it
-departs from what you'd expect from a normal large dataset with no
-significant biases.  It's important to stress that warnings or even
-failures do not necessarily mean that there is a problem with your
-data, only that it is unusual.  It is possible that the biological
-nature of your sample means that you would expect this particular
-bias in your results.
+FreeSurfer is a set of tools for analysis and visualization of structural and functional brain imaging data. FreeSurfer contains a fully automatic structural imaging stream for processing cross sectional and longitudinal data.
+
+FreeSurfer provides many anatomical analysis tools, including: representation of the cortical surface between white and gray matter, representation of the pial surface, segmentation of white matter from the rest of the brain, skull stripping, B1 bias field correction, nonlinear registration of the cortical surface of an individual with a stereotaxic atlas, labeling of regions of the cortical surface, statistical analysis of group morphometry differences, and labeling of subcortical brain structures and much more ...
 #------------------------------------------------
 # INSTALLATION DIRECTORY
 #------------------------------------------------
 # Buildroot: defaults to null if not included here
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
-%define MODULE_VAR TACC_SPIDER
+%define MODULE_VAR TACC_FREESURFER
 
 #------------------------------------------------
 # PREPARATION SECTION
@@ -47,8 +40,7 @@ bias in your results.
 %prep
 rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
-#setup -c unpack multiple folders in to one folder
-%setup -c spiderweb
+%setup -n freesurfer
 
 %build
 
@@ -61,34 +53,40 @@ module load TACC
 
 mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
 
-#ln -s ./spider/bin/spider_linux_mp_intel64 ./spider/bin/spider
+#which direcotires are needed for precompiled version, chimeraext, python?
+#Syntax error, chimeraext/FilterKit/Filter.py
 
-cp -R ./spider/bin ./spider/docs ./spider/fftw ./spider/man ./spider/proc ./spider/spire $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp -R ./* $RPM_BUILD_ROOT/%{INSTALL_DIR}
+
+cat > $RPM_BUILD_ROOT/%{INSTALL_DIR}/.license << 'EOF'
+jiao@tacc.utexas.edu
+13706
+*CpqVQL31xgFA
+EOF
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help ( 
 [[
-This module loads %{name}. This module makes available the %{name} executables. Documentation for %{name} is available online at the publisher\'s website: http://www.wadsworth.org/spider_doc/spider/docs/documents.html
-The executable works on this machine is spider_linux_mp_intel64
+This module loads %{name}. This module makes available the %{name} executables. Documentation for %{name} is available online at the publisher\'s website: http://surfer.nmr.mgh.harvard.edu/fswiki/FreeSurferWiki 
+These executables can be found in %{MODULE_VAR}_DIR, e.g. recon-all. Need to run SetUpFreeSurfer.sh before running anything.
+
 Version %{version}
 ]])
 
-whatis("Name: spider")
+whatis("Name: FreeSurfer")
 whatis("Version: %{version}")
-whatis("Category: computational biology, Electron Microscopy")
-whatis("Keywords:  Biology, Cryo-EM, Image Processing ")
-whatis("Description: spider - an image processing system for electron microscopy")
-whatis("URL: http://www.wadsworth.org/spider_doc/spider/docs/spider.html")
+whatis("Category: computational biology, Imaging")
+whatis("Keywords:  Biology, fMRI, Reconstruction")
+whatis("Description: freesurfer - a set of tools for analysis and visualization of structural and functional brain imaging data.") 
+whatis("URL: http://surfer.nmr.mgh.harvard.edu/fswiki/FreeSurferWiki")
 
 prepend_path("PATH",              "%{INSTALL_DIR}/bin")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
 setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
-setenv (     "SPIDER_DIR",        "%{INSTALL_DIR}")
-setenv (     "SPBIN_DIR",         "%{INSTALL_DIR}/bin")
-setenv (     "SPMAN_DIR",         "%{INSTALL_DIR}/man")
-setenv (     "SPPROC_DIR",        "%{INSTALL_DIR}/proc")
+setenv (     "FREESURFER_HOME",           "%{INSTALL_DIR}")
+
 EOF
 
 #--------------
@@ -103,8 +101,6 @@ cat > $RPM_BUILD_ROOT%{MODULE_DIR}/.version.%{version} << 'EOF'
 
 set     ModulesVersion      "%{version}"
 EOF
-
-
 
 #------------------------------------------------
 # FILES SECTION
