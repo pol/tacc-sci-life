@@ -18,19 +18,20 @@ requires:   boost-gcc4_7 = 1.51.0
 # This will define the correct _topdir and turn of building a debug package
 %define debug_package %{nil}
 %include rpm-dir.inc
+%include ../system-defines.inc
 
 # Compiler Family Definitions
 # %include compiler-defines.inc
 # MPI Family Definitions
 # %include mpi-defines.inc
 # Other defs
-%define APPS    /opt/apps
-%define MODULES modulefiles
+
 %define PNAME cufflinks
+%define MODULE_VAR TACC_CUFFLINKS
+
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 
-%define MODULE_VAR TACC_CUFFLINKS
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION
@@ -66,6 +67,7 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %install
 
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
+%include ../system-load.inc
 
 # Start with a clean environment
 if [ -f "$BASH_ENV" ]; then
@@ -82,8 +84,15 @@ fi
 
 module purge
 module load TACC
-module swap $TACC_FAMILY_COMPILER gcc/4.7.1
 
+# looks like the install is broken for new versions of gcc
+%if "%{PLATFORM}" == "lonestar"
+  module swap $TACC_FAMILY_COMPILER gcc/4.7.1
+%endif
+
+%if "%{PLATFORM}" == "stampede"
+  module swap $TACC_FAMILY_COMPILER gcc/4.6.3
+%endif
 # boost is in the required section at the top of the spec file
 module load boost/1.51.0
 module load cmake
@@ -118,13 +127,20 @@ cp ./*.h ./include/bam
 
 cd $CUFFLINKS_DIR
 
-./configure CC=gcc CXX=g++ --prefix=%{INSTALL_DIR} --with-boost=$TACC_BOOST_DIR --with-eigen=$CUFFLINKS_DIR/eigen --with-bam=$MY_SAMTOOLS_DIR --with-bam-libdir=$MY_SAMTOOLS_DIR LDFLAGS="-Wl,-rpath,$TACC_BOOST_LIB,-rpath,/opt/apps/gcc/4.7.1/lib64/"
+#%if "%{PLATFORM}" == "lonestar"
+  ./configure CC=gcc CXX=g++ --prefix=%{INSTALL_DIR} --with-boost=$TACC_BOOST_DIR --with-eigen=$CUFFLINKS_DIR/eigen --with-bam=$MY_SAMTOOLS_DIR --with-bam-libdir=$MY_SAMTOOLS_DIR LDFLAGS="-Wl,-rpath,$TACC_BOOST_LIB,-rpath,$GCC_LIB"
+#%endif
+
+#%if "%{PLATFORM}" == "stampede"
+#  ./configure CC=gcc CXX=g++ --prefix=%{INSTALL_DIR} --with-boost=$TACC_BOOST_DIR --with-eigen=$CUFFLINKS_DIR/eigen --with-bam=$MY_SAMTOOLS_DIR --with-bam-libdir=$MY_SAMTOOLS_DIR LDFLAGS="-Wl,-rpath,$TACC_BOOST_LIB"
+#%endif
 
 # Patch to fix error
 # common.h:25:25: error: 'boost::BOOST_FOREACH' has not been declared
 
 cd $CUFFLINKS_DIR/src && mv common.h common.h.prot && for x in *.cpp *.h; do sed 's/foreach/for_each/' $x > x; mv x $x; done && mv common.h.prot common.h && cd $CUFFLINKS_DIR
 
+cd $CUFFLINKS_DIR
 make
 mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
 make DESTDIR=$RPM_BUILD_ROOT install
