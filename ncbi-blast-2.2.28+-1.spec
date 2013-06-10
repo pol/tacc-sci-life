@@ -75,8 +75,6 @@ whatis("Description: NCBI BLAST+ sequence alignment package. The program compare
 prepend_path("PATH",              "%{INSTALL_DIR}/bin")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
 setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
-#setenv (     "%{MODULE_VAR}_INC", "%{INSTALL_DIR}/include")
-#setenv (     "%{MODULE_VAR}_LIB", "%{INSTALL_DIR}/lib")
 
 EOF
 
