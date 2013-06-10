@@ -6,7 +6,7 @@ Version: 2.2.28
 Release: 1 
 License: GPL
 Group: Applications/Life Sciences
-Source: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-%{version}+-x64-linux.tar.gz
+Source: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.2.28+-x64-linux.tar.gz
 Packager: vaughn@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
