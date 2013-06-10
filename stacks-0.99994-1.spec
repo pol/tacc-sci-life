@@ -36,7 +36,14 @@ module purge
 module load TACC
 module load samtools
 
-./configure CC=icc CXX=icpc --prefix=%{INSTALL_DIR} --enable-bam --with-bam-include-path=$TACC_SAMTOOLS_INC --with-bam-lib-path=$TACC_SAMTOOLS_LIB
+#%if "%{PLATFORM}" == "stampede"
+  ./configure CC=icc CXX=icpc --prefix=%{INSTALL_DIR} --enable-bam --with-bam-include-path=$TACC_SAMTOOLS_INC --with-bam-lib-path=$TACC_SAMTOOLS_LIB
+#%endif
+
+#%if "%{PLATFORM}" == "lonestar"
+#  ./configure CC=icc CXX=icpc --prefix=%{INSTALL_DIR} --enable-bam --with-bam-include-path=$TACC_SAMTOOLS_INC/bam --with-bam-lib-path=$TACC_SAMTOOLS_LIB
+#%endif
+
 make
 make DESTDIR=$RPM_BUILD_ROOT install
 
