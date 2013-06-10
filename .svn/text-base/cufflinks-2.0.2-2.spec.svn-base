@@ -10,7 +10,7 @@ Source:     cufflinks-%{version}.tar.gz
 Packager:   TACC - vaughn@tacc.utexas.edu
 # This is the actual installation directory - Careful
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
-requires:   boost-gcc4_6 = 1.51.0
+requires:   boost-gcc4_7 = 1.51.0
 
 #------------------------------------------------
 # BASIC DEFINITIONS
@@ -128,7 +128,7 @@ cp ./*.h ./include/bam
 cd $CUFFLINKS_DIR
 
 #%if "%{PLATFORM}" == "lonestar"
-  ./configure CC=gcc CXX=g++ --prefix=%{INSTALL_DIR} --with-boost=$TACC_BOOST_DIR --with-eigen=$CUFFLINKS_DIR/eigen --with-bam=$MY_SAMTOOLS_DIR --with-bam-libdir=$MY_SAMTOOLS_DIR LDFLAGS="-Wl,-rpath,$TACC_BOOST_LIB,-rpath,$GCC_LIB -L$TACC_BOOST_LIB -lboost_system"
+  ./configure CC=gcc CXX=g++ --prefix=%{INSTALL_DIR} --with-boost=$TACC_BOOST_DIR --with-eigen=$CUFFLINKS_DIR/eigen --with-bam=$MY_SAMTOOLS_DIR --with-bam-libdir=$MY_SAMTOOLS_DIR LDFLAGS="-Wl,-rpath,$TACC_BOOST_LIB,-rpath,$GCC_LIB"
 #%endif
 
 #%if "%{PLATFORM}" == "stampede"

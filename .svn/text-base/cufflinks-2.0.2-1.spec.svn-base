@@ -3,35 +3,38 @@
 Summary:    cufflinks - Transcript assembly, differential expression, and differential regulation for RNA-Seq
 Name:       cufflinks
 Version:    2.0.2
-Release:    2
+Release:    1
 License:    Boost Software License
 Group: Applications/Life Sciences
 Source:     cufflinks-%{version}.tar.gz
 Packager:   TACC - vaughn@tacc.utexas.edu
 # This is the actual installation directory - Careful
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
-requires:   boost-gcc4_6 = 1.51.0
+requires:   boost149-gcc4_4 = 1.49.0
+
 
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
-# This will define the correct _topdir and turn of building a debug package
 %define debug_package %{nil}
+# This will define the correct _topdir
 %include rpm-dir.inc
-%include ../system-defines.inc
-
 # Compiler Family Definitions
 # %include compiler-defines.inc
 # MPI Family Definitions
 # %include mpi-defines.inc
 # Other defs
-
+%define system linux
+%define APPS    /opt/apps
+%define MODULES modulefiles
 %define PNAME cufflinks
-%define MODULE_VAR TACC_CUFFLINKS
 
-%define INSTALL_DIR %{APPS}/%{name}/%{version}
-%define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
-
+# Allow for creation of multiple packages with this spec file
+# Any tags right after this line apply only to the subpackage
+# Summary and Group are required.
+# %package -n %{name}-%{comp_fam_ver}
+# Summary: HMMER biosequence analysis using profile hidden Markov models
+# Group: Applications/Life Sciences
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION
@@ -41,6 +44,13 @@ Cufflinks assembles transcripts, estimates their abundances, and tests for diffe
 
 Cufflinks is a collaborative effort between the Laboratory for Mathematical and Computational Biology, led by Lior Pachter at UC Berkeley, Steven Salzberg's computational genomics group at the Institute of Genetic Medicine at Johns Hopkins University, and Barbara Wold's lab at Caltech. 
 
+#------------------------------------------------
+# INSTALLATION DIRECTORY
+#------------------------------------------------
+# Buildroot: defaults to null if not included here
+%define INSTALL_DIR %{APPS}/%{name}/%{version}
+%define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
+%define MODULE_VAR TACC_CUFFLINKS
 
 #------------------------------------------------
 # PREPARATION SECTION
@@ -61,41 +71,31 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 #------------------------------------------------
 %build
 
-#------------------------------------------------
-# INSTALL SECTION
-#------------------------------------------------
-%install
-
-mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
-%include ../system-load.inc
-
 # Start with a clean environment
 if [ -f "$BASH_ENV" ]; then
    . $BASH_ENV
    export MODULEPATH=/opt/apps/teragrid/modulefiles:/opt/apps/modulefiles:/opt/modulefiles
 fi
 
+
+
 # Load correct compiler
 # %include compiler-load.inc
 # Load correct mpi stack
-# %include mpi-load.inc
-# %include mpi-env-vars.inc
+#%include mpi-load.inc
+#%include mpi-env-vars.inc
 # Load additional modules here (as needed)
-
 module purge
 module load TACC
+module swap $TACC_FAMILY_COMPILER gcc
 
-# looks like the install is broken for new versions of gcc
-%if "%{PLATFORM}" == "lonestar"
-  module swap $TACC_FAMILY_COMPILER gcc/4.7.1
-%endif
-
-%if "%{PLATFORM}" == "stampede"
-  module swap $TACC_FAMILY_COMPILER gcc/4.6.3
-%endif
 # boost is in the required section at the top of the spec file
-module load boost/1.51.0
+module load boost/1.49.0
 module load cmake
+module load samtools
+#-----------------------------
+# Build parallel version
+#-----------------------------
 
 export CUFFLINKS_DIR=`pwd`
 # apparently I'm getting lazy in my old age.  I'm just using wget for the Eigen sourcecode
@@ -126,25 +126,23 @@ mkdir -p ./include/bam
 cp ./*.h ./include/bam
 
 cd $CUFFLINKS_DIR
-
-#%if "%{PLATFORM}" == "lonestar"
-  ./configure CC=gcc CXX=g++ --prefix=%{INSTALL_DIR} --with-boost=$TACC_BOOST_DIR --with-eigen=$CUFFLINKS_DIR/eigen --with-bam=$MY_SAMTOOLS_DIR --with-bam-libdir=$MY_SAMTOOLS_DIR LDFLAGS="-Wl,-rpath,$TACC_BOOST_LIB,-rpath,$GCC_LIB -L$TACC_BOOST_LIB -lboost_system"
-#%endif
-
-#%if "%{PLATFORM}" == "stampede"
-#  ./configure CC=gcc CXX=g++ --prefix=%{INSTALL_DIR} --with-boost=$TACC_BOOST_DIR --with-eigen=$CUFFLINKS_DIR/eigen --with-bam=$MY_SAMTOOLS_DIR --with-bam-libdir=$MY_SAMTOOLS_DIR LDFLAGS="-Wl,-rpath,$TACC_BOOST_LIB"
-#%endif
-
-# Patch to fix error
-# common.h:25:25: error: 'boost::BOOST_FOREACH' has not been declared
-
-cd $CUFFLINKS_DIR/src && mv common.h common.h.prot && for x in *.cpp *.h; do sed 's/foreach/for_each/' $x > x; mv x $x; done && mv common.h.prot common.h && cd $CUFFLINKS_DIR
-
-cd $CUFFLINKS_DIR
+#export LDFLAGS="-L$TACC_SAMTOOLS_LIB -lbam -Wl,-rpath,$TACC_BOOST_LIB -Wl,-rpath,$TACC_SAMTOOLS_LIB"
+#export CXXFLAGS="-I$TACC_SAMTOOLS_INC -I$TACC_BOOST_INC"
+./configure CC=gcc CXX=g++ --prefix=%{INSTALL_DIR} --with-boost=$TACC_BOOST_DIR --with-eigen=$CUFFLINKS_DIR/eigen --with-bam=$MY_SAMTOOLS_DIR --with-bam-libdir=$MY_SAMTOOLS_DIR LDFLAGS="-Wl,-rpath,$TACC_BOOST_LIB,-rpath,/opt/apps/gcc/4.4.5/lib64/"
+# ./configure CC=gcc CXX=g++ --prefix=$CUFFLINKS_DIR/bin --with-boost=$TACC_BOOST_DIR --with-eigen=$CUFFLINKS_DIR/eigen --with-bam=$TACC_SAMTOOLS_DIR LDFLAGS="-Wl,-rpath,$TACC_BOOST_LIB"
 make
 mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
 make DESTDIR=$RPM_BUILD_ROOT install
 cp -r LICENSE README AUTHORS ./eigen $MY_SAMTOOLS_DIR $RPM_BUILD_ROOT%{INSTALL_DIR} 
+
+
+#------------------------------------------------
+# INSTALL SECTION
+#------------------------------------------------
+%install
+
+# ADD ALL MODULE STUFF HERE
+# TACC module
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
