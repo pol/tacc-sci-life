@@ -16,6 +16,7 @@ BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 %include rpm-dir.inc
 
 %include ../system-defines.inc
+%define PNAME picard
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
 %define MODULE_VAR TACC_PICARD
