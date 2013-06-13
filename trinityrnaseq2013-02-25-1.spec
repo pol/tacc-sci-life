@@ -136,3 +136,16 @@ EOF
 
 %clean 
 rm -rf $RPM_BUILD_ROOT
+
+# Trinity test
+# 
+# Stampede
+# srun -A CompBioApps -q largemem -p development -t 1:00:00 -n 32 --pty /bin/bash -l
+# Lonestar
+# idev -A CompBioApps -q largemem -pe 1way 24
+# 
+# cd into rpmbuild/trinityrnaseq-%{version}/sample_data/test_Trinity_Assembly
+# module load bowtie/1.0.0
+# Execute runMe.sh -- It should complete without error in about a minute
+
+
