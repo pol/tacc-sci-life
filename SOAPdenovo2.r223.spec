@@ -1,11 +1,11 @@
-Summary:    Stampy
-Name:       stampy
-Version:    1.0.21
+Summary:    SOAP de novo 2 - Short Oligonucleotide Analysis Package
+Name:       soapdenovo2
+Version:    r223
 Release:    1
-License:    GPL
-Vendor:     Wellcome Trust Centre
+License:    GPLv3
+Vendor:     BGI
 Group: Applications/Life Sciences
-Source:     Stampy-%{version}.tgz
+Source:     SOAPdenovo2-r223.tar.gz
 Packager:   TACC - wonaya@tacc.utexas.edu
 # This is the actual installation directory - Careful
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
@@ -13,28 +13,20 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
-# This will define the correct _topdir
-%include ../system-defines.inc
-%include rpm-dir.inc
-# Compiler Family Definitions
-# %include compiler-defines.inc
-# MPI Family Definitions
-# %include mpi-defines.inc
-# Other defs
-%define PNAME stampy
 
-# Allow for creation of multiple packages with this spec file
-# Any tags right after this line apply only to the subpackage
-# Summary and Group are required.
-# %package -n %{name}-%{comp_fam_ver}
-# Summary: Maps short reads from illumina sequencing machines onto a reference genome
-# Group:   Applications/Biology
+%include rpm-dir.inc
+%include ../system-defines.inc
+
+%define PNAME %{name}
+%define INSTALL_DIR %{APPS}/%{name}/%{version}
+%define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
+%define MODULE_VAR TACC_SOAP
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION
 #------------------------------------------------
 %description
-Stampy is a package for the mapping of short reads from illumina sequencing machines onto a reference genome.
+SOAPdenovo2, a short read de novo assembly tool, is a package for assembling short oligonucleotide into contigs and scaffolds.
 
 #------------------------------------------------
 # INSTALLATION DIRECTORY
@@ -42,7 +34,7 @@ Stampy is a package for the mapping of short reads from illumina sequencing mach
 # Buildroot: defaults to null if not included here
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
-%define MODULE_VAR TACC_STAMPY
+%define MODULE_VAR TACC_SOAP
 
 #------------------------------------------------
 # PREPARATION SECTION
@@ -55,51 +47,42 @@ rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # Unpack source
 # This will unpack the source
-%setup -n stampy-%{version}
-
-#------------------------------------------------
-# BUILD SECTION
-#------------------------------------------------
-%build
-
+%setup -n %{version}
 #------------------------------------------------
 # INSTALL SECTION
 #------------------------------------------------
 %install
 
+cd sparsePregraph
+make
+cd ../standardPregraph
+make
+
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %include ../system-load.inc
 
-module unload python
-
-make
-
-cp -r build ext makefile maptools.so plugins README.txt Stampy stampy.py $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp -r * $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # ADD ALL MODULE STUFF HERE
+module unload python
 # TACC module
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
-
 help (
 [[
-This module loads %{PNAME}, which uses python.
-To startup this program, use 'stampy.py' in the command line. 
-Documentation for %{PNAME} is available online at the publisher website: http://www.well.ox.ac.uk/~gerton/README.txt
-For convenience %{MODULE_VAR}_DIR points to the installation directory. 
-PATH has been updated to include %{PNAME}.
+This module loads %{name}. SOAPdenovo resolves more repeat regions in contig assembly, increases coverage and length in scaffold construction, improves gap closing, and optimizes for large genome. 
 
 Version %{version}
 ]])
 
-whatis("Name: ${PNAME}")
+whatis("Name: soapdenovo2")
 whatis("Version: %{version}")
 whatis("Category: computational biology, genomics")
-whatis("Keywords: Biology, Genomics, Mapping")
-whatis("Description: Stampy - Illumina short reads mapper")
-whatis("URL: http://www.well.ox.ac.uk/project-stampy")
+whatis("Keywords: Biology, Genomics, Assembly")
+whatis("Description: soapdenovo2 - novel short-read assembly method that can build a de novo draft assembly for the human-sized genomes")
+whatis("URL: http://soap.genomics.org.cn/soapdenovo.html")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
 prepend_path("PATH"       ,"%{INSTALL_DIR}/")
@@ -118,8 +101,6 @@ cat > $RPM_BUILD_ROOT%{MODULE_DIR}/.version.%{version} << 'EOF'
 
 set     ModulesVersion      "%{version}"
 EOF
-
-
 
 #------------------------------------------------
 # FILES SECTION
