@@ -1,13 +1,13 @@
-Summary:    openbabel -- chemical toolbox designed to speak the many languages of chemical data.
-Name:       openbabel
-Version:    2.3.2
+Summary:    maker -- a portable and easy to configure genome annotation pipeline
+Name:       maker
+Version:    2.28b
 Release:    1
 License:    GNU General Public License
 Group: Applications/Life Sciences
-Source:     openbabel-2.3.2.tar.gz
+Source:     %{name}-%{version}.tar.gz
 Packager:   TACC - jiao@tacc.utexas.edu
 # This is the actual installation directory - Careful
-#BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
+BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 
 #------------------------------------------------
 # BASIC DEFINITIONS
@@ -15,13 +15,13 @@ Packager:   TACC - jiao@tacc.utexas.edu
 %define debug-package %{nil}
 # This will define the correct _topdir
 %include rpm-dir.inc
+%include ../system-defines.inc
 # Compiler Family Definitions
 # %include compiler-defines.inc
 # MPI Family Definitions
 # %include mpi-defines.inc
 # Other defs
-%include ../system-defines.inc
-%define PNAME %{name}
+%define PNAME maker
 
 # Allow for creation of multiple packages with this spec file
 # Any tags right after this line apply only to the subpackage
@@ -33,18 +33,15 @@ Packager:   TACC - jiao@tacc.utexas.edu
 #------------------------------------------------
 # PACKAGE DESCRIPTION
 #------------------------------------------------
-
 %description
-# %description -n %{name}-%{comp_fam_ver}
-Open Babel is a chemical toolbox designed to speak the many languages of chemical data. It's an open, collaborative project allowing anyone to search, convert, analyze, or store data from molecular modeling, chemistry, solid-state materials, biochemistry, or related areas.
-
+MAKER is a portable and easily configurable genome annotation pipeline. It's purpose is to allow smaller eukaryotic and prokaryotic genome projects to independently annotate their genomes and to create genome databases. MAKER identifies repeats, aligns ESTs and proteins to a genome, produces ab-initio gene predictions and automatically synthesizes these data into gene annotations having evidence-based quality values. 
 #------------------------------------------------
 # INSTALLATION DIRECTORY
 #------------------------------------------------
 # Buildroot: defaults to null if not included here
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
-%define MODULE_VAR TACC_OPENBABEL
+%define MODULE_VAR TACC_MAKER
 
 #------------------------------------------------
 # PREPARATION SECTION
@@ -60,30 +57,51 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 # This will unpack the source to /tmp/BUILD/***
 %setup -n %{name}-%{version}
 
-#------------------------------------------------
-# BUILD SECTION
-#------------------------------------------------
 %build   
-
-%install 
-%include ../system-load.inc         
-# %include compiler-load.inc
+%install
+%include ../system-load.inc          
+    
+# Load additional modules here (as needed)
 module purge 
 module load TACC
-#module swap $TACC_FAMILY_COMPILER gcc
-module load cmake
+module swap mvapich2 openmpi
 
-export MY_OPENBABAL_DIR=`pwd`
-cd $MY_OPENBABAL_DIR
-#echo $PWD
-mkdir install
-cd install
-cmake .. -DCMAKE_INSTALL_PREFIX=%{INSTALL_DIR}
+cd src
+perl Build.PL << EOF
+y
+/opt/apps/intel11_1/openmpi/1.4.3/bin/mpicc
+/opt/apps/intel11_1/openmpi/1.4.3/include
+EOF
+./Build installdeps << EOF
+Y  
+yes
 
+yes
+yes
+yes
+yes
+yes
+yes
+yes
+yes
+yes
+yes
+y
+yes
+yes
+a
+n
+yes
+Y
+EOF
 
-make -j 2
-make DESTDIR=$RPM_BUILD_ROOT install 
+./Build installexes << EOF
+Y
+nasridine
+ylt993
+EOF
 
+./Build install
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
@@ -91,22 +109,23 @@ cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help (
 [[
 This module loads %{name} built with cmake.
-This module makes available the openbabel executable. Documentation for %{name} is available online at the publisher\'s website: http://openbabel.org/wiki/Main_Page/
+This module makes available the openbabel executable. Documentation for %{name} is available online at the publisher\'s website: http://irs.inms.nrc.ca/software/egsnrc/egsnrc.html
 
 Version %{version}
 ]])
 
-whatis("Name: openbabel")
+whatis("Name: maker")
 whatis("Version: %{version}")
-whatis("Category: computational chemistry, simulation")
-whatis("Keywords:  Biology, Chemistry, Molecular modeling, Format conversion")
-whatis("Description: openbabal - chemical toolbox designed to speak the many languages of chemical data ")
-whatis("URL: http://openbabel.org/wiki/Main_Page")
+whatis("Category: Biology, sequencing")
+whatis("Keywords:  Genome, Sequencing, Annotation")
+whatis("Description: Maker - a portable and easily configurable genome annotation pipeline.") 
+whatis("http://www.yandell-lab.org/software/maker.html")
 
 prepend_path("PATH",              "%{INSTALL_DIR}/bin")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
 setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
-
+prepend_path("LD_PRELOAD",              "/opt/apps/intel11_1/openmpi/1.4.3/lib/libmpi.so")
+setenv ( "OMPI_MCA_mpi_warn_on_fork",    "0")
 
 EOF
 
@@ -128,8 +147,8 @@ EOF
 #------------------------------------------------
 # FILES SECTION
 #------------------------------------------------
-# %files -n %{name}-%{comp_fam_ver}
 %files
+
 # Define files permisions, user and group
 %defattr(755,root,root,-)
 %{INSTALL_DIR}

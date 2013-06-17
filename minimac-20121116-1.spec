@@ -1,12 +1,18 @@
 # $Id$
 
-Summary:    Markov Chain based haplotyper
-Name:       mach
-Version:    1.0.18
-Release:    2
+Summary:    A low memory, computationally efficient implementation of the MaCH algorithm for genotype imputation
+Name:       minimac
+Version:    20121116
+Release:    1
 License:    Unknown
 Group: Applications/Life Sciences/genetics
-Source:     %{name}.%{version}.source.tgz
+# Downloaded minimac-beta-2012.11.16.tgz
+# Repackaged as minimac-20121116.tgz
+## mkdir -p minimac-20121116
+## mv minimac minimac-20121116/
+## mv minimac-omp minimac-20121116/
+## tar -czvf minimac-20121116.tgz minimac-20121116
+Source:     %{name}-%{version}.tgz
 Packager:   TACC - vaughn@tacc.utexas.edu
 # This is the actual installation directory - Careful
 #BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
@@ -31,7 +37,7 @@ Packager:   TACC - vaughn@tacc.utexas.edu
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 
-%define MODULE_VAR TACC_MACH
+%define MODULE_VAR TACC_MINIMAC
 
 # Allow for creation of multiple packages with this spec file
 # Any tags right after this line apply only to the subpackage
@@ -56,7 +62,8 @@ rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 ## SETUP
 ##
 
-%setup -c -n %{name}-%{version}
+#%setup -c -n %{name}-%{version}
+%setup
 
 #------------------------------------------------
 # BUILD SECTION
@@ -78,16 +85,9 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 # %include mpi-env-vars.inc
 # Load additional modules here (as needed)
 
-module purge
-module load TACC
-
-# Original CFLAGS contained -static which was causing failure
-make all 'CFLAGS=-O2 -I./libsrc -I./mach1 -D__ZLIB_AVAILABLE__  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE'
-
-# May want to revisit placement of this, or alternative implementation
-export DONT_STRIP=1
-
-cp executables/mach1 executables/thunder $RPM_BUILD_ROOT/%{INSTALL_DIR}
+# These are just binaries
+cp minimac $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp minimac-omp $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # ADD ALL MODULE STUFF HERE
 # TACC module
@@ -97,9 +97,8 @@ mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help (
 [[
-MACH 1.0 is a Markov Chain based haplotyper. It can resolve long haplotypes or infer 
-missing genotypes in samples of unrelated individuals. The current version is a pre-release.
-Documentation for %{name} is available - http://www.sph.umich.edu/csg/abecasis/MACH
+minimac is a low memory, computationally efficient implementation of the MaCH algorithm for genotype imputation. It is designed to work on phased genotypes and can handle very large reference panels with hundreds or thousands of haplotypes. The current version is a pre-release.
+Documentation for %{name} is available - http://genome.sph.umich.edu/wiki/Minimac
 The executable can be found in %{MODULE_VAR}_DIR
 
 This module provides the mach1 and thunder executables.
@@ -107,12 +106,12 @@ This module provides the mach1 and thunder executables.
 Version %{version}
 ]])
 
-whatis("Name: MACH")
+whatis("Name: minimac")
 whatis("Version: %{version}")
 whatis("Category: Computational biology, genetics")
 whatis("Keywords: Biology, Genomics, Alignment, Sequencing, Genetics, GWAS, Imputation")
-whatis("Description: Markov Chain based haplotyper")
-whatis("URL: http://www.sph.umich.edu/csg/abecasis/MACH")
+whatis("Description: Low-memory Markov Chain-based haplotyper")
+whatis("URL: http://genome.sph.umich.edu/wiki/Minimac")
 
 prepend_path("PATH",              "%{INSTALL_DIR}")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")

@@ -1,20 +1,15 @@
 # $Id$
 
-Summary:    Markov Chain based haplotyper
-Name:       mach
-Version:    1.0.18
-Release:    2
-License:    Unknown
-Group: Applications/Life Sciences/genetics
-Source:     %{name}.%{version}.source.tgz
-Packager:   TACC - vaughn@tacc.utexas.edu
-# This is the actual installation directory - Careful
-#BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
+Summary: Memory-efficient short read (NGS) aligner
+Name: bowtie
+Version: 1.0.0
+Release: 1
+License: GPL
+Group: Applications/Life Sciences
+Source: http://sourceforge.net/projects/bowtie-bio/files/bowtie/1.0.0/bowtie-1.0.0-src.zip
+Packager: TACC - vaughn@tacc.utexas.edu
+#BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 
-#------------------------------------------------
-# BASIC DEFINITIONS
-#------------------------------------------------
-# This will define the correct _topdir and turn of building a debug package
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
@@ -30,33 +25,28 @@ Packager:   TACC - vaughn@tacc.utexas.edu
 %define PNAME %{name}
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
+%define MODULE_VAR TACC_BOWTIE
 
-%define MODULE_VAR TACC_MACH
-
-# Allow for creation of multiple packages with this spec file
-# Any tags right after this line apply only to the subpackage
-# Summary and Group are required.
+# Compiler-specific packages
 # %package -n %{name}-%{comp_fam_ver}
-# Summary: HMMER biosequence analysis using profile hidden Markov models
 # Group: Applications/Life Sciences
+# Summary: Memory-efficient short read (NGS) aligner
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION
 #------------------------------------------------
 %description
+# %description -n %{name}-%{comp_fam_ver}
+Bowtie is an ultrafast, memory-efficient short read aligner. It aligns short DNA sequences (reads) to the human genome at a rate of over 25 million 35-bp reads per hour. Bowtie indexes the genome with a Burrows-Wheeler index to keep its memory footprint small: typically about 2.2 GB for the human genome (2.9 GB for paired-end).
 
-##
-## PREP
-##
+#------------------------------------------------
+# PREPARATION SECTION
+#------------------------------------------------
 # Use -n <name> if source file different from <name>-<version>.tar.gz
 %prep
-rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
-##
-## SETUP
-##
-
-%setup -c -n %{name}-%{version}
+# Unpack source
+%setup -n %{name}-%{version}
 
 #------------------------------------------------
 # BUILD SECTION
@@ -80,15 +70,14 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 module purge
 module load TACC
+module swap $TACC_FAMILY_COMPILER gcc
 
-# Original CFLAGS contained -static which was causing failure
-make all 'CFLAGS=-O2 -I./libsrc -I./mach1 -D__ZLIB_AVAILABLE__  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE'
+# Since LDFLAGS is not used in compilation, we hijack EXTRA_FLAGS to carry the rpath payload
+make EXTRA_FLAGS="-Wl,-rpath,$GCC_LIB"
 
-# May want to revisit placement of this, or alternative implementation
-export DONT_STRIP=1
-
-cp executables/mach1 executables/thunder $RPM_BUILD_ROOT/%{INSTALL_DIR}
-
+cp -R ./bowtie ./bowtie-build ./bowtie-inspect ./doc ./genomes ./indexes ./reads ./scripts ./SeqAn-1.1 $RPM_BUILD_ROOT/%{INSTALL_DIR}
+ 
+ 
 # ADD ALL MODULE STUFF HERE
 # TACC module
 
@@ -97,25 +86,27 @@ mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help (
 [[
-MACH 1.0 is a Markov Chain based haplotyper. It can resolve long haplotypes or infer 
-missing genotypes in samples of unrelated individuals. The current version is a pre-release.
-Documentation for %{name} is available - http://www.sph.umich.edu/csg/abecasis/MACH
-The executable can be found in %{MODULE_VAR}_DIR
+The %{PNAME} module file defines the following environment variables:
+%{MODULE_VAR}_DIR and %{MODULE_VAR}_SCRIPTS for the location of the %{PNAME}
+distribution. Documentation can be found online at http://bowtie-bio.sourceforge.net/
 
-This module provides the mach1 and thunder executables.
+This module provides the bowtie, bowtie-build, and bowtie-inspect binaries + associated scripts.
 
 Version %{version}
+
 ]])
 
-whatis("Name: MACH")
+whatis("Name: Bowtie")
 whatis("Version: %{version}")
-whatis("Category: Computational biology, genetics")
-whatis("Keywords: Biology, Genomics, Alignment, Sequencing, Genetics, GWAS, Imputation")
-whatis("Description: Markov Chain based haplotyper")
-whatis("URL: http://www.sph.umich.edu/csg/abecasis/MACH")
+whatis("Category: computational biology, genomics")
+whatis("Keywords: Biology, Genomics, Alignment, Sequencing")
+whatis("URL: http://bowtie-bio.sourceforge.net/index.shtml")
+whatis("Description: Ultrafast, memory-efficient short read aligner")
 
-prepend_path("PATH",              "%{INSTALL_DIR}")
-setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
+setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}")
+setenv("%{MODULE_VAR}_SCRIPTS","%{INSTALL_DIR}/scripts")
+prepend_path("PATH","%{INSTALL_DIR}")
+prepend_path("PATH" ,"%{MODULE_VAR}_SCRIPTS")
 
 EOF
 
@@ -133,10 +124,10 @@ set     ModulesVersion      "%{version}"
 EOF
 
 
-
 #------------------------------------------------
 # FILES SECTION
 #------------------------------------------------
+#%files -n %{name}-%{comp_fam_ver}
 %files
 
 # Define files permisions, user and group

@@ -1,11 +1,11 @@
-##FastQC
-Summary: FastQC - A quality control application for high throughput sequence data
-Name:	fastqc	
-Version:  0.10.1	
+##SPIDER
+Summary: SPIDER - System for Processing Image Data from Electron microscopy and Related fields is an image processing system for electron microscopy. 
+Name:	spider
+Version:  21.01	
 Release:   1	
 Group:	Applications/Life Sceinces
 License:  GPL 
-Source0:  %{name}_v%{version}.zip	
+Source0: http://www.wadsworth.org/spider_doc/spider/download/spiderweb.21.01.tar.gz	
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 #------------------------------------------------
@@ -16,7 +16,7 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 %include rpm-dir.inc
 
 %include ../system-defines.inc
-%define PNAME fastqc
+%define PNAME spider
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION
@@ -38,17 +38,17 @@ bias in your results.
 # Buildroot: defaults to null if not included here
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
-%define MODULE_VAR TACC_FASTQC
+%define MODULE_VAR TACC_SPIDER
 
 #------------------------------------------------
 # PREPARATION SECTION
 #------------------------------------------------
 # Use -n <name> if source file different from <name>-<version>.tar.gz
 %prep
-rm   -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
+rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
-%setup -n FastQC 
+#setup -c unpack multiple folders in to one folder
+%setup -c spiderweb
 
 %build
 
@@ -61,26 +61,34 @@ module load TACC
 
 mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
 
-cp -R ./Help ./Contaminants ./uk ./Templates ./fastqc ./*bat ./*.txt ./*.jar $RPM_BUILD_ROOT/%{INSTALL_DIR}
+#ln -s ./spider/bin/spider_linux_mp_intel64 ./spider/bin/spider
+
+cp -R ./spider/bin ./spider/docs ./spider/fftw ./spider/man ./spider/proc ./spider/spire $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help ( 
 [[
-This module loads %{name}. This module makes available the %{name} executables. Documentation for %{name} is available online at the publisher\'s website: http://www.bioinformatics.babraham.ac.uk/projects/fastqc/
-These executables can be found in %{MODULE_VAR}_DIR, including "fastqc".
-
+This module loads %{name}. This module makes available the %{name} executables. Documentation for %{name} is available online at the publisher\'s website: http://www.wadsworth.org/spider_doc/spider/docs/documents.html
+The executable works on this machine is spider_linux_mp_intel64
 Version %{version}
 ]])
 
-whatis("Name: fastqc")
+whatis("Name: spider")
 whatis("Version: %{version}")
-whatis("Category: computational biology, genomics")
-whatis("Keywords:  Biology, Genomics, Sequencing, FastQ, Quality Control")
-whatis("Description: fastqc - A Quality Control application for FastQ files")
-whatis("URL: http://www.bioinformatics.babraham.ac.uk/projects/fastqc/")
+whatis("Category: computational biology, Electron Microscopy")
+whatis("Keywords:  Biology, Cryo-EM, Image Processing ")
+whatis("Description: spider - an image processing system for electron microscopy")
+whatis("URL: http://www.wadsworth.org/spider_doc/spider/docs/spider.html")
 
+prepend_path("PATH",              "%{INSTALL_DIR}/bin")
+setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
+setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
+setenv (     "SPIDER_DIR",        "%{INSTALL_DIR}")
+setenv (     "SPBIN_DIR",         "%{INSTALL_DIR}/bin")
+setenv (     "SPMAN_DIR",         "%{INSTALL_DIR}/man")
+setenv (     "SPPROC_DIR",        "%{INSTALL_DIR}/proc")
 EOF
 
 #--------------

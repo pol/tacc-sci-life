@@ -1,12 +1,13 @@
 ## GenomeAnalysisToolKit
 Summary: GATK - Genome Analysis Toolkit
 Name: gatk
-Version: 2.3.9
+#Illegal char '-' in version if it is 2.5-2
+Version: 2.5.2
 Release: 1
 License: MIT License
 Vendor: Broad Institute
 Group: Applications/Life Sciences
-Source: GenomeAnalysisTK-2.3-9.tar.bz2
+Source: GenomeAnalysisTK-2.5-2.tar.bz2
 Packager: TACC - jiao@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 
@@ -24,7 +25,7 @@ The GATK is a structured software library that makes writing efficient analysis 
 rm   -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
-%setup -n GenomeAnalysisTK-2.3-9-ge5ebf34
+%setup -n GenomeAnalysisTK-2.5-2-gf57256b
 
 %build
 

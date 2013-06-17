@@ -10,17 +10,22 @@ License: GPL
 URL: https://www.nescent.org/wg_garli/Main_Page
 Group: Applications/Life Sciences
 Source: garli-2.0.tar.gz
-Source1: ncl-2.1.15.tar.gz
+# NCL is bundled inside the garli tarball
+#Source1: ncl-2.1.15.tar.gz
 Packager: gendlerk@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 %include rpm-dir.inc
+%include ../system-defines.inc
 
 %define APPS /opt/apps
 %define MODULES modulefiles
 
 %include compiler-defines.inc
 %include mpi-defines.inc
+
+%define PNAME garli
+%define MODULE_VAR TACC_GARLI
 
 %define INSTALL_DIR %{APPS}/%{comp_fam_ver}/%{mpi_fam_ver}/%{name}/%{version}
 %define  MODULE_DIR %{APPS}/%{comp_fam_ver}/%{mpi_fam_ver}/%{MODULES}/%{name}
@@ -38,7 +43,6 @@ GARLI (Genetic Algorithm for Rapid Likelihood Inference) performs phylogenetic s
 # The prep stage.  To execute just the prep stage do 'rpmbuild -bp'
 %prep
 rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
-mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # The first call to setup untars the first source.  
 %setup
@@ -51,7 +55,8 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 # -T prevents the 'default' source file from re-unpacking.  If you don't have this, the
 #    default source will unpack twice... a weird RPMism.
 # -D prevents the top-level directory from being deleted before we can get there !
-%setup -T -D -a 1
+# The following line commented out since ncl is bundled inside the garli tarball -JMF
+#%setup -T -D -a 1
 
 # We should now have a ../BUILD/garli-2.0 and, within that, a
 # ../BUILD/garli-2.0/ncl-2.1.15 directory.
@@ -59,21 +64,26 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 # The build step.  To just test the build step do 'rpmbuild -bc'
 %build
 
-set +x
+%install
+
+%include ../system-load.inc
+mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
+
+# probably should use intel and mvapich2
 %include compiler-load.inc
 %include mpi-load.inc
 
 
-set -x
-
 # Create temporary directory for the install.  We need this to
 # trick garli into thinking ncl-2.1.15 is installed in its final location!
-mkdir -p             %{INSTALL_DIR}
-# mount -t tmpfs tmpfs %{INSTALL_DIR}
+mkdir -p     %{INSTALL_DIR}
+tacctmpfs -m %{INSTALL_DIR}
 # First build ncl-2.1.15.  
 # We will build ncl-2.1.15 in its own directory off of the garli install.
-rm -rf %{INSTALL_DIR}/ncl-2.1.15
+#rm -rf %{INSTALL_DIR}/ncl-2.1.15
 mkdir %{INSTALL_DIR}/ncl-2.1.15
+
+tar xzf ncl-2.1.15.tar.gz
 cd ncl-2.1.15
 env CPPFLAGS=-DNCL_CONST_FUNCS ./configure --prefix=%{INSTALL_DIR}/ncl-2.1.15 --disable-shared
 make
@@ -110,12 +120,14 @@ make install
 
 # Copy from tmpfs to RPM_BUILD_ROOT so that everything is in the right
 # place for the rest of the RPM.  Then, unmount the tmpfs.
-# cp -r %{INSTALL_DIR}/ $RPM_BUILD_ROOT/%{INSTALL_DIR}/..
+cp -r %{INSTALL_DIR}/* $RPM_BUILD_ROOT/%{INSTALL_DIR}
 # umount %{INSTALL_DIR}/
+tacctmpfs -u %{INSTALL_DIR}
 
 # Remove any old module files and create anew
 rm -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
+# need to update this to lua
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version} << 'EOF'
 #%Module1.0#################################################################
 #

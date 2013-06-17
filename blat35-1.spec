@@ -32,6 +32,7 @@ rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 %build
 
+%install
 
 if [ -f "$BASH_ENV" ]; then
   export MODULEPATH=/opt/apps/modulefiles:/opt/modulefiles
@@ -40,6 +41,7 @@ fi
 
 module purge
 module load TACC
+module swap $TACC_FAMILY_COMPILER gcc
 
 # I'm using the old gcc here.  The make file has -Wall and -Werror
 # on, so I'll have to edit the makefile for it to work with the newer 
@@ -48,10 +50,10 @@ module load TACC
 # least makes the tool available.
 
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
-make BINDIR=$RPM_BUILD_ROOT/%{INSTALL_DIR} MACHTYPE=x86_64
+make BINDIR=$RPM_BUILD_ROOT/%{INSTALL_DIR} MACHTYPE=x86_64 
+# L="$L -Wl,-Bdynamic -L/usr/lib64 -lpng -Wl,-Bstatic"
 
 
-%install
 
 #-----------------
 # Modules Section 

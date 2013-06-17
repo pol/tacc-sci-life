@@ -2,15 +2,15 @@
 
 Summary:    cufflinks - Transcript assembly, differential expression, and differential regulation for RNA-Seq
 Name:       cufflinks
-Version:    2.0.2
-Release:    2
+Version:    2.1.1
+Release:    1
 License:    Boost Software License
 Group: Applications/Life Sciences
-Source:     cufflinks-%{version}.tar.gz
-Packager:   TACC - vaughn@tacc.utexas.edu
+Source:     http://cufflinks.cbcb.umd.edu/downloads/%{name}-%{version}.Linux_x86_64.tar.gz
+Packager:   TACC - jfonner@tacc.utexas.edu
 # This is the actual installation directory - Careful
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
-requires:   boost-gcc4_7 = 1.51.0
+
 
 #------------------------------------------------
 # BASIC DEFINITIONS
@@ -50,11 +50,10 @@ Cufflinks is a collaborative effort between the Laboratory for Mathematical and 
 
 # Remove older attempts
 rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
-mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
-# Unpack source
+# Unpack tarball
 # This will unpack the source to /tmp/BUILD/***
-%setup -n %{name}-%{version}
+%setup -n %{name}-%{version}.Linux_x86_64
 
 #------------------------------------------------
 # BUILD SECTION
@@ -85,89 +84,39 @@ fi
 module purge
 module load TACC
 
-# looks like the install is broken for new versions of gcc
-%if "%{PLATFORM}" == "lonestar"
-  module swap $TACC_FAMILY_COMPILER gcc/4.7.1
-%endif
+# Installing from source is so broken, I've resorted to using the binaries
+# see version 2.0.X for a spec file that built from source
 
-%if "%{PLATFORM}" == "stampede"
-  module swap $TACC_FAMILY_COMPILER gcc/4.6.3
-%endif
-# boost is in the required section at the top of the spec file
-module load boost/1.51.0
-module load cmake
+cp -r ./* $RPM_BUILD_ROOT%{INSTALL_DIR} 
 
-export CUFFLINKS_DIR=`pwd`
-# apparently I'm getting lazy in my old age.  I'm just using wget for the Eigen sourcecode
-wget http://bitbucket.org/eigen/eigen/get/3.1.0.tar.gz
-tar xvzf 3.1.0.tar.gz 
-rm ./3.1.0.tar.gz
-cd eigen*
-export EIGEN_SRC=`pwd`
-mkdir build
-cd build
+#------------------------------------------------
+# MODULE SECTION
+#------------------------------------------------
 
-#building with gcc to be consistent with cufflinks
-CC=gcc CXX=g++ cmake .. -DCMAKE_INSTALL_PREFIX=$CUFFLINKS_DIR/eigen
-make install
-#have to move eigen out of the Eigen3 dir
-mv $CUFFLINKS_DIR/eigen/include/eigen3/* $CUFFLINKS_DIR/eigen/include/
-rmdir $CUFFLINKS_DIR/eigen/include/eigen3
-
-cd $CUFFLINKS_DIR
-
-# aha, after several frustrating hours, I think they screwed up how they link to samtools include files.  They insert an extra "bam" directory when calling the headers... idiots.
-wget http://downloads.sourceforge.net/project/samtools/samtools/0.1.18/samtools-0.1.18.tar.bz2?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fsamtools%2Ffiles%2Fsamtools%2F0.1.18%2F
-tar xjf samtools*
-cd samtools*
-MY_SAMTOOLS_DIR=$PWD
-make
-mkdir -p ./include/bam
-cp ./*.h ./include/bam
-
-cd $CUFFLINKS_DIR
-
-#%if "%{PLATFORM}" == "lonestar"
-  ./configure CC=gcc CXX=g++ --prefix=%{INSTALL_DIR} --with-boost=$TACC_BOOST_DIR --with-eigen=$CUFFLINKS_DIR/eigen --with-bam=$MY_SAMTOOLS_DIR --with-bam-libdir=$MY_SAMTOOLS_DIR LDFLAGS="-Wl,-rpath,$TACC_BOOST_LIB,-rpath,$GCC_LIB"
-#%endif
-
-#%if "%{PLATFORM}" == "stampede"
-#  ./configure CC=gcc CXX=g++ --prefix=%{INSTALL_DIR} --with-boost=$TACC_BOOST_DIR --with-eigen=$CUFFLINKS_DIR/eigen --with-bam=$MY_SAMTOOLS_DIR --with-bam-libdir=$MY_SAMTOOLS_DIR LDFLAGS="-Wl,-rpath,$TACC_BOOST_LIB"
-#%endif
-
-# Patch to fix error
-# common.h:25:25: error: 'boost::BOOST_FOREACH' has not been declared
-
-cd $CUFFLINKS_DIR/src && mv common.h common.h.prot && for x in *.cpp *.h; do sed 's/foreach/for_each/' $x > x; mv x $x; done && mv common.h.prot common.h && cd $CUFFLINKS_DIR
-
-cd $CUFFLINKS_DIR
-make
-mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
-make DESTDIR=$RPM_BUILD_ROOT install
-cp -r LICENSE README AUTHORS ./eigen $MY_SAMTOOLS_DIR $RPM_BUILD_ROOT%{INSTALL_DIR} 
+# I keep both TACC_CUFFLINKS_DIR and TACC_CUFFLINKS_BIN for backward compatibility
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help (
 [[
-This module loads %{name} built with gcc.
-This module makes available the cufflinks executable. Documentation for %{name} is available online at the publisher website: http://cufflinks.cbcb.umd.edu/
+This module loads the %{PNAME} software package.
+Documentation for %{PNAME} is available online at the publisher website: http://cufflinks.cbcb.umd.edu/
 The cufflinks executable can be found in %{MODULE_VAR}_BIN
 
 Version %{version}
 ]])
 
-whatis("Name: cufflinks")
+whatis("Name: %{PNAME}")
 whatis("Version: %{version}")
 whatis("Category: computational biology, genomics")
 whatis("Keywords: Biology, Genomics, RNAseq, Transcriptome profiling")
 whatis("Description: cufflinks - Transcript assembly, differential expression, and differential regulation for RNA-Seq")
 whatis("URL: http://cufflinks.cbcb.umd.edu/")
 
-prepend_path("PATH",              "%{INSTALL_DIR}/bin")
+prepend_path("PATH",              "%{INSTALL_DIR}")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
-setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
+setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}")
 
 EOF
 

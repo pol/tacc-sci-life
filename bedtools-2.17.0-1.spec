@@ -1,11 +1,12 @@
-Summary:    bismark - A tool to map bisulfite converted sequence reads and determine cytosine methylation states
-Name:       bismark
-Version:    0.7.12
+#http://bedtools.googlecode.com/files/BEDTools.v2.16.2.tar.gz
+Summary:    A flexible suite of utilities for comparing genomic features
+Name:       bedtools
+Version:    2.17.0
 Release:    1
-License:    GPLv3
+License:    GPLv2
 Group: Applications/Life Sciences
-Source:     %{name}_v%{version}.tar.gz
-Packager:   TACC - wonaya@tacc.utexas.edu
+Source:     BEDTools.v%{version}.tar.gz
+Packager:   TACC - jiao@tacc.utexas.edu
 # This is the actual installation directory - Careful
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 
@@ -15,13 +16,13 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 %define debug-package %{nil}
 # This will define the correct _topdir
 %include rpm-dir.inc
+%include ../system-defines.inc
 # Compiler Family Definitions
 # %include compiler-defines.inc
 # MPI Family Definitions
 # %include mpi-defines.inc
 # Other defs
-%include ../system-defines.inc
-%define PNAME bismark
+
 # Allow for creation of multiple packages with this spec file
 # Any tags right after this line apply only to the subpackage
 # Summary and Group are required.
@@ -33,7 +34,7 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 # PACKAGE DESCRIPTION
 #------------------------------------------------
 %description
-Bismark is a program to map bisulfite treated sequencing reads to a genome of interest and perform methylation calls in a single step. The output can be easily imported into a genome viewer, such as SeqMonk, and enables a researcher to analyse the methylation levels of their samples straight away.
+BEDTools is a software suite for the comparison, manipulation and annotation of genomic features in Browser Extensible Data (BED) and General Feature Format (GFF) format. BEDTools also supports the comparison of sequence alignments in BAM format to both BED and GFF features.
 
 #------------------------------------------------
 # INSTALLATION DIRECTORY
@@ -41,8 +42,7 @@ Bismark is a program to map bisulfite treated sequencing reads to a genome of in
 # Buildroot: defaults to null if not included here
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
-%define MODULE_VAR TACC_BISMARK
-
+%define MODULE_VAR TACC_BEDTOOLS
 
 #------------------------------------------------
 # PREPARATION SECTION
@@ -55,40 +55,24 @@ rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # Unpack source
-# This will unpack the source to /tmp/BUILD/***
-%setup -n %{name}_v%{version}
+# This will unpack the source to /tmp/BUILD/BEDTools-Version-%{version}
+%setup -n bedtools-%{version}
 
 #------------------------------------------------
 # BUILD SECTION
 #------------------------------------------------
 %build
 
-#------------------------------------------------
-# INSTALL SECTION
-#------------------------------------------------
 %install
-
-
-# Start with a clean environment
 %include ../system-load.inc
-# Load correct compiler
-# %include compiler-load.inc
-# Load correct mpi stack
-#%include mpi-load.inc
-#%include mpi-env-vars.inc
-# Load additional modules here (as needed)
 
 module purge
 module load TACC
-#-----------------------------
-# Build parallel version
-#-----------------------------
+module swap $TACC_FAMILY_COMPILER gcc
 
-echo "Bismark is a script. No need to compile it."
+make LDFLAGS="-Wl,-rpath,/opt/apps/gcc/4.4.5/lib64/"
 
-mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
-
-cp -R ./bismark ./bismark_genome_preparation ./bismark_methylation_extractor ./license.txt ./Bismark_User_Guide*.pdf $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp -R ./bin ./genomes ./data $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # ADD ALL MODULE STUFF HERE
 # TACC module
@@ -98,23 +82,38 @@ mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help (
 [[
-This module loads %{name} This module makes available the bismark executable. Documentation for %{name} is available online at the publisher\'s website: http://www.bioinformatics.bbsrc.ac.uk/projects/bismark/
-The bismark executables can be found in %{MODULE_VAR}_DIR, including "bismark_genome_preparation","bismark", "methylation_extractor".
+This module loads %{name} built with gcc and makes available all the BEDtools executables. 
+Documentation is available online - http://code.google.com/p/bedtools/
+
+The BEDTools executable can be found in %{MODULE_VAR}_BIN. Useful commands include:
+
+intersectBed
+pairToBed
+pairToPair
+bamToBed
+windowBed
+closestBed
+subtractBed
+mergeBed
+coverageBed
+complementBed
+shuffleBed
+groupBy
 
 Version %{version}
 ]])
 
-whatis("Name: bismark")
+whatis("Name: bedtools")
 whatis("Version: %{version}")
 whatis("Category: computational biology, genomics")
-whatis("Keywords:  Biology, Genomics, Alignment, Methylation, Epigenomics, Bisulfite, Sequencing")
-whatis("Description: bismark - A tool to map bisulfite converted sequence reads and determine cytosine")
-whatis("URL: http://www.bioinformatics.bbsrc.ac.uk/projects/bismark/")
+whatis("Keywords: Biology, Genomics, Utility, Interval, Sequencing")
+whatis("Description: bedtools: a flexible suite of utilities for comparing genomic features")
+whatis("URL: http://code.google.com/p/bedtools/")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
-prepend_path("PATH"       ,"%{INSTALL_DIR}/")
+setenv("%{MODULE_VAR}_BIN","%{INSTALL_DIR}/bin/")
 
-prereq ("bowtie")
+prepend_path("PATH","%{INSTALL_DIR}/bin/")
 
 EOF
 
@@ -127,6 +126,7 @@ cat > $RPM_BUILD_ROOT%{MODULE_DIR}/.version.%{version} << 'EOF'
 ##
 ## version file for %{PNAME}-%{version}
 ##
+
 set     ModulesVersion      "%{version}"
 EOF
 
@@ -152,5 +152,4 @@ cd /tmp
 
 # Remove the installation files now that the RPM has been generated
 rm -rf $RPM_BUILD_ROOT
-
 

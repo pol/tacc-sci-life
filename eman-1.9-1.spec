@@ -1,11 +1,12 @@
-##FastQC
-Summary: FastQC - A quality control application for high throughput sequence data
-Name:	fastqc	
-Version:  0.10.1	
+##eman
+##Does not work with module python (2.7) on Stampede, works with system python (2.6)
+Summary: Eman - Software for Single Particle Analysis and Electron Micrograph Analysis 
+Name:	eman
+Version:  1.9	
 Release:   1	
 Group:	Applications/Life Sceinces
 License:  GPL 
-Source0:  %{name}_v%{version}.zip	
+Source0: eman-linux-x86_64-cluster-1.9.tar.gz 
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 #------------------------------------------------
@@ -16,39 +17,30 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 %include rpm-dir.inc
 
 %include ../system-defines.inc
-%define PNAME fastqc
+%define PNAME eman
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION
 #------------------------------------------------
 %description
-FastQC is an application which takes a FastQ file and runs a series
-of tests on it to generate a comprehensive QC report.  This will
-tell you if there is anything unusual about your sequence.  Each
-test is flagged as a pass, warning or fail depending on how far it
-departs from what you'd expect from a normal large dataset with no
-significant biases.  It's important to stress that warnings or even
-failures do not necessarily mean that there is a problem with your
-data, only that it is unusual.  It is possible that the biological
-nature of your sample means that you would expect this particular
-bias in your results.
+EMAN is a suite of scientific image processing tools aimed primarily at the transmission electron microscopy community, though it is beginning to be used in other fields as well. EMAN has a particular focus on performing a task known as single particle reconstruction. In this method, images of nanoscale molecules and molecular assemblies embedded in vitreous (glassy) ice are collected on a transmission electron microscope, then processed using EMAN to produce a complete 3-D recosntruction at resolutions now approaching atomic resolution.
+
 #------------------------------------------------
 # INSTALLATION DIRECTORY
 #------------------------------------------------
 # Buildroot: defaults to null if not included here
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
-%define MODULE_VAR TACC_FASTQC
+%define MODULE_VAR TACC_EMAN
 
 #------------------------------------------------
 # PREPARATION SECTION
 #------------------------------------------------
 # Use -n <name> if source file different from <name>-<version>.tar.gz
 %prep
-rm   -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
+rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
-%setup -n FastQC 
+%setup -n EMAN
 
 %build
 
@@ -61,26 +53,35 @@ module load TACC
 
 mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
 
-cp -R ./Help ./Contaminants ./uk ./Templates ./fastqc ./*bat ./*.txt ./*.jar $RPM_BUILD_ROOT/%{INSTALL_DIR}
+#which direcotires are needed for precompiled version, chimeraext, python?
+#Syntax error, chimeraext/FilterKit/Filter.py
+
+cp -R ./bin ./doc ./chimeraext ./include ./lib ./python ./README $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
-help ( 
+help { 
 [[
-This module loads %{name}. This module makes available the %{name} executables. Documentation for %{name} is available online at the publisher\'s website: http://www.bioinformatics.babraham.ac.uk/projects/fastqc/
-These executables can be found in %{MODULE_VAR}_DIR, including "fastqc".
+This module loads %{name}. This module makes available the %{name} executables. Documentation for %{name} is available online at the publisher\'s website: http://blake.bcm.edu/emanwiki/EMAN
+These executables can be found in %{MODULE_VAR}_DIR, including refine.
 
 Version %{version}
-]])
+]]}
 
-whatis("Name: fastqc")
+whatis("Name: EMAN")
 whatis("Version: %{version}")
-whatis("Category: computational biology, genomics")
-whatis("Keywords:  Biology, Genomics, Sequencing, FastQ, Quality Control")
-whatis("Description: fastqc - A Quality Control application for FastQ files")
-whatis("URL: http://www.bioinformatics.babraham.ac.uk/projects/fastqc/")
+whatis("Category: computational biology, Electron Microscopy")
+whatis("Keywords:  Biology, Cryo-EM, Image Processing, Reconstruction")
+whatis("Description: eman - Software for Single Particle Analysis and Electron Micrograph Analysis")
+whatis("URL: http://blake.bcm.edu/emanwiki/EMAN")
 
+prepend_path("PATH",              "%{INSTALL_DIR}/bin")
+prepend_path("LD_LIBRARY_PATH",   "%{INSTALL_DIR}/lib")
+prepend_path("PYTHONPATH",        "%{INSTALL_DIR}/lib")
+setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
+setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
+setenv (     "EMANDIR",           "%{INSTALL_DIR}")
 EOF
 
 #--------------
@@ -95,8 +96,6 @@ cat > $RPM_BUILD_ROOT%{MODULE_DIR}/.version.%{version} << 'EOF'
 
 set     ModulesVersion      "%{version}"
 EOF
-
-
 
 #------------------------------------------------
 # FILES SECTION
