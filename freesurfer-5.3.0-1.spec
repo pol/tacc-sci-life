@@ -1,4 +1,4 @@
-#export RPM_BUILD_DIR=/admin/build/admin/rpms/stampede/
+##freesurfer syntax error fixed
 Summary: FreeSurfer - a set of tools for analysis and visualization of structural and functional brain imaging data. 
 Name:	freesurfer
 Version:  5.3.0
@@ -32,15 +32,15 @@ FreeSurfer provides many anatomical analysis tools, including: representation of
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 %define MODULE_VAR TACC_FREESURFER
 #big data dir
-%define FREESURFER_DATADIR /scratch/projects/tacc/bio/%{name}/%{version}
+%define TACC_FREESURFER_DATADIR /scratch/projects/tacc/bio/%{name}/%{version}
 #------------------------------------------------
 # PREPARATION SECTION
 #------------------------------------------------
 # Use -n <name> if source file different from <name>-<version>.tar.gz
 %prep
 
-if [ ! -d "%{FREESURFER_DATADIR}" ]; then
-    echo "The data directory %{FREESURFER_DATADIR} was not found. Aborting rpmbuild."
+if [ ! -d "%{TACC_FREESURFER_DATADIR}" ]; then
+    echo "The data directory %{TACC_FREESURFER_DATADIR} was not found. Aborting rpmbuild."
     exit 1
 fi
 
@@ -63,9 +63,9 @@ mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
 #Syntax error, chimeraext/FilterKit/Filter.py
 
 cp -R ASegStatsLUT.txt AUTHORS bin build-stamp.txt data DefectLUT.txt diffusion docs FreeSurferColorLUT.txt fsafd fsfast lib LICENSE matlab mni NOTICE README SegmentNoLUT.txt sessions Simple_surface_labels2009.txt tkmeditParcColorsCMA tktools $RPM_BUILD_ROOT/%{INSTALL_DIR}
-ln -s %{FREESURFER_DATADIR}/average average
-ln -s %{FREESURFER_DATADIR}/subjects subjects
-ln -s %{FREESURFER_DATADIR}/trctrain trctrain
+ln -s %{TACC_FREESURFER_DATADIR}/average average
+ln -s %{TACC_FREESURFER_DATADIR}/subjects subjects
+ln -s %{TACC_FREESURFER_DATADIR}/trctrain trctrain
 cat > $RPM_BUILD_ROOT/%{INSTALL_DIR}/.license << 'EOF'
 jiao@tacc.utexas.edu
 13706
@@ -93,10 +93,10 @@ whatis("URL: http://surfer.nmr.mgh.harvard.edu/fswiki/FreeSurferWiki")
 prepend_path("PATH",              "%{INSTALL_DIR}/bin")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
 setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
-setenv (     "TACC_FREESURFER_DATADIR",     "/scratch/projects/tacc/bio/%{name}/%{version}")
+setenv (     "%{TACC_FREESURFER_DATADIR}",     "/scratch/projects/tacc/bio/%{name}/%{version}")
 setenv (     "FREESURFER_HOME",           "%{INSTALL_DIR}")
-setenv (     "SUBJECTS_DIR",    "%{FREESURFER_DATADIR}/subjects") 
-setenv (     "MNI_DIR",         "%{FREESURFER_DATADIR}/mni")
+setenv (     "SUBJECTS_DIR",    "%{TACC_FREESURFER_DATADIR}/subjects") 
+setenv (     "MNI_DIR",         "%{TACC_FREESURFER_DATADIR}/mni")
 setenv (     "FSFAST_HOME",     "%{INSTALL_DIR}/fsfast")
 setenv (     "FSF_OUTPUT_FORMAT", "nii")
 

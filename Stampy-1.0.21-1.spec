@@ -70,6 +70,8 @@ rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %include ../system-load.inc
 
+module unload python
+
 make
 
 cp -r build ext makefile maptools.so plugins README.txt Stampy stampy.py $RPM_BUILD_ROOT/%{INSTALL_DIR}

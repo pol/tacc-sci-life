@@ -37,15 +37,15 @@ Geant4 is a toolkit for simulating the passage of particles through matter. It i
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 %define MODULE_VAR TACC_GEANT4
-%define GEANT4_DATADIR /scratch/projects/tacc/bio/%{name}/%{version}
+%define TACC_GEANT4_DATADIR /scratch/projects/tacc/bio/%{name}/%{version}
 
 #------------------------------------------------
 # PREPARATION SECTION
 #------------------------------------------------
 # Use -n <name> if source file different from <name>-<version>.tar.gz
 %prep
-if [ ! -d "%{GEANT4_DATADIR}" ]; then
-    echo "The data directory %{GEANT4_DATADIR} was not found. Aborting rpmbuild."
+if [ ! -d "%{TACC_GEANT4_DATADIR}" ]; then
+    echo "The data directory %{TACC_GEANT4_DATADIR} was not found. Aborting rpmbuild."
     exit 1
 fi
 # Remove older attempts
@@ -111,7 +111,7 @@ whatis("URL: http://geant4.cern.ch")
 prepend_path("PATH",              "%{INSTALL_DIR}/bin")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
 setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
-setenv (     "TACC_GEANT4_DATADIR",  "/scratch/projects/tacc/bio/%{name}/%{version}")
+setenv (     "%{TACC_GEANT4_DATADIR}",  "/scratch/projects/tacc/bio/%{name}/%{version}")
 setenv ( "G4LEVELGAMMADATA",    "%{INSTALL_DIR}/data/PhotonEvaporation2.3")
 setenv ( "G4RADIOACTIVEDATA",    "%{INSTALL_DIR}/data/RadioactiveDecay3.6")
 setenv ( "G4LEDATA",    "%{INSTALL_DIR}/data/G4EMLOW6.32")

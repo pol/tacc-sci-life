@@ -52,32 +52,29 @@ rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 module purge
 module load TACC
 module load python
-
 export EMAN2DIR=`pwd`
 
 cd mpi_eman
-make -f Makefile.linux install
+make -f Makefile.linux2 install
+
 cd ..
 
 mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
 
 cp -R ./bin ./doc ./include ./lib ./mpi_eman ./Python-2.7-ucs4 $RPM_BUILD_ROOT/%{INSTALL_DIR}
-#cd $RPM_BUILD_ROOT/%{INSTALL_DIR}
-#cd mpi_eman
-#make -f Makefile.linux install
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
-help { 
+help ( 
 [[
 This module loads %{name}. This module makes available the %{name} executables. Documentation for %{name} is available online at the publisher\'s website: http://blake.bcm.edu/emanwiki/EMAN
 These executables can be found in %{MODULE_VAR}_DIR, including refine.
 
 Version %{version}
-]]}
+]])
 
-whatis("Name: EMAN")
+whatis("Name: EMAN2")
 whatis("Version: %{version}")
 whatis("Category: computational biology, Electron Microscopy")
 whatis("Keywords:  Biology, Cryo-EM, Image Processing, Reconstruction")
@@ -103,6 +100,7 @@ cat > $RPM_BUILD_ROOT%{MODULE_DIR}/.version.%{version} << 'EOF'
 
 set     ModulesVersion      "%{version}"
 EOF
+module unload python
 
 #------------------------------------------------
 # FILES SECTION
