@@ -2,9 +2,10 @@
 # R-3.01.spec, v3.01, 2013-06-28 vaughn@tacc.utexas.edu
 #
 # See http://www.r-project.org/
+# Need to use build_intel13.sh for this
 
 Summary:    R is a free software environment for statistical computing and graphics.
-Name:       R
+Name:       R_mkl
 Version:    3.0.1
 Release:    1
 License:    GPLv2
@@ -31,12 +32,17 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 %define PNAME %{name}
 %define INSTALL_DIR %{APPS}/%{comp_fam_ver}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{comp_fam_ver}/%{MODULES}/%{name}
-%define MODULE_VAR TACC_R
+%define MODULE_VAR TACC_R_MKL
+
+%package -n %{name}-%{comp_fam_ver}
+Summary:   R is a free software environment for statistical computing and graphics.
+Group: Applications/Life Sciences
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION
 #------------------------------------------------
-%description -n %{name}
+%description
+%description -n %{name}-%{comp_fam_ver}
 R provides a wide variety of statistical (linear and nonlinear 
 modelling, classical statistical tests, time-series analysis, 
 classification, clustering, ...) and graphical techniques, and 
@@ -50,7 +56,7 @@ is highly extensible.
 rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # Unpack source
-%setup 
+%setup -n R-3.0.1
 
 ##
 ## BUILD
