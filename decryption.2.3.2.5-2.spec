@@ -1,6 +1,6 @@
 Summary: NCBI decryption tools
 Name: decryption
-Version: 2.3.2-5
+Version: 2.3.2.5
 Release: 2
 License: Public Domain
 Vendor: National Center for Biotechnology Information
@@ -26,25 +26,19 @@ BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 Subset of the SRA toolkit that includes only the utilities related to decryption
 
 ## PREP
-# Use -n <name> if source file different from <name>-<version>.tar.gz
 %prep
 rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 ## SETUP
-%setup -n %{name}.%{version}-%{release}-centos_linux64
-
+%setup -n decryption.2.3.2-5-centos_linux64
 %build
-
 %install
-
 %include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 echo "Decryption Tool is distributed as compiled binary for Centos 64bit. No compilation necessary."
-
 module unload python
-
-cp -R ./* $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp -R bin $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 #-----------------
 # Modules Section
@@ -68,7 +62,6 @@ whatis("Category: computational biology, genomics")
 whatis("Keywords: Biology, Genomics, Quality Control, Utility, Sequencing, NCBI, SRA")
 whatis("URL: http://www.ncbi.nlm.nih.gov/Traces/sra/?view=software")
 whatis("Description: Decryption tool is a subset of SRA Toolkit for decrypting the encrypted non-SRA data")
-
 
 prepend_path("PATH",              "%{INSTALL_DIR}/bin")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}/")

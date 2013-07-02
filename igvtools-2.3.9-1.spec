@@ -1,11 +1,13 @@
-Summary: NCBI decryption tools
-Name: decryption
-Version: 2.3.2-5
-Release: 2
-License: Public Domain
-Vendor: National Center for Biotechnology Information
+## http://www.broadinstitute.org/igv/projects/downloads/igvtools_2.3.9.zip
+
+Summary: IGVTools
+Name: igvtools
+Version: 2.3.9
+Release: 1
+License: MIT License
+Vendor: Broad Institute
 Group: Applications/Life Sciences
-Source: decryption.2.3.2-5-centos_linux64.tar.gz
+Source: igvtools_2.3.9.zip
 Packager: TACC - wonaya@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 
@@ -16,14 +18,19 @@ BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 %include rpm-dir.inc
 %include ../system-defines.inc
 
-%define PNAME %{name}
+# Compiler Family Definitions
+# %include compiler-defines.inc
+# MPI Family Definitions
+# %include mpi-defines.inc
+# Other defs
 
+%define PNAME %{name}
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
-%define MODULE_VAR TACC_DECRYPTION
+%define MODULE_VAR TACC_IGVTOOLS
 
 %description
-Subset of the SRA toolkit that includes only the utilities related to decryption
+The Integrative Genomics Viewer (IGV) is a high-performance visualization tool for interactive exploration of large, integrated genomic datasets. IGVtools is for preprocessing data files
 
 ## PREP
 # Use -n <name> if source file different from <name>-<version>.tar.gz
@@ -31,24 +38,21 @@ Subset of the SRA toolkit that includes only the utilities related to decryption
 rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 ## SETUP
-%setup -n %{name}.%{version}-%{release}-centos_linux64
-
+%setup -n IGVTools
 %build
-
 %install
-
 %include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
-echo "Decryption Tool is distributed as compiled binary for Centos 64bit. No compilation necessary."
+echo "IGVtools is distributed as compiled binary for Centos 64bit. No compilation necessary."
 
-module unload python
-
-cp -R ./* $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp -R genomes igvtools igvtools.* igvtools_* $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 #-----------------
 # Modules Section
 #-----------------
+
+module unload python
 
 rm -rf $RPM_BUILD_ROOT%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT%{MODULE_DIR}
@@ -65,10 +69,9 @@ Version %{version}
 whatis("Name: %{name}")
 whatis("Version: %{version}")
 whatis("Category: computational biology, genomics")
-whatis("Keywords: Biology, Genomics, Quality Control, Utility, Sequencing, NCBI, SRA")
-whatis("URL: http://www.ncbi.nlm.nih.gov/Traces/sra/?view=software")
-whatis("Description: Decryption tool is a subset of SRA Toolkit for decrypting the encrypted non-SRA data")
-
+whatis("Keywords: Biology, Genomics, Viewer")
+whatis("URL: http://www.broadinstitute.org/igv/home")
+whatis("Description: The Integrative Genomics Viewer (IGV) is a high-performance visualization tool for interactive exploration of large, integrated genomic datasets. IGVtools is for preprocessing data files")
 
 prepend_path("PATH",              "%{INSTALL_DIR}/bin")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}/")
