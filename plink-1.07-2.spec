@@ -14,9 +14,6 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
-#------------------------------------------------
-# BASIC DEFINITIONS
-#------------------------------------------------
 %include rpm-dir.inc
 %include ../system-defines.inc
 

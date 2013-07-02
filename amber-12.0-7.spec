@@ -14,6 +14,8 @@ Requires: netcdf-3.6-intel13
 %define version_unit 12
 
 %include rpm-dir.inc
+Buildroot: /var/tmp/%{name}-%{version}-buildroot
+
 %include ../system-defines.inc
 %include compiler-defines.inc
 %include mpi-defines.inc
@@ -47,16 +49,23 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %include compiler-load.inc
 %include mpi-load.inc
 
-module load mkl
+%if "%{PLATFORM}" != "stampede"
+    module load mkl
+%endif
+
 module load cuda
 module load hdf5 netcdf/3.6.3
 
 echo COMPILER LOAD: %{comp_fam_ver_load}
 echo MPI      LOAD: %{mpi_fam_ver_load}
 
-mkdir -p             %{INSTALL_DIR}
-tacctmpfs -m         %{INSTALL_DIR}
-cd                   %{INSTALL_DIR}
+# this is a test of Doug's new tacctmpfs ---
+#mkdir -p             %{INSTALL_DIR}
+rm -rf 			%{INSTALL_DIR}
+PATH=/tmp/djbin:$PATH
+/tmp/djbin/tacctmpfs -m %{INSTALL_DIR}
+cd                   	%{INSTALL_DIR}
+pwd
 
 tar xjf %{_topdir}/SOURCES/AmberTools12.tar.bz2 --strip-components 1
 tar xjf %{_topdir}/SOURCES/Amber12.tar.bz2 --strip-components 1
@@ -72,6 +81,7 @@ export AMBERHOME MKL_HOME CUDA_HOME
 # make clean
 
 # it takes two or more rounds of configure to get the updates... Im' just testing this
+$AMBERHOME/patch_amber.py --update-tree
 $AMBERHOME/patch_amber.py --update-tree
 $AMBERHOME/patch_amber.py --update-tree
 
@@ -286,7 +296,7 @@ cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/.version.%{version} << 'EOF'
 set     ModulesVersion      "%{version}"
 EOF
 
-%{SPEC_DIR}/checkModuleSyntax %{MODULE_DIR}/%{version}.lua
+%{SPEC_DIR}/checkModuleSyntax $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua
 
 #############################    MODULES  ######################################
 
