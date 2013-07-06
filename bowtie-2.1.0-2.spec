@@ -67,14 +67,9 @@ if [ -f "$BASH_ENV" ]; then
    export MODULEPATH=/opt/apps/xsede/modulefiles:/opt/apps/modulefiles:/opt/modulefiles
 fi
 
-# get a clean environment if on a TACC system
-%if "%{PLATFORM}" == "stampede" || "%{PLATFORM}" == "lonestar"
 module purge
 module load TACC
 module swap $TACC_FAMILY_COMPILER gcc
-%endif
-# currently, if not on a TACC system, we don't worry about resetting the module environment
-
 
 # Since LDFLAGS is not used in compilation, we hijack EXTRA_FLAGS to carry the rpath payload
 make EXTRA_FLAGS="-Wl,-rpath,$GCC_LIB"
@@ -84,32 +79,6 @@ cp -R ./bowtie2 ./bowtie2-align ./bowtie2-build ./bowtie2-inspect ./doc ./script
 # ADD ALL MODULE STUFF HERE
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
-
-%if "%{PLATFORM}" == "sanger"
-#------------- begin sanger tcl ----------------------#
-
-cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
-#%Module -*- tcl -*-
-##
-## modulefile
-##
-proc ModulesHelp { } {
-puts stderr "The %{name} module file defines the following environment variables:\n%{MODULE_VAR}_DIR and %{MODULE_VAR}_SCRIPTS for the location of the %{name}\ndistribution. Documentation can be found online at http://bowtie-bio.sourceforge.net/bowtie2/\n\nNOTE: Bowtie2 indexes are not backwards compatible with Bowtie1 indexes.\n\n This module provides the bowtie2, bowtie2-align, bowtie2-build, and bowtie2-inspect binaries + scripts\n\nVersion %{version}"
-}
-
-module-whatis "%{PNAME} %{version} Ultrafast, memory-efficient short read aligner URL: http://bowtie-bio.sourceforge.net/bowtie2/"
-
-set             root                    %{APPS}/%{PNAME}
-set             version                 %{version}
-prepend-path    PATH                    $root/$version
-setenv          %{MODULE_VAR}_DIR       $root/$version
-setenv          %{MODULE_VAR}_SCRIPTS   $root/$version/scripts
-
-EOF
-
-#------------- end sanger tcl ----------------------#
-%else
-
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help (
 [[
@@ -137,8 +106,6 @@ setenv("%{MODULE_VAR}_SCRIPTS","%{INSTALL_DIR}/scripts")
 prepend_path("PATH"       ,"%{INSTALL_DIR}")
 
 EOF
-
-%endif
 
 #--------------
 #  Version file.
