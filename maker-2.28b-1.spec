@@ -42,12 +42,44 @@ MAKER is a portable and easily configurable genome annotation pipeline. It's pur
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 %define MODULE_VAR TACC_MAKER
-
+%define MAKER_DATA /scratch/projects/tacc/bio/%{name}/%{version}
 #------------------------------------------------
 # PREPARATION SECTION
 #------------------------------------------------
 # Use -n <name> if source file different from <name>-<version>.tar.gz
 %prep
+
+if [ ! -d "%{MAKER_DATADIR}" ]; then
+    echo "The data directory %{MAKER_DATADIR} was not found. Aborting rpmbuild."
+    exit 1
+fi
+if [ ! -d "%{MAKER_DATADIR}/RepeatMasker" ]; then
+    echo "RepeatMasker is missing from %{MAKER_DATADIR}. Aborting rpmbuild."
+    exit 1
+fi
+if [ ! -d "%{MAKER_DATADIR}/RepeatMasker/rmblast" ]; then
+    echo "rmblast is missing from RepeatMasker. Aborting rpmbuild."
+    exit 1
+fi
+if [ ! -d "%{MAKER_DATADIR}/blast" ]; then
+    echo "ncbi-blast is missing from %{MAKER_DATADIR}. Aborting rpmbuild."
+    exit 1
+fi
+if [ ! -d "%{MAKER_DATADIR}/augustus" ]; then
+    echo "Augustus is missing from %{MAKER_DATADIR}. Aborting rpmbuild."
+    exit 1
+fi
+if [ ! -d "%{MAKER_DATADIR}/snap" ]; then
+    echo "snap is missing from %{MAKER_DATADIR}. Aborting rpmbuild."
+    exit 1
+fi
+if [ ! -d "%{MAKER_DATADIR}/exonerate" ]; then
+    echo "exonerate is missing from %{MAKER_DATADIR}. Aborting rpmbuild."
+    exit 1
+fi
+
+chown -R root:G-800657 %{MAKER_DATADIR}/
+chmod -R 755 %{MAKER_DATADIR}
 
 # Remove older attempts
 rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
@@ -95,12 +127,6 @@ yes
 Y
 EOF
 
-./Build installexes << EOF
-Y
-nasridine
-ylt993
-EOF
-
 ./Build install
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
@@ -108,8 +134,7 @@ mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help (
 [[
-This module loads %{name} built with cmake.
-This module makes available the openbabel executable. Documentation for %{name} is available online at the publisher\'s website: http://irs.inms.nrc.ca/software/egsnrc/egsnrc.html
+A portable and easy to configure genome annotation pipeline. MAKER allows smaller eukaryotic genome projects and prokaryotic genome projects to annotate their genomes and to create genome databases. MAKER identifies repeats, aligns ESTs and proteins to a genome, produces ab initio gene predictions and automatically synthesizes these data into gene annotations with evidence-based quality values. MAKER is also easily trainable: outputs of preliminary runs can be used to automatically retrain its gene prediction algorithm, producing higher quality gene-models on subsequent runs. MAKER's inputs are minimal. Its outputs are in GFF3 or FASTA format, and can be directly loaded into Chado, GBrowse, JBrowse or Apollo. Documentation can be found at http://gmod.org/wiki/MAKER.
 
 Version %{version}
 ]])
@@ -126,6 +151,15 @@ setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
 setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
 prepend_path("LD_PRELOAD",              "/opt/apps/intel11_1/openmpi/1.4.3/lib/libmpi.so")
 setenv ( "OMPI_MCA_mpi_warn_on_fork",    "0")
+setenv ( "TACC_MAKER_DATADIR",      "/scratch/projects/tacc/bio/%{name}/%{version}")
+prepend_path("PATH",         "%{MAKER_DATADIR}/RepeatMasker")
+prepend_path("PATH",         "%{MAKER_DATADIR}/RepeatMasker/rmblast/bin")
+prepend_path("PATH",         "%{MAKER_DATADIR}/blast/bin")
+setenv ("AUGUSTUS_CONFIG_PATH",     "%{MAKER_DATADIR}/augustus/config")
+prepend_path("PATH",         "%{MAKER_DATADIR}/augustus/bin")
+prepend_path("PATH",         "%{MAKER_DATADIR}/snap")
+setenv ("ZOE",        "%{MAKER_DATADIR}/snap/Zoe")
+prepend_path("PATH",         "%{MAKER_DATADIR}/exonerate/bin")
 
 EOF
 
