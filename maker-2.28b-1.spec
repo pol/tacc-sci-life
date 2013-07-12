@@ -5,6 +5,7 @@ Release:    1
 License:    GNU General Public License
 Group: Applications/Life Sciences
 Source:     %{name}-%{version}.tar.gz
+Source1:   postgresql-9.2.4.tar.bz2
 Packager:   TACC - jiao@tacc.utexas.edu
 # This is the actual installation directory - Careful
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
@@ -88,6 +89,7 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 # Unpack source
 # This will unpack the source to /tmp/BUILD/***
 %setup -n %{name}-%{version}
+%setup -n %{name}-%{version} -T -D -a 1
 
 %build   
 %install
@@ -98,7 +100,14 @@ module purge
 module load TACC
 module swap mvapich2 openmpi
 
-cd src
+CWD=`pwd`
+mkdir pgsql
+cd postgresql-9.2.4/
+./configure --prefix=$CWD/pgsql
+gmake
+gmake install
+
+cd ../src
 perl Build.PL << EOF
 y
 /opt/apps/intel11_1/openmpi/1.4.3/bin/mpicc
@@ -106,9 +115,6 @@ y
 EOF
 ./Build installdeps << EOF
 Y  
-yes
-
-yes
 yes
 yes
 yes
@@ -125,9 +131,19 @@ a
 n
 yes
 Y
+%{CWD}/pqsql/bin
+9
+2
+4
+%{CWD}/pqsql/bin
+%{CWD}/pqsql/include
+%{CWD}/pqsql/lib
 EOF
 
 ./Build install
+
+cd $CWD
+cp -R ./bin ./data ./GMOD ./lib ./LICENSE ./MWAS ./perl ./pgsql ./README $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
@@ -147,6 +163,7 @@ whatis("Description: Maker - a portable and easily configurable genome annotatio
 whatis("http://www.yandell-lab.org/software/maker.html")
 
 prepend_path("PATH",              "%{INSTALL_DIR}/bin")
+prepend_path("PATH",              "%{INSTALL_DIR}/pgsql/bin")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
 setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
 prepend_path("LD_PRELOAD",              "/opt/apps/intel11_1/openmpi/1.4.3/lib/libmpi.so")
@@ -160,6 +177,7 @@ prepend_path("PATH",         "%{MAKER_DATADIR}/augustus/bin")
 prepend_path("PATH",         "%{MAKER_DATADIR}/snap")
 setenv ("ZOE",        "%{MAKER_DATADIR}/snap/Zoe")
 prepend_path("PATH",         "%{MAKER_DATADIR}/exonerate/bin")
+prereq("openmpi")
 
 EOF
 
