@@ -62,9 +62,8 @@ echo MPI      LOAD: %{mpi_fam_ver_load}
 # this is a test of Doug's new tacctmpfs ---
 #mkdir -p             %{INSTALL_DIR}
 rm -rf 			%{INSTALL_DIR}
-PATH=/tmp/djbin:$PATH
-/tmp/djbin/tacctmpfs -m %{INSTALL_DIR}
-cd                   	%{INSTALL_DIR}
+tacctmpfs -m 	%{INSTALL_DIR}
+cd              %{INSTALL_DIR}
 pwd
 
 tar xjf %{_topdir}/SOURCES/AmberTools12.tar.bz2 --strip-components 1
