@@ -86,6 +86,7 @@ $AMBERHOME/patch_amber.py --update-tree
 $AMBERHOME/patch_amber.py --update-tree
 $AMBERHOME/patch_amber.py --update-tree
 $AMBERHOME/update_amber --upgrade
+$AMBERHOME/patch_amber.py --update-tree
 
 yes | ./configure --with-netcdf $TACC_NETCDF_DIR intel
 make install
@@ -120,12 +121,15 @@ tacctmpfs -u                                %{INSTALL_DIR}
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 
-
 %if "%{PLATFORM}" == "stampede"
 
 cat >    $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help(
 [[
+This revision of Amber was built on %(date +'%B %d, %Y') and includes all bugfixes
+up to that point. A list of bugfixes is on the Amber site here:
+http://ambermd.org/bugfixes.html
+
 The TACC Amber installation includes the parallel modules with the .MPI suffix:
 
 MMPBSA.MPI  pbsa.MPI  pmemd.MPI  ptraj.MPI  sander.LES.MPI  sander.MPI
