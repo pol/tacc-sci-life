@@ -1,4 +1,5 @@
-# need --define 'is_gcc46 1' to run rpmbuild
+# need --define 'is_gcc47 1' to run rpmbuild
+#export RPM_BUILD_DIR=/admin/build/admin/rpms/stampede/
 Summary:    geant4 -- toolkit for the simulation of the passage of particles through matter
 Name:       geant4
 Version:    9.6.p02
@@ -96,10 +97,10 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 #two .sh need to be manually modified
 cd $RPM_BUILD_ROOT/%{INSTALL_DIR}/bin
-sed -i -e "56,65s@\$geant4_envbindir\/..\/data@%{GEANT4_DATADIR}@g" geant4.sh
+sed -i -e "56,65s@\$geant4_envbindir\/..\/share\/Geant4-9.6.2\/data@%{GEANT4_DATADIR}@g" geant4.sh
 
 cd $RPM_BUILD_ROOT/%{INSTALL_DIR}/share/Geant4-9.6.2/geant4make
-sed -i -e "161,170s@\$geant4make_root\/..\/..\/..\/data@%{GEANT4_DATADIR}@g" geant4make.sh
+sed -i -e "161,170s@\$geant4make_root\/..\/data@%{GEANT4_DATADIR}@g" geant4make.sh
 # ADD ALL MODULE STUFF HERE
 # TACC module
 
@@ -132,7 +133,7 @@ whatis("URL: http://geant4.cern.ch")
 prepend_path("PATH",              "%{INSTALL_DIR}/bin")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
 setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
-setenv (     "%{TACC_GEANT4_DATADIR}",  "/scratch/projects/tacc/bio/%{name}/%{version}")
+setenv (     "TACC_GEANT4_DATADIR",  "/scratch/projects/tacc/bio/%{name}/%{version}")
 setenv ( "G4LEVELGAMMADATA",    "%{TACC_GEANT4_DATADIR}/PhotonEvaporation2.3")
 setenv ( "G4RADIOACTIVEDATA",    "%{TACC_GEANT4_DATADIR}/RadioactiveDecay3.6")
 setenv ( "G4LEDATA",    "%{TACC_GEANT4_DATADIR}/G4EMLOW6.32")
@@ -141,7 +142,8 @@ setenv ( "G4ABLADATA",    "%{TACC_GEANT4_DATADIR}/G4ABLA3.0")
 setenv ( "G4REALSURFACEDATA",    "%{TACC_GEANT4_DATADIR}/RealSurface1.0")
 setenv ( "G4NEUTRONXSDATA",    "%{TACC_GEANT4_DATADIR}/G4NEUTRONXS1.2")
 setenv ( "G4PIIDATA",    "%{TACC_GEANT4_DATADIR}/G4PII1.3")
-setenv ( "G4SAIDXSDATA",    "%{TACC_GEANT4_DATADIR}/G4SAIDDATA1.1")prereq ("cmake")
+setenv ( "G4SAIDXSDATA",    "%{TACC_GEANT4_DATADIR}/G4SAIDDATA1.1")
+prereq ("cmake")
 
 EOF
 
