@@ -8,7 +8,7 @@ Group:	Applications/Life Sceinces
 License:  GPL 
 Source0: eman-linux-x86_64-cluster-1.9.tar.gz 
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
-
+Packager:   TACC - jiao@tacc.utexas.edu
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
