@@ -84,6 +84,10 @@ module purge
 module load TACC
 module load intel
 
+%if "%{PLATFORM}" == "lonestar"
+module load mkl
+%endif
+
 export JAVA_HOME=/usr/java/latest/
 export JAVA_TOOL_OPTIONS="-Xms128M -Xmx128M"
 
