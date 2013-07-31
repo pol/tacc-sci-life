@@ -1,20 +1,19 @@
 Summary: Amber Toolkit and parallel modules.
 Name:      amber 
 Version:   12.0
-Release:   7
+Release:   8
 License:   UCSF
 Vendor:    Amber
 Group: Applications/Life Sciences 
-Source0:   AmberTools12.tar.bz2
+Source0:   AmberTools13.tar.bz2
 Source1:   Amber12.tar.bz2
 Packager:  TACC - jfonner@tacc.utexas.edu
-BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 Requires: netcdf-3.6-intel13
 
 %define version_unit 12
 
 %include rpm-dir.inc
-Buildroot: /var/tmp/%{name}-%{version}-buildroot
+# Buildroot: /var/tmp/%{name}-%{version}-buildroot
 
 %include ../system-defines.inc
 %include compiler-defines.inc
@@ -22,7 +21,6 @@ Buildroot: /var/tmp/%{name}-%{version}-buildroot
 
 %define      PNAME amber
 %define MODULE_VAR TACC_AMBER
-
 %define INSTALL_DIR %{APPS}/%{comp_fam_ver}/%{mpi_fam_ver}/%{PNAME}/%{version}
 %define  MODULE_DIR %{APPS}/%{comp_fam_ver}/%{mpi_fam_ver}/%{MODULES}/%{PNAME}
 
@@ -59,14 +57,12 @@ module load hdf5 netcdf/3.6.3
 echo COMPILER LOAD: %{comp_fam_ver_load}
 echo MPI      LOAD: %{mpi_fam_ver_load}
 
-# this is a test of Doug's new tacctmpfs ---
-#mkdir -p             %{INSTALL_DIR}
-rm -rf 			%{INSTALL_DIR}
+mkdir -p        %{INSTALL_DIR}
 tacctmpfs -m 	%{INSTALL_DIR}
 cd              %{INSTALL_DIR}
 pwd
 
-tar xjf %{_topdir}/SOURCES/AmberTools12.tar.bz2 --strip-components 1
+tar xjf %{_topdir}/SOURCES/AmberTools13.tar.bz2 --strip-components 1
 tar xjf %{_topdir}/SOURCES/Amber12.tar.bz2 --strip-components 1
 
 
@@ -80,12 +76,10 @@ export AMBERHOME MKL_HOME CUDA_HOME
 # make clean
 
 # it takes two or more rounds of configure to get the updates... Im' just testing this
-$AMBERHOME/patch_amber.py --update-tree
-$AMBERHOME/patch_amber.py --update-tree
-$AMBERHOME/patch_amber.py --update-tree
-$AMBERHOME/patch_amber.py --update-tree
-$AMBERHOME/update_amber --upgrade
-$AMBERHOME/patch_amber.py --update-tree
+./update_amber --update
+./update_amber --update
+./update_amber --update
+./update_amber --update
 
 yes | ./configure --with-netcdf $TACC_NETCDF_DIR intel
 make install
@@ -301,7 +295,9 @@ cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/.version.%{version} << 'EOF'
 set     ModulesVersion      "%{version}"
 EOF
 
-%{SPEC_DIR}/checkModuleSyntax $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua
+if [ -f $RPM_BUILD_DIR/SPECS/checkModuleSyntax ]; then
+    $RPM_BUILD_DIR/SPECS/checkModuleSyntax $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua
+fi
 
 #############################    MODULES  ######################################
 

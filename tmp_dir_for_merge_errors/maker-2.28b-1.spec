@@ -5,7 +5,7 @@ Release:    1
 License:    GNU General Public License
 Group: Applications/Life Sciences
 Source:     %{name}-%{version}.tar.gz
-Source1:   postgresql-9.2.4.tar.bz2
+Source1:   postgresql-9.2.4.tar.gz
 Packager:   TACC - jiao@tacc.utexas.edu
 # This is the actual installation directory - Careful
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
@@ -178,7 +178,6 @@ prepend_path("PATH",         "%{MAKER_DATADIR}/snap")
 setenv ("ZOE",        "%{MAKER_DATADIR}/snap/Zoe")
 prepend_path("PATH",         "%{MAKER_DATADIR}/exonerate/bin")
 prereq("openmpi")
-
 EOF
 
 #--------------

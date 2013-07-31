@@ -56,7 +56,7 @@ Trinity, developed at the Broad Institute and the Hebrew University of Jerusalem
 
 
 if [ -f "$BASH_ENV" ]; then
-  export MODULEPATH=/opt/apps/modulefiles:/opt/modulefiles:/share1/apps/teragrid/modulefiles
+  export MODULEPATH=/opt/apps/modulefiles:/opt/modulefiles
   . $BASH_ENV
 fi
 

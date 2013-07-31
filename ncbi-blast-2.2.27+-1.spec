@@ -25,12 +25,14 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 %prep
 rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 %setup -n ncbi-%{PNAME}-%{version}+-src
 
 %build
 
+
+%install
+mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 if [ -f "$BASH_ENV" ]; then
   export MODULEPATH=/opt/apps/modulefiles:/opt/modulefiles
@@ -41,7 +43,8 @@ module purge
 module load TACC
 
 mkdir -p %{INSTALL_DIR}
-mount -t tmpfs tmpfs %{INSTALL_DIR}
+tacctmpfs -m %{INSTALL_DIR}
+#mount -t tmpfs tmpfs %{INSTALL_DIR}
 cd c++
 ./configure --prefix=%{INSTALL_DIR} CC=icc CXX=icpc CFLAGS='-O3 -xSSE4.2' CXXFLAGS='-O3 -xSSE4.2' --without-gui --without-debug
 make
@@ -49,9 +52,9 @@ make install
 
 cp -rp %{INSTALL_DIR} $RPM_BUILD_ROOT/%{INSTALL_DIR}/..
 
-umount %{INSTALL_DIR}
+#umount %{INSTALL_DIR}
+tacctmpfs -u %{INSTALL_DIR}
 
-%install
 #done
 
 
