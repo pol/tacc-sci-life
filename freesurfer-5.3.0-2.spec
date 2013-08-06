@@ -1,8 +1,8 @@
-##freesurfer syntax error fixed
+#export RPM_BUILD_DIR=/admin/build/admin/rpms/stampede/
 Summary: FreeSurfer - a set of tools for analysis and visualization of structural and functional brain imaging data. 
 Name:	freesurfer
 Version:  5.3.0
-Release:   1	
+Release:   2	
 Group:	Applications/Life Sceinces
 License:  MGH
 Source0: ftp://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/5.3.0/freesurfer-Linux-centos6_x86_64-stable-pub-v5.3.0.tar.gz 
@@ -99,7 +99,7 @@ setenv (     "SUBJECTS_DIR",    "%{INSTALL_DIR}/subjects")
 setenv (     "MNI_DIR",         "%{INSTALL_DIR}/mni")
 setenv (     "FSFAST_HOME",     "%{INSTALL_DIR}/fsfast")
 setenv (     "FSF_OUTPUT_FORMAT", "nii")
-prepend_path("PERL5LIB"    "%{INSTALL_DIR}/mni/lib/perl5/5.8.5")
+prepend_path("PERL5LIB",    "%{INSTALL_DIR}/mni/lib/perl5/5.8.5")
 
 EOF
 
