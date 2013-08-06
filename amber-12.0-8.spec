@@ -206,13 +206,17 @@ EOF
 cat >    $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help(
 [[
+This revision of Amber was built on %(date +'%B %d, %Y') and includes all bugfixes
+up to that point. A list of bugfixes is on the Amber site here:
+http://ambermd.org/bugfixes.html
+
 The TACC Amber installation includes the parallel modules with the .MPI suffix:
 
-MMPBSA.MPI  pbsa.MPI  pmemd.MPI  ptraj.MPI  sander.LES.MPI  sander.MPI
+mdgx.MPI  pbsa.MPI  pmemd.MPI  pmemd.amoeba.MPI  ptraj.MPI  sander.LES.MPI  sander.MPI
 
 The pmemd binaries for use with GPUs are named:
 
-pmemd.cuda.MPI  pmemd.cuda
+pmemd.cuda.MPI  pmemd.cuda  
 
 They were built with "single-precision, double-precision" for the best trade-off
 between speed and accuracy.  Visit http://ambermd.org/gpus/ for more 
@@ -243,7 +247,7 @@ for the corresponding Amber directories.
 Also, AMBERHOME is set to the Amber Home Directory (TACC_AMBER_DIR),
 and $AMBERHOME/bin is included in the PATH variable.
 
-Version %{version}
+Version %{version}. 
 ]]
 )
 
