@@ -8,7 +8,7 @@ Group:	Applications/Life Sceinces
 License:  GPL 
 Source0: eman-linux-x86_64-cluster-1.9.tar.gz 
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
-
+Packager:   TACC - jiao@tacc.utexas.edu
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
@@ -61,13 +61,13 @@ cp -R ./bin ./doc ./chimeraext ./include ./lib ./python ./README $RPM_BUILD_ROOT
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
-help { 
+help ( 
 [[
 This module loads %{name}. This module makes available the %{name} executables. Documentation for %{name} is available online at the publisher\'s website: http://blake.bcm.edu/emanwiki/EMAN
 These executables can be found in %{MODULE_VAR}_DIR, including refine.
 
 Version %{version}
-]]}
+]])
 
 whatis("Name: EMAN")
 whatis("Version: %{version}")

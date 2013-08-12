@@ -23,7 +23,7 @@ Packager: vaughn@tacc.utexas.edu
 # This will define the correct _topdir
 %include rpm-dir.inc
 # Compiler Family Definitions
-%include compiler-defines.inc
+#%include compiler-defines.inc
 # MPI Family Definitions
 # %include mpi-defines.inc
 # Other defs
@@ -32,20 +32,20 @@ Packager: vaughn@tacc.utexas.edu
 %define MODULES modulefiles
 %define PNAME %{name}
 
-%package -n %{name}-%{comp_fam_ver}
+%package -n %{name}-%{version}
 Group: Applications/Life Sciences
 Summary: De novo RNA-Seq Assembler
 
 %description
-%description -n %{name}-%{comp_fam_ver}
+%description -n %{name}-%{version}
 Trinity, developed at the Broad Institute and the Hebrew University of Jerusalem, represents a novel method for the efficient and robust de novo reconstruction of transcriptomes from RNA-seq data. Trinity combines three independent software modules: Inchworm, Chrysalis, and Butterfly, applied sequentially to process large volumes of RNA-seq reads
 
 #------------------------------------------------
 # INSTALLATION DIRECTORY
 #------------------------------------------------
 # Buildroot: defaults to null if not included here
-%define INSTALL_DIR %{APPS}/%{comp_fam_ver}/%{name}/%{version}
-%define MODULE_DIR  %{APPS}/%{comp_fam_ver}/%{MODULES}/%{name}
+%define INSTALL_DIR %{APPS}/%{name}/%{version}
+%define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 %define MODULE_VAR TACC_TRINITY
 
 %prep
@@ -56,16 +56,16 @@ Trinity, developed at the Broad Institute and the Hebrew University of Jerusalem
 
 
 if [ -f "$BASH_ENV" ]; then
-  export MODULEPATH=/opt/apps/modulefiles:/opt/modulefiles
+  export MODULEPATH=/opt/apps/modulefiles:/opt/modulefiles:/share1/apps/teragrid/modulefiles
   . $BASH_ENV
 fi
 
 module purge
 module load TACC
-module swap $TACC_FAMILY_COMPILER gcc/4.4.5
+module swap $TACC_FAMILY_COMPILER gcc
 module load jdk64
 
-make
+make LDFLAGS="-Wl,-rpath,$GCC_LIB"
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
@@ -97,7 +97,8 @@ whatis("URL: http://trinityrnaseq.sourceforge.net/")
 whatis("Description: Package for RNA-Seq de novo Assembly")
 
 
-prepend_path("PATH",              "%{INSTALL_DIR}")
+append_path("PATH",              "%{INSTALL_DIR}")
+append_path("PATH",              "%{INSTALL_DIR}/Inchworm/bin")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
 setenv (     "%{MODULE_VAR}_BUTTERFLY", "%{INSTALL_DIR}/Butterfly")
 setenv (     "%{MODULE_VAR}_CHRYSALIS", "%{INSTALL_DIR}/Chrysalis")
@@ -121,7 +122,7 @@ cat > $RPM_BUILD_ROOT%{MODULE_DIR}/.version.%{version} << 'EOF'
 set     ModulesVersion      "%{version}"
 EOF
 
-%files -n %{name}-%{comp_fam_ver}
+%files -n %{name}-%{version}
 %defattr(755,root,root,-)
 %{INSTALL_DIR}
 %{MODULE_DIR}

@@ -128,15 +128,6 @@ make DESTDIR=$RPM_BUILD_ROOT install
 cd $MY_GEANT4_DIR
 cp -r data $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
-#cross-section data for geant4.9.5.p01
-export G4LEVELGAMMADATA=$RPM_BUILD_ROOT/%{INSTALL_DIR}/data/PhotonEvaporation2.2
-export G4RADIOACTIVEDATA=$RPM_BUILD_ROOT/%{INSTALL_DIR}/data/RadioactiveDecay3.4
-export G4LEDATA=$RPM_BUILD_ROOT/%{INSTALL_DIR}/data/G4EMLOW6.23
-export G4NEUTRONHPDATA=$RPM_BUILD_ROOT/%{INSTALL_DIR}/data/G4NDL4.0
-export G4ABLADATA=$RPM_BUILD_ROOT/%{INSTALL_DIR}/data/G4ABLA3.0
-export G4REALSURFACEDATA=$RPM_BUILD_ROOT/%{INSTALL_DIR}/data/RealSurface1.0
-export G4NEUTRONXSDATA=$RPM_BUILD_ROOT/%{INSTALL_DIR}/data/G4NEUTRONXS1.1
-export G4PIIDATA=$RPM_BUILD_ROOT/%{INSTALL_DIR}/data/G4PII1.3
 #------------------------------------------------
 # INSTALL SECTION
 #------------------------------------------------
@@ -167,6 +158,14 @@ whatis("URL: http://geant4.cern.ch")
 prepend_path("PATH",              "%{INSTALL_DIR}/bin")
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}")
 setenv (     "%{MODULE_VAR}_BIN", "%{INSTALL_DIR}/bin")
+setenv ( "G4LEVELGAMMADATA",    "%{INSTALL_DIR}/data/PhotonEvaporation2.2")
+setenv ( "G4RADIOACTIVEDATA",    "%{INSTALL_DIR}/data/RadioactiveDecay3.4")
+setenv ( "G4LEDATA",    "%{INSTALL_DIR}/data/G4EMLOW6.23")
+setenv ( "G4NEUTRONHPDATA",    "%{INSTALL_DIR}/data/G4NDL4.0")
+setenv ( "G4ABLADATA",    "%{INSTALL_DIR}/data/G4ABLA3.0")
+setenv ( "G4REALSURFACEDATA",    "%{INSTALL_DIR}/data/RealSurface1.0")
+setenv ( "G4NEUTRONXSDATA",    "%{INSTALL_DIR}/data/G4NEUTRONXS1.1")
+setenv ( "G4PIIDATA",    "%{INSTALL_DIR}/data/G4PII1.3")
 
 
 EOF

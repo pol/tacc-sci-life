@@ -26,13 +26,7 @@ do
         exit 1
     fi
 done
-echo "Copying data files to  ${GEANT4_DATADIR}"
-cp -r G4NDL4.2 G4EMLOW6.32 G4NEUTRONXS1.2 G4PII1.3 PhotonEvaporation2.3 RadioactiveDecay3.6 G4SAIDDATA1.1 RealSurface1.0 ${GEANT4_DATADIR}/
-chgrp -R G-800657 ${GEANT4_DATADIR}
+echo "Moving data files to  ${GEANT4_DATADIR}"
+mv G4NDL4.2 G4EMLOW6.32 G4NEUTRONXS1.2 G4PII1.3 PhotonEvaporation2.3 RadioactiveDecay3.6 G4SAIDDATA1.1 RealSurface1.0 ${GEANT4_DATADIR}/
 chmod -R 775 ${GEANT4_DATADIR}
-echo "Permission changed."
-cd ..
-echo "Deleting unzipped files"
-rm -fr G4NDL4.2 G4EMLOW6.32 G4NEUTRONXS1.2 G4PII1.3 PhotonEvaporation2.3 RadioactiveDecay3.6 G4SAIDDATA.1.1 RealSurface1.0
-echo "Done!"
  
