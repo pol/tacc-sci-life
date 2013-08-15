@@ -41,13 +41,16 @@ rm -rf $RPM_BUILD_ROOT
 %install
 
 %include ../system-load.inc
-module load python/2.7.3-epd-7.3.2
-
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
-module purge
-module load TACC
-module swap $TACC_FAMILY_COMPILER gcc/4.7.1
+#module purge
+#module load TACC
+module load python
+module unload $TACC_FAMILY_COMPILER
+module load gcc
+
+sed -i s/-Wl// makefile
 make python=python2.7
+
 cp -r build ext makefile maptools.so plugins README.txt Stampy stampy.py $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
