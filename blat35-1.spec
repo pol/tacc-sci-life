@@ -13,8 +13,7 @@ Packager:  jfonner@tacc.utexas.edu
 %include rpm-dir.inc
 
 %define PNAME blat
-%define APPS /opt/apps
-%define MODULES modulefiles
+%include ../system-defines.inc
 
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
@@ -34,10 +33,7 @@ rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 %install
 
-if [ -f "$BASH_ENV" ]; then
-  export MODULEPATH=/opt/apps/modulefiles:/opt/modulefiles
-  . $BASH_ENV
-fi
+%include ../system-load.inc
 
 module purge
 module load TACC
