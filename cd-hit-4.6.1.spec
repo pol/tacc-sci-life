@@ -27,7 +27,7 @@ Summary: Clustering DNA/protein sequence database at high identity with toleranc
 
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
-%define MODULE_VAR TACC_CD-HIT
+%define MODULE_VAR TACC_CDHIT
 %define PNAME cd-hit
 
 #------------------------------------------------
