@@ -1,5 +1,6 @@
 ##GMAP
 #export RPM_BUILD_DIR=/home1/0000/build/rpms/
+#export RPM_BUILD_DIR=/admin/build/admin/rpms/stampede/
 Summary: GMAP: a genomic mapping and alignment program for mRNA and EST sequences 
 Name:  gmap
 Version:  20130911

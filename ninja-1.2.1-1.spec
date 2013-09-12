@@ -1,5 +1,6 @@
 ##Ninja
 #export RPM_BUILD_DIR=/home1/0000/build/rpms/
+#export RPM_BUILD_DIR=/admin/build/admin/rpms/stampede/
 Summary: Ninja - a software for  large-scale neighbor-joining phylogeny inference
 Name:  ninja
 Version:  1.2.1

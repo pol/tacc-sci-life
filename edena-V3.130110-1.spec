@@ -1,5 +1,6 @@
 ##EDENA
 #export RPM_BUILD_DIR=/home1/0000/build/rpms/
+#export RPM_BUILD_DIR=/admin/build/admin/rpms/stampede/
 Summary: Edena - de novo short reads assembler
 Name:  edena
 Version:  V3.130110
