@@ -5,7 +5,7 @@ Version: 4.6.1
 Release: 1
 License: GPL
 Group: Applications/Life Sciences
-Source:  cd-hit-4.6.1.tar.gz
+Source:  https://cdhit.googlecode.com/files/cd-hit-v4.6.1-2012-08-27.tgz
 Packager: TACC - jcarson@tacc.utexas.edu
 Summary: Clustering DNA/protein sequence database at high identity with tolerance. 
 
@@ -47,7 +47,7 @@ rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 ## SETUP
 ##
 
-%setup -n %{PNAME}-%{version}
+%setup -n %{PNAME}-v%{version}-2012-08-27
 
 ##
 ## BUILD
@@ -67,10 +67,8 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 module purge
 module load TACC
 
-make openmp=yes
-
+make PREFIX=$RPM_BUILD_ROOT/%{INSTALL_DIR} openmp=yes 
 make PREFIX=$RPM_BUILD_ROOT/%{INSTALL_DIR} install
-
 make clean
 
 # ADD ALL MODULE STUFF HERE
