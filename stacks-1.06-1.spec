@@ -36,17 +36,17 @@ module purge
 module load TACC
 module load samtools
 
-#%if "%{PLATFORM}" == "stampede"
+%if "%{PLATFORM}" == "stampede"
   ./configure CC=icc CXX=icpc --prefix=%{INSTALL_DIR} --enable-bam --with-bam-include-path=$TACC_SAMTOOLS_INC --with-bam-lib-path=$TACC_SAMTOOLS_LIB
-#%endif
+%endif
 
-#%if "%{PLATFORM}" == "lonestar"
+%if "%{PLATFORM}" == "lonestar"
   module swap $TACC_FAMILY_COMPILER gcc
   ./configure --prefix=%{INSTALL_DIR} --enable-bam --with-bam-include-path=$TACC_SAMTOOLS_INC --with-bam-lib-path=$TACC_SAMTOOLS_LIB
-#%endif
+%endif
 
-make
-make DESTDIR=$RPM_BUILD_ROOT install
+make CC=icc CXX=icpc
+make CC=icc CXX=icpc DESTDIR=$RPM_BUILD_ROOT install
 
 cp LICENSE README ChangeLog $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
