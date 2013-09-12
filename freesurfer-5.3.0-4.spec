@@ -1,13 +1,14 @@
 #export RPM_BUILD_DIR=/admin/build/admin/rpms/stampede/
+#bin and mni moved to data_dir 
 Summary: FreeSurfer - a set of tools for analysis and visualization of structural and functional brain imaging data. 
 Name:	freesurfer
 Version:  5.3.0
-Release:   2	
+Release:   4	
 Group:	Applications/Life Sceinces
 License:  MGH
-Source0: freesurfer-Linux-centos6_x86_64-stable-pub-v5.3.0.tar.gz 
+Source: freesurfer-Linux-centos6_x86_64-stable-pub-v5.3.0.tar.gz 
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
-
+Packager:   TACC - jiao@tacc.utexas.edu
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
@@ -62,10 +63,12 @@ mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
 #which direcotires are needed for precompiled version, chimeraext, python?
 #Syntax error, chimeraext/FilterKit/Filter.py
 
-cp -R ASegStatsLUT.txt AUTHORS bin build-stamp.txt data DefectLUT.txt diffusion docs FreeSurferColorLUT.txt fsafd fsfast lib LICENSE matlab mni NOTICE README SegmentNoLUT.txt sessions Simple_surface_labels2009.txt tkmeditParcColorsCMA tktools $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp -R ASegStatsLUT.txt AUTHORS build-stamp.txt data DefectLUT.txt diffusion docs FreeSurferColorLUT.txt fsafd fsfast lib LICENSE matlab NOTICE README SegmentNoLUT.txt sessions Simple_surface_labels2009.txt tkmeditParcColorsCMA tktools $RPM_BUILD_ROOT/%{INSTALL_DIR}
 ln -s %{TACC_FREESURFER_DATADIR}/average $RPM_BUILD_ROOT/%{INSTALL_DIR}/average
 ln -s %{TACC_FREESURFER_DATADIR}/subjects $RPM_BUILD_ROOT/%{INSTALL_DIR}/subjects
 ln -s %{TACC_FREESURFER_DATADIR}/trctrain $RPM_BUILD_ROOT/%{INSTALL_DIR}/trctrain
+ln -s %{TACC_FREESURFER_DATADIR}/bin $RPM_BUILD_ROOT/%{INSTALL_DIR}/bin
+ln -s %{TACC_FREESURFER_DATADIR}/mni $RPM_BUILD_ROOT/%{INSTALL_DIR}/mni
 cat > $RPM_BUILD_ROOT/%{INSTALL_DIR}/.license << 'EOF'
 jiao@tacc.utexas.edu
 13706
@@ -78,7 +81,7 @@ cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help ( 
 [[
 This module loads %{name}. This module makes available the %{name} executables. Documentation for %{name} is available online at the publisher\'s website: http://surfer.nmr.mgh.harvard.edu/fswiki/FreeSurferWiki 
-These executables can be found in %{MODULE_VAR}_DIR, e.g. recon-all. Need to run SetUpFreeSurfer.sh before running anything.
+These executables can be found in %{MODULE_VAR}_DIR, e.g. recon-all. No need to run SetUpFreeSurfer.sh before running. All the related paths/envs are set up when the module is loaded.
 
 Version %{version}
 ]])
@@ -99,6 +102,7 @@ setenv (     "SUBJECTS_DIR",    "%{INSTALL_DIR}/subjects")
 setenv (     "MNI_DIR",         "%{INSTALL_DIR}/mni")
 setenv (     "FSFAST_HOME",     "%{INSTALL_DIR}/fsfast")
 setenv (     "FSF_OUTPUT_FORMAT", "nii")
+prepend_path("PATH",              "%{INSTALL_DIR}/mni/bin")
 prepend_path("PERL5LIB",    "%{INSTALL_DIR}/mni/lib/perl5/5.8.5")
 
 EOF
