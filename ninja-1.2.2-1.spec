@@ -7,7 +7,7 @@ Version:  1.2.2
 Release:   1	
 Group:	Applications/Life Sceinces
 License:  LGPL 
-Source0:  %{name}_%{version}.tgz	
+Source0:  %{name}_%{version}.tar.gz	
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 Packager:   TACC - jiao@tacc.utexas.edu
