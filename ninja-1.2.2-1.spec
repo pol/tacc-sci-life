@@ -41,7 +41,6 @@ NINJA is software for large-scale neighbor-joining phylogeny inference. It expec
 # Use -n <name> if source file different from <name>-<version>.tar.gz
 %prep
 rm   -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 %setup -n %{name}_%{version} 
 
