@@ -40,7 +40,6 @@ Packager:   TACC - jiao@tacc.utexas.edu
 # Use -n <name> if source file different from <name>-<version>.tar.gz
 %prep
 rm   -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 %setup -n EdenaV3.130110 
 
@@ -58,15 +57,14 @@ mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
 make
 cp -R ./bin COPYING referenceManual.pdf $RPM_BUILD_ROOT/%{INSTALL_DIR} 
 
-rm -rf $RPM_BUILD_ROOT
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help ( 
 [[
-This module makes available the GSNAP and GMAP executables.
-Documentation for %{name} is available online - http://research-pub.gene.com/gmap/
+This module makes available the edena executable.
+Documentation for %{name} is available online - http://www.genomic.ch/edena.php 
 The executable can be found in %{MODULE_VAR}_BIN
 
 Version %{version}
