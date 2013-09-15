@@ -79,7 +79,7 @@ help (
 [[
 The %{PNAME} module file defines the following environment variables:
 %{MODULE_VAR}_DIR and %{MODULE_VAR}_SCRIPTS for the location of the %{PNAME}
-distribution. Documentation can be found online at http://sourceforge.net/apps/mediawiki/shore/index.php
+distribution. Documentation can be found online at http://weizhong-lab.ucsd.edu/cd-hit/ref.php
 
 Version %{version}
 
