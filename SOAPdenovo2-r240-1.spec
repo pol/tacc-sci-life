@@ -5,21 +5,9 @@ Release:    1
 License:    GPLv3
 Vendor:     BGI
 Group: Applications/Life Sciences
-Source:     SOAPdenovo2-r240.tar.gz
+Source:     http://downloads.sourceforge.net/project/soapdenovo2/SOAPdenovo2/src/r240/SOAPdenovo2-src-r240.tgz 
 Packager:   TACC - wonaya@tacc.utexas.edu
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
-
-#------------------------------------------------
-# BASIC DEFINITIONS
-#------------------------------------------------
-
-%include rpm-dir.inc
-%include ../system-defines.inc
-
-%define PNAME %{name}
-%define INSTALL_DIR %{APPS}/%{name}/%{version}
-%define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
-%define MODULE_VAR TACC_SOAPDENOVO2
 
 #------------------------------------------------
 # BASIC DEFINITIONS
@@ -34,7 +22,7 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 # %include mpi-defines.inc
 # Other defs
 
-%define PNAME %{name}
+%define PNAME soapdenovo2
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
 %define MODULE_VAR TACC_SOAPDENOVO2
@@ -46,7 +34,7 @@ SOAPdenovo2, a short read de novo assembly tool, is a package for assembling sho
 %prep
 rm -rf $RPM_BUILD_ROOT
 
-%setup -n %{PNAME}-%{version}
+%setup -n %{name}-src-%{version}
 
 %build
 
@@ -72,15 +60,16 @@ cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help (
 [[
 This module loads %{PNAME}. SOAPdenovo2 resolves more repeat regions in contig assembly, increases coverage and length in scaffold construction, improves gap closing, and optimizes for large genome. 
-To startup this program, use either SOAPdenovo-127mer or SOAPdenovo-63mer in the command line. 
-Publication for %{PNAME} is available online at the publisher website: http://www.gigasciencejournal.com/content/1/1/18/
+
+The %{PNAME} directory is added to the PATH when the module is loaded. To startup this program, use either SOAPdenovo-127mer or SOAPdenovo-63mer in the command line. 
 For convenience %{MODULE_VAR}_DIR points to the installation directory. 
-PATH has been updated to include %{PNAME}.
+
+Publication for %{PNAME} is available online at the publisher website: http://www.gigasciencejournal.com/content/1/1/18/
 
 Version %{version}
 ]])
 
-whatis("Name: soapdenovo2")
+whatis("Name: %{name}")
 whatis("Version: %{version}")
 whatis("Category: computational biology, genomics")
 whatis("Keywords: Biology, Genomics, Assembly")
@@ -88,8 +77,7 @@ whatis("Description: soapdenovo2 - novel short-read assembly method that can bui
 whatis("URL: http://soap.genomics.org.cn/soapdenovo.html")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
-prepend_path("PATH"       ,"%{INSTALL_DIR}/SOAPdenovo-127mer")
-prepend_path("PATH"       ,"%{INSTALL_DIR}/SOAPdenovo-63mer")
+prepend_path("PATH"       ,"%{INSTALL_DIR}/")
 
 EOF
 

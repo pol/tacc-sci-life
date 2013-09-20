@@ -68,7 +68,7 @@ module load TACC
 module load gsl
 module load boost
 
-./configure --prefix=%{INSTALL_DIR} --without-lzma LDFLAGS="$LDFLAGS -L$TACC_GSL_LIB -L$TACC_BOOST_LIB " CPPFLAGS=" -I$TACC_GSL_INC -I$TACC_BOOST_INC "
+./configure --prefix=%{INSTALL_DIR} --without-lzma LDFLAGS="$LDFLAGS -L$TACC_GSL_LIB -L$TACC_BOOST_LIB -Wl,-rpath,$TACC_BOOST_LIB " CPPFLAGS=" -I$TACC_GSL_INC -I$TACC_BOOST_INC "
 
 make
 
@@ -81,7 +81,7 @@ cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help (
 [[
 The %{PNAME} module file defines the following environment variables:
-%{MODULE_VAR}_DIR and %{MODULE_VAR}_SCRIPTS for the location of the %{PNAME}
+%{MODULE_VAR}_DIR, %{MODULE_VAR}_BIN, and %{MODULE_VAR}_SCRIPTS for the location of the %{PNAME}
 distribution. Documentation can be found online at http://sourceforge.net/apps/mediawiki/shore/index.php
 
 Version %{version}
@@ -96,8 +96,9 @@ whatis("URL: http://1001genomes.org/software/shore.html")
 whatis("Description: Mapping and analysis pipeline for short read (SHORE) data produced on the Illumina platform. ")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}")
+setenv("%{MODULE_VAR}_BIN","%{INSTALL_DIR}/bin")
 setenv("%{MODULE_VAR}_SCRIPTS","%{INSTALL_DIR}/scripts")
-prepend_path("PATH"       ,"%{INSTALL_DIR}")
+prepend_path("PATH"       ,"%{INSTALL_DIR}/bin")
 
 EOF
 

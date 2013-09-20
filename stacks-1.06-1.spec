@@ -5,7 +5,8 @@ Release:    1
 License:    GPLv3
 Vendor:     Cresko Lab at U Oregon
 Group:      Applications/Life Sciences
-Source:     %{name}-%{version}.tar.gz
+Source0:     %{name}-%{version}.tar.gz
+Source1:  http://sourceforge.net/projects/samtools/files/samtools/0.1.19/samtools-0.1.19.tar.bz2
 Packager:   TACC - jfonner@tacc.utexas.edu
 Buildroot: /var/tmp/%{name}-%{version}-buildroot
 
@@ -13,7 +14,7 @@ Buildroot: /var/tmp/%{name}-%{version}-buildroot
 %include ../system-defines.inc
 
 %define PNAME stacks
-%define MODULE_VAR ${MODULE_VAR_PREFIX}STACKS
+%define MODULE_VAR %{MODULE_VAR_PREFIX}STACKS
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
 
@@ -25,6 +26,15 @@ rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 %setup -n %{name}-%{version}
 
+# The next command unpacks Source1
+# -b <n> means unpack the nth source *before* changing directories.  
+# -a <n> means unpack the nth source *after* changing to the
+#        top-level build directory (i.e. as a subdirectory of the main source). 
+# -T prevents the 'default' source file from re-unpacking.  If you don't have this, the
+#    default source will unpack twice... a weird RPMism.
+# -D prevents the top-level directory from being deleted before we can get there!
+%setup -T -D -a 1
+
 %build
 
 %install
@@ -34,21 +44,30 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 module purge
 module load TACC
-module load samtools
 
 %if "%{PLATFORM}" == "stampede"
+  module load samtools
   ./configure CC=icc CXX=icpc --prefix=%{INSTALL_DIR} --enable-bam --with-bam-include-path=$TACC_SAMTOOLS_INC --with-bam-lib-path=$TACC_SAMTOOLS_LIB
+  make CC=icc CXX=icpc
+  make CC=icc CXX=icpc DESTDIR=$RPM_BUILD_ROOT install
+  cp LICENSE README ChangeLog $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %endif
 
 %if "%{PLATFORM}" == "lonestar"
   module swap $TACC_FAMILY_COMPILER gcc
-  ./configure --prefix=%{INSTALL_DIR} --enable-bam --with-bam-include-path=$TACC_SAMTOOLS_INC --with-bam-lib-path=$TACC_SAMTOOLS_LIB
+  cd samtools*
+  MY_SAMTOOLS_DIR=$PWD
+  make
+  cd ..
+  #./configure --prefix=%{INSTALL_DIR} --enable-bam --with-bam-include-path=$TACC_SAMTOOLS_INC --with-bam-lib-path=$TACC_SAMTOOLS_LIB
+  ./configure --prefix=%{INSTALL_DIR} --enable-bam --with-bam-include-path=$MY_SAMTOOLS_DIR --with-bam-lib-path=$MY_SAMTOOLS_DIR
+  make
+  make DESTDIR=$RPM_BUILD_ROOT install
+  cp LICENSE README ChangeLog $RPM_BUILD_ROOT/%{INSTALL_DIR}
+  mkdir $RPM_BUILD_ROOT/%{INSTALL_DIR}/samtools
+  cp -R ./samtools*/{samtools,bcftools,misc,libbam.a,*.h} $RPM_BUILD_ROOT/%{INSTALL_DIR}/samtools
 %endif
 
-make CC=icc CXX=icpc
-make CC=icc CXX=icpc DESTDIR=$RPM_BUILD_ROOT install
-
-cp LICENSE README ChangeLog $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # MODULEFILE CREATION
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
