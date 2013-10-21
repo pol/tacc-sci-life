@@ -7,7 +7,7 @@ Vendor:     Broad Institute
 Group: Applications/Life Sciences
 Source:     arachne-3.2.tar.gz
 Packager:   TACC - wonaya@tacc.utexas.edu
-BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
+BuildRoot:  /scratch/02114/wonaya/tmp/%{name}-%{version}-buildroot
 
 #------------------------------------------------
 # BASIC DEFINITIONS
@@ -44,10 +44,11 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 module purge
 module load TACC
-module unload $TACC_FAMILY_COMPILER
-module load gcc/4.4.5
+#module unload $TACC_FAMILY_COMPILER
+#module load gcc/4.7.1
+module load python
 
-./configure --prefix=$RPM_BUILD_ROOT/%{INSTALL_DIR}
+./configure --prefix=$PWD
 make
 
 module unload python

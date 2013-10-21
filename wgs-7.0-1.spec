@@ -42,10 +42,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
-module purge
-module load TACC
-module unload $TACC_FAMILY_COMPILER
-module load gcc
+#module purge
+#module load TACC
+#module unload $TACC_FAMILY_COMPILER
+#module load gcc
 
 cd kmer
 gmake install
