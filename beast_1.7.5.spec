@@ -1,62 +1,65 @@
-#
-# Spec file for BEAST
-#
-Summary:   BEAST - a program for Bayesian MCMC of Evolution & Phylogenetics using Molecular Sequences
-Name:      beast
-Version:   1.7.5
-Release:   1
-License:   GNU Lesser GPL
+## BEAST
+Summary: BEAST - a program for Bayesian MCMC of Evolution and Phylogenetics using Molecular Sequences
+Name: beast
+Version: 1.7.5
+Release: 1
+License: GNU Lesser GPL
 Group: Applications/Life Sciences
-Source:    BEASTv1.7.5.tgz
-Packager:  TACC - mattcowp@tacc.utexas.edu
-BuildRoot: /var/tmp/%{name}-%{version}-buildroot
+Source: BEASTv1.7.5.tgz
+Packager: TACC - mattcowp@tacc.utexas.edu
+BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 
-%include rpm-dir.inc
-
-%define APPS /opt/apps
-%define MODULES modulefiles
-
+%define debug_package %{nil}
+%include ../rpm-dir.inc
 %include ../system-defines.inc
 
-%define INSTALL_DIR %{APPS}/%{comp_fam_ver}/%{name}/%{version}
-%define MODULE_DIR  %{APPS}/%{comp_fam_ver}/%{MODULES}/%{name}
-
-%package -n %{name}-%{comp_fam_ver}
-Summary:   BEAST - a program for Bayesian MCMC of Evolution & Phylogenetics using Molecular Sequences
-Group: Applications/Life Sciences
-
 %description
-%description -n %{name}-%{comp_fam_ver}
-
 BEAST is a a program for Bayesian MCMC of Evolution & Phylogenetics using Molecular Sequences. This module provides the following binaries: beast, beauti, beastMC3, loganalyser, logcombiner, treeannotator, and treestat.
 
+%define INSTALL_DIR %{APPS}/%{name}/%{version}
+%define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
+%define MODULE_VAR TACC_BEAST
+
 %prep
-rm   -rf $RPM_BUILD_ROOT
+rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
-#%setup -n %{name}-%{version}
 %setup -n BEASTv1.7.5
 
 %build
 %include ../system-load.inc
 
-# Use mount temp trick
- mkdir -p             %{INSTALL_DIR}
- mount -t tmpfs tmpfs %{INSTALL_DIR}
+module purge
+module load TACC
+
+# compile shared object file
+# module load intel
+echo "Compiling shared object file with icc."
+cd native
+rm *.so
+export JAVA_HOME=/usr/java/latest
+make -f Makefile.icc
+cd ..
 
 %install
-%include system-load.inc
-
-mkdir -p  $RPM_BUILD_ROOT/%{INSTALL_DIR}
-cp -r ./* %{INSTALL_DIR}
-cp    -r %{INSTALL_DIR}/ $RPM_BUILD_ROOT/%{INSTALL_DIR}/..
-umount                                   %{INSTALL_DIR}
 
 
-## Module for beast
-mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
-cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
-local help_message = [[
+
+#copy into install dir
+mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
+cp -R ./* $RPM_BUILD_ROOT/%{INSTALL_DIR}
+rm $RPM_BUILD_ROOT/%{INSTALL_DIR}/native/*.c
+rm $RPM_BUILD_ROOT/%{INSTALL_DIR}/native/*.h
+
+#-----------------
+# Modules Section
+#-----------------
+
+rm -rf $RPM_BUILD_ROOT%{MODULE_DIR}
+mkdir -p $RPM_BUILD_ROOT%{MODULE_DIR}
+cat   >  $RPM_BUILD_ROOT%{MODULE_DIR}/%{version}.lua << 'EOF'
+help(
+[[
 The BEAST modulefile defines the following environment variables,
 TACC_BEAST_DIR, and TACC_BEAST_BIN for the location of the beast directory and 
 binaries.
@@ -65,8 +68,7 @@ The modulefile also prepends TACC_BEAST_BIN directory to PATH
 
 Version %{version}
 ]]
-
-help(help_message,"\n")
+)
 
 whatis("Name: BEAST")
 whatis("Version: %{version}")
@@ -76,30 +78,32 @@ whatis("URL:  http://code.google.com/p/beast-mcmc/")
 whatis("Description: Tool for Bayesian MCMC analysis of molecular sequences")
 
 -- Prerequisites
-prereq("jdk64")
 
-setenv("TACC_BEAST_DIR"       ,"%{INSTALL_DIR}")
-setenv("TACC_BEAST_BIN"      ,"%{INSTALL_DIR}/bin")
-
+setenv( "TACC_BEAST_DIR", "%{INSTALL_DIR}" )
+setenv( "TACC_BEAST_BIN", "%{INSTALL_DIR}/bin" )
 
 prepend_path("PATH","%{INSTALL_DIR}/bin")
 
 EOF
 
-cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/.version.%{version} << 'EOF'
+
+#--------------
+#  Version file.
+#--------------
+
+cat > $RPM_BUILD_ROOT%{MODULE_DIR}/.version.%{version} << 'EOF'
 #%Module3.1.1#################################################
 ##
-## version file for beast
+## version file for %{PNAME}-%{version}
 ##
- 
+
 set     ModulesVersion      "%{version}"
 EOF
 
-%files -n %{name}-%{comp_fam_ver}
-%defattr(755,root,install)
+%files
+%defattr(755,root,root,-)
 %{INSTALL_DIR}
 %{MODULE_DIR}
 
-%post
 %clean
 rm -rf $RPM_BUILD_ROOT
