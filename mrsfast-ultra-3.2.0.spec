@@ -46,7 +46,7 @@ rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 ## SETUP
 ##
 
-%setup -n %{PNAME}-%{version}-2012-08-27
+%setup -n %{PNAME}-%{version}
 
 ##
 ## BUILD
@@ -67,8 +67,6 @@ module purge
 module load TACC
 
 make 
-make install
-make clean
 
 # ADD ALL MODULE STUFF HERE
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
