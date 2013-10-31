@@ -27,7 +27,7 @@ Summary: micro-read substitution-only Fast Alignment Search Tool
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 %define MODULE_VAR TACC_MRSFAST
-%define PNAME mrsfast-ultra
+%define PNAME mrsfast
 
 #------------------------------------------------
 # PACKAGE DESCRIPTION
@@ -46,7 +46,7 @@ rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 ## SETUP
 ##
 
-%setup -n %{PNAME}-%{version}
+%setup -n %{PNAME}-ultra-%{version}
 
 ##
 ## BUILD
@@ -57,16 +57,22 @@ rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 ##
 ## INSTALL
 ##
+
 %install
 
 %include ../system-load.inc
 
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
+
 module purge
 module load TACC
 
 make 
+
+# make install not supported
+cp -r ./* $RPM_BUILD_ROOT%{INSTALL_DIR} 
+
 
 # ADD ALL MODULE STUFF HERE
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
