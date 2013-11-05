@@ -12,30 +12,30 @@ Vendor:     R Foundation for Statistical Computing
 Group:      Applications/Statistics
 Source:     %{name}-%{version}.tar.gz
 Packager:   TACC - vaughn@tacc.utexas.edu
-# This is the actual installation directory - Careful
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
+
+# This is the actual installation directory - Careful
 
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
+%define _topdir /home1/0000/build/rpms/
+
 %include rpm-dir.inc
 
 %include ../system-defines.inc
 %include compiler-defines.inc
 %include mpi-defines.inc
 
-%define APPS    /opt/apps
-%define MODULES modulefiles
-
 %define PNAME R
 %define MODULE_VAR TACC_R
 %define INSTALL_DIR %{APPS}/%{comp_fam_ver}/%{mpi_fam_ver}/%{PNAME}/%{version}
 %define MODULE_DIR %{APPS}/%{comp_fam_ver}/%{mpi_fam_ver}/%{MODULES}/%{PNAME}
-
+%define PACKAGE_NAME %{name}-%{version}-%{comp_fam_ver}-%{mpi_fam_ver}
 #-----------------------------------------------
 # PACKAGE
 #-----------------------------------------------
-%package -n %{name}%{version}-%{comp_fam_ver}-%{mpi_fam_ver}
+%package -n %{PACKAGE_NAME}
 Summary: The R statistical computing environment 
 Group:  Applications/Statistics
 
@@ -43,7 +43,7 @@ Group:  Applications/Statistics
 # DESCRIPTION
 #------------------------------------------------
 %description
-%description -n %{name}%{version}-%{comp_fam_ver}-%{mpi_fam_ver} 
+%description -n %{PACKAGE_NAME} 
 R provides a wide variety of statistical (linear and nonlinear 
 modelling, classical statistical tests, time-series analysis, 
 classification, clustering, ...) and graphical techniques, and 
@@ -372,12 +372,12 @@ fi
 #------------------------------------------------
 # FILES SECTION
 #------------------------------------------------
-%files -n %{name}%{version}-%{comp_fam_ver}-%{mpi_fam_ver}
+%files -n %{PACKAGE_NAME} 
 %defattr(-,root,install)
 %{INSTALL_DIR}
 %{MODULE_DIR}
 
-%post -n %{name}%{version}-%{comp_fam_ver}-%{mpi_fam_ver}
+%post -n %{PACKAGE_NAME} 
 
 %clean
 
