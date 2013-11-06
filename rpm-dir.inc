@@ -6,6 +6,7 @@
 
 Buildroot: %(echo $RPM_BUILD_DIR)/tmp/%{name}-%{version}-buildroot
 %define _topdir %(echo $RPM_BUILD_DIR)
+%define SPEC_DIR %{_topdir}/SPECS
 
 %define defined()      %{expand:%%{?%{1}:1}%%{!?%{1}:0}}
 %define undefined()    %{expand:%%{?%{1}:0}%%{!?%{1}:1}}

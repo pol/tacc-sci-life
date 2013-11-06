@@ -5,10 +5,18 @@ Release:    1
 License:    GPLv3
 Group: Applications/Life Sciences
 Source:     %{name}_v%{version}.tar.gz
+<<<<<<< HEAD
 Packager:   TACC - wonaya@tacc.utexas.edu
 # This is the actual installation directory - Careful
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 
+=======
+Packager:   TACC - jiao@tacc.utexas.edu
+# This is the actual installation directory - Careful
+BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
+#Need to export 
+#export RPM_BUILD_DIR=/admin/build/admin/rpms/stampede/
+>>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
@@ -43,7 +51,10 @@ Bismark is a program to map bisulfite treated sequencing reads to a genome of in
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 %define MODULE_VAR TACC_BISMARK
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
 #------------------------------------------------
 # PREPARATION SECTION
 #------------------------------------------------

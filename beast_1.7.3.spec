@@ -9,19 +9,21 @@ License:   GNU Lesser GPL
 Group: Applications/Life Sciences
 Source:    BEASTv1.7.3.tgz
 Packager:  TACC - gendlerk@tacc.utexas.edu
+BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 %include rpm-dir.inc
 
 %define APPS /opt/apps
 %define MODULES modulefiles
 
+
+%include compiler-defines.inc
+
+#%define INSTALL_DIR %{APPS}/%{comp_fam_ver}/%{name}/%{version}
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
+
+#%define MODULE_DIR  %{APPS}/%{comp_fam_ver}/%{MODULES}/%{name}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
-
-%define PKG_INSTALL_DIR /opt/apps/%{name}/%{version}
-%define MOD_INSTALL_DIR /opt/apps/modulefiles/%{name}
-
-# BuildRoot: /tmp/%{name}-%{version}-buildroot
 
 %package -n %{name}
 Summary:   BEAST - a program for Bayesian MCMC of Evolution & Phylogenetics using Molecular Sequences
@@ -36,16 +38,18 @@ BEAST is a a program for Bayesian MCMC of Evolution & Phylogenetics using Molecu
 rm   -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
+#%setup -n %{name}-%{version}
 %setup -n BEASTv1.7.3
 
 %build
+%include compiler-load.inc
 
 # Use mount temp trick
  mkdir -p             %{INSTALL_DIR}
  mount -t tmpfs tmpfs %{INSTALL_DIR}
 
 %install
-#%include compiler-load.inc
+%include compiler-load.inc
 
 mkdir -p  $RPM_BUILD_ROOT/%{INSTALL_DIR}
 cp -r ./* %{INSTALL_DIR}

@@ -1,12 +1,20 @@
 Summary: NCBI decryption tools
 Name: decryption
+<<<<<<< HEAD
 Version: 2.3.2
 Release: 5
+=======
+Version: 2.3.2-5
+Release: 2
+>>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
 License: Public Domain
 Vendor: National Center for Biotechnology Information
 Group: Applications/Life Sciences
 Source: decryption.2.3.2-5-centos_linux64.tar.gz
+<<<<<<< HEAD
 #Source0:  %{name}.%{version}-%{release}-centos_linux64.tar.gz
+=======
+>>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
 Packager: TACC - wonaya@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 
@@ -21,7 +29,11 @@ BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
+<<<<<<< HEAD
 %define MODULE_VAR TACC_SRATOOLKIT
+=======
+%define MODULE_VAR TACC_DECRYPTION
+>>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
 
 %description
 Subset of the SRA toolkit that includes only the utilities related to decryption
