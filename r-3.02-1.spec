@@ -12,17 +12,12 @@ Vendor:     R Foundation for Statistical Computing
 Group:      Applications/Statistics
 Source:     %{name}-%{version}.tar.gz
 Packager:   TACC - vaughn@tacc.utexas.edu
-BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
-
-# This is the actual installation directory - Careful
 
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
-%define _topdir /home1/0000/build/rpms/
 
 %include rpm-dir.inc
-
 %include ../system-defines.inc
 %include compiler-defines.inc
 %include mpi-defines.inc
@@ -32,16 +27,11 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 %define INSTALL_DIR %{APPS}/%{comp_fam_ver}/%{mpi_fam_ver}/%{PNAME}/%{version}
 %define MODULE_DIR %{APPS}/%{comp_fam_ver}/%{mpi_fam_ver}/%{MODULES}/%{PNAME}
 %define PACKAGE_NAME %{name}-%{version}-%{comp_fam_ver}-%{mpi_fam_ver}
-#-----------------------------------------------
-# PACKAGE
-#-----------------------------------------------
+
 %package -n %{PACKAGE_NAME}
 Summary: The R statistical computing environment 
 Group:  Applications/Statistics
 
-#------------------------------------------------
-# DESCRIPTION
-#------------------------------------------------
 %description
 %description -n %{PACKAGE_NAME} 
 R provides a wide variety of statistical (linear and nonlinear 
@@ -49,20 +39,12 @@ modelling, classical statistical tests, time-series analysis,
 classification, clustering, ...) and graphical techniques, and 
 is highly extensible. 
 
-#------------------------------------------------
-# PREPARATION SECTION
-#------------------------------------------------
 %prep
 rm -rf $RPM_BUILD_ROOT
 
-# We handle setup entirely ourselves
 # %setup 
 
-#------------------------------------------------
-# BUILD SECTION
-#------------------------------------------------
 %build
-# BUILD is empty now
 
 %install
 %include ../system-load.inc
@@ -72,7 +54,6 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 module purge
 module load TACC
-
 module load intel
 module load mkl
 module swap mvapich2 mvapich2/1.8
@@ -96,7 +77,7 @@ export R_HOME MKL_HOME CUDA_HOME
 export SRC_DIR=${R_HOME}/src
 mkdir -p ${SRC_DIR}
 cd ${SRC_DIR}
-tar xjf %{_topdir}/SOURCES/R-3.0.2.tar.gz --strip-components=1
+tar xzf %{_topdir}/SOURCES/R-3.0.2.tar.gz --strip-components=1
 
 ./configure --prefix=${INSTALL_DIR} \
   --enable-R-shlib --enable-shared \
