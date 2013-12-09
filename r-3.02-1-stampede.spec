@@ -1,5 +1,5 @@
 #
-# R-3.0.2.spec 2013-11-05 13:59:00 vaughn@tacc.utexas.edu
+# R-3.0.2.spec 2013-12-05 10:00:00 vaughn@tacc.utexas.edu
 #
 # See http://www.r-project.org/
 
@@ -40,26 +40,31 @@ classification, clustering, ...) and graphical techniques, and
 is highly extensible. 
 
 %prep
-rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # %setup 
 
 %build
 
 %install
-%include ../system-load.inc
+
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
+
+%include ../system-load.inc
 %include compiler-load.inc
 %include mpi-load.inc
 
+echo "Once more into the breach...."
+
 module purge
 module load TACC
-module load intel
-module load mkl
-module swap mvapich2 mvapich2/1.8
+module swap intel intel/13.1.1.163
+module use /home1/apps/intel13/modulefiles
 module load hdf5
 module load netcdf
 module load boost
+
+# read -p "Press [Enter] key to continue..."
 
 echo COMPILER LOAD: %{comp_fam_ver_load}
 echo MPI      LOAD: %{mpi_fam_ver_load}
@@ -78,7 +83,7 @@ export SRC_DIR=${R_HOME}/src
 mkdir -p ${SRC_DIR}
 cd ${SRC_DIR}
 
-wget 'http://mirrors.nics.utk.edu/cran/src/base/R-3/R-3.0.2.tar.gz'
+wget 'http://cran.fhcrc.org/src/base/R-3/R-3.0.2.tar.gz'
 tar zxf R-3.0.2.tar.gz
 cd R-3.0.2
 
@@ -88,22 +93,24 @@ cd R-3.0.2
   --without-readline \
   CC=mpicc CXX=mpicxx F77=ifort FC=ifort \
   LD=xild AR=xiar \
-  SHLIB_CFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost  -pthread "\
-  MAIN_FFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost  -pthread "\
+  SHLIB_CFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread "\
+  MAIN_FFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread "\
   SHLIB_FFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread "\
-  MAIN_LDFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost  -pthread "\
-  SHLIB_LDFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread "\
-  DYLIB_LDFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread "\
-  SHLIB_CXXLDFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread "\
-  SHLIB_FCLDFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread "\
-  BLAS_LIBS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lpthread -lm"\
-  LAPACK_LIBS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lpthread -lm"\
-  CFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} "\
-  LDFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} "\
-  CPPFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} "\
-  FFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} "\
-  CXXFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} "\
-  FCFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} "
+  MAIN_LDFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_rt"\
+  SHLIB_LDFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_rt"\
+  DYLIB_LDFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_rt"\
+  SHLIB_CXXLDFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread  -L${TACC_MKL_LIB} -lmkl_rt"\
+  SHLIB_FCLDFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread  -L${TACC_MKL_LIB} -lmkl_rt"\
+  BLAS_LIBS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_rt"\
+  LAPACK_LIBS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_rt"\
+  CFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_rt"\
+  LDFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_rt"\
+  CPPFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_rt"\
+  FFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_rt"\
+  CXXFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_rt"\
+  FCFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} -lmkl_rt"
+
+# read -p "Press [Enter] key to continue..."
 
 make
 make install
@@ -116,6 +123,11 @@ export LD_LIBRARY_PATH=%{INSTALL_DIR}/lib64:%{INSTALL_DIR}/lib:$LD_LIBRARY_PATH
 # behavior and flags
 #############################################################
 
+# Swap into MVAPICH2 2.0a
+module rm mvapich2
+module use /home1/apps/intel13/modulefiles
+module load mvapich2/2.0a
+
 #############################################################
 # RMPI
 #############################################################
@@ -123,8 +135,7 @@ export LD_LIBRARY_PATH=%{INSTALL_DIR}/lib64:%{INSTALL_DIR}/lib:$LD_LIBRARY_PATH
 # the same package will be installed on ls4
 cd ${SRC_DIR}
 wget 'http://www.stats.uwo.ca/faculty/yu/Rmpi/download/linux/Rmpi_0.6-3.tar.gz'
-
-R CMD INSTALL Rmpi_0.6-3.tar.gz --configure-args="--with-Rmpi-include=/opt/apps/intel11_1/mvapich2/1.8/include --with-Rmpi-libpath=/opt/apps/intel11_1/mvapich2/1.8/lib --with-Rmpi-type=MPICH2"
+R CMD INSTALL Rmpi_0.6-3.tar.gz --configure-args="--with-Rmpi-include=/home1/apps/intel13/mvapich2/2.0a/include --with-Rmpi-libpath=/home1/apps/intel13/mvapich2/2.0a/lib --with-Rmpi-type=MPICH2"
 
 #############################################################
 # pdbMPI pbdSLAP pbdBASE pbdDMAT pbdDEMO pbdNCDF4 pmclust
@@ -134,9 +145,16 @@ wget 'http://cran.r-project.org/src/contrib/rlecuyer_0.3-3.tar.gz'
 sleep 5
 wget 'http://cran.r-project.org/src/contrib/pbdMPI_0.2-1.tar.gz'
 sleep 5
-
 R CMD INSTALL rlecuyer_0.3-3.tar.gz
-R CMD INSTALL pbdMPI_0.2-1.tar.gz --configure-args=" --with-mpi-include=/opt/apps/intel11_1/mvapich2/1.8/include --with-mpi-libpath=/opt/apps/intel11_1/mvapich2/1.8/lib --with-mpi-type=MPICH2"
+R CMD INSTALL pbdMPI_0.2-1.tar.gz --configure-args=" --with-mpi-include=/home1/apps/intel13/mvapich2/2.0a/include --with-mpi-libpath=/home1/apps/intel13/mvapich2/2.0a/lib --with-mpi-type=MPICH2"
+
+# Reset to default Intel13 stack
+module purge
+module load TACC
+module swap intel intel/13.1.1.163
+module load hdf5
+module load netcdf
+module load boost
 
 echo 'options("repos" = c(CRAN="http://cran.fhcrc.org"))
 install.packages("ggplot2");
@@ -211,11 +229,16 @@ pdbMPI, pbdSLAP, pbdBASE, pbdDMAT, pbdDEMO, pbdNCDF4, pmclust
 multicore
 doMC, doSNOW, doMPI, doParallel
 BH, bigmemory, biganalytics, bigtabulate, synchronicity
-Rdsm, fork, SparseM, slam, cluster, randomForest, bit, ff, mchof
-BioConductor (base installation)
+Rdsm, SparseM, slam, cluster, randomForest, bit, ff, mchof
+BioConductor (base installation plus some common packages)
+ggplot2
 
 The R modulefile defines the environment variables TACC_R_DIR, TACC_R_BIN,
 TACC_R_LIB and extends the PATH and LD_LIBRARY_PATH paths as appropriate.
+
+This version of Rstats supports automatic offloading of some 
+operations to the Xeon Phi co-processor. For instructions on how to enable 
+automatic offloading, please submit a ticket and mark it attn: Yaakoub El Khamra
 
 Version %{version}
 ]]
