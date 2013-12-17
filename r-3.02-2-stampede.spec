@@ -6,7 +6,7 @@
 Summary:    R is a free software environment for statistical computing and graphics.
 Name:       Rstats
 Version:    3.0.2    
-Release:    1 
+Release:    2 
 License:    GPLv2
 Vendor:     R Foundation for Statistical Computing
 Group:      Applications/Statistics
@@ -60,6 +60,11 @@ module purge
 module load TACC
 module swap intel intel/13.1.1.163
 module use /home1/apps/intel13/modulefiles
+
+# Swap into MVAPICH2 2.0a
+module rm mvapich2
+module load mvapich2/2.0a
+
 module load hdf5
 module load netcdf
 module load boost
@@ -123,10 +128,6 @@ export LD_LIBRARY_PATH=%{INSTALL_DIR}/lib64:%{INSTALL_DIR}/lib:$LD_LIBRARY_PATH
 # behavior and flags
 #############################################################
 
-# Swap into MVAPICH2 2.0a
-module rm mvapich2
-module use /home1/apps/intel13/modulefiles
-module load mvapich2/2.0a
 
 #############################################################
 # RMPI
@@ -148,16 +149,7 @@ sleep 5
 R CMD INSTALL rlecuyer_0.3-3.tar.gz
 R CMD INSTALL pbdMPI_0.2-1.tar.gz --configure-args=" --with-mpi-include=/home1/apps/intel13/mvapich2/2.0a/include --with-mpi-libpath=/home1/apps/intel13/mvapich2/2.0a/lib --with-mpi-type=MPICH2"
 
-# Reset to default Intel13 stack
-module purge
-module load TACC
-module swap intel intel/13.1.1.163
-module load hdf5
-module load netcdf
-module load boost
-
 echo 'options("repos" = c(CRAN="http://cran.fhcrc.org"))
-install.packages("ggplot2");
 install.packages("snow");
 install.packages("pbdSLAP");
 install.packages("pbdBASE");
@@ -166,12 +158,16 @@ install.packages("pbdDEMO");
 install.packages("pbdNCDF4");
 install.packages("pmclust");
 install.packages("snowfall");
+install.packages("doSNOW");
+install.packages("doMPI");' > optional-mpvapich2-specific.R
+Rscript optional-mpvapich2-specific.R
+
+echo 'options("repos" = c(CRAN="http://cran.fhcrc.org"))
+install.packages("ggplot2");
 install.packages("iterators");
 install.packages("foreach");
 install.packages("multicore");
 install.packages("doMC");
-install.packages("doSNOW");
-install.packages("doMPI");
 install.packages("doParallel");
 install.packages("BH");
 install.packages("bigmemory.sri");
@@ -195,8 +191,16 @@ Rscript optional.R
 # create the script for bioconductor
 echo 'source("http://bioconductor.org/biocLite.R");
 biocLite();
-biocLite(c("ggplot2","ShortRead","RankProd","multtest","IRanges","edgeR","Biostrings","GenomicFeatures","bioDist","GenomicRanges"));' > bio.R
-Rscript bio.R
+biocLite(c("ggplot2","ShortRead","RankProd","multtest","IRanges","edgeR","Biostrings","GenomicFeatures","bioDist","GenomicRanges"));' > bioConductor.R
+Rscript bioConductor.R
+
+# Reset to default Intel13 stack
+module purge
+module load TACC
+module swap intel intel/13.1.1.163
+module load hdf5
+module load netcdf
+module load boost
 
 #----------------------------------------------------------
 # Copy into rpm directory
