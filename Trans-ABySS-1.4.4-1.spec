@@ -1,11 +1,11 @@
-Summary:    Rum
-Name:       rum
-Version:    2.0.5
+Summary:    Trans-ABySS
+Name:       trans-ABySS
+Version:    1.4.4
 Release:    1
-License:    GPL
-Vendor:     PCBI UPenn
+License:    BCCA
+Vendor:     BC Cancer Agency
 Group: Applications/Life Sciences
-Source:     rum-2.0.5.tar.gz
+Source:     trans-abyss-1.4.4.tar.gz
 Packager:   TACC - wonaya@tacc.utexas.edu
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 
@@ -25,34 +25,42 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 %define PNAME %{name}
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
-%define MODULE_VAR TACC_RUM
+%define MODULE_VAR TACC_TRANSABYSS
 
 %description
-RUM is an RNA-Seq alignment pipeline. 
+Trans-ABySS is a software pipeline for analyzing ABySS-assembled contigs from shotgun transcriptome data.
 
 ## PREP
 %prep
 rm -rf $RPM_BUILD_ROOT
 
-%setup -n %{PNAME}-%{version}
+%setup -n %{PNAME}-v%{version}
+
 %build
+
 %install
+
 %include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 70df240576caec52f0109c83e777cad8c319b73d
-module load perl
+module purge
+module load TACC
+module unload $TACC_FAMILY_COMPILER
+module load gcc
+module load samtools
+module load bwa
+module load jdk64
+module load abyss
 module load python
 
-perl Makefile.PL
-module unload perl
-module unload python
-=======
 
-perl Makefile.PL
->>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
+cd kmer
+gmake install
+cd ../src
+gmake
+cd ..
+
+module unload python
+
 cp -r * $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
@@ -61,11 +69,11 @@ cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 
 help (
 [[
-This module loads %{PNAME}, which uses perl.
-To startup this program, use '$TACC_RUM_DIR/bin/rum_runner' in the command line. 
-Documentation for %{PNAME} is available online at the publisher website: https://github.com/itmat/rum/wiki
+To startup this program, use go to %{MODULE_VAR}_DIR/Linux-amd64/bin/ in the command line to see all the available tools. 
+Documentation for %{PNAME} is available online at the publisher website: http://sourceforge.net/apps/mediawiki/wgs-assembler/index.php?title=Main_Page
 For convenience %{MODULE_VAR}_DIR points to the installation directory. 
 PATH has been updated to include %{PNAME}.
+
 Version %{version}
 ]])
 
@@ -73,11 +81,15 @@ whatis("Name: ${PNAME}")
 whatis("Version: %{version}")
 whatis("Category: computational biology, genomics")
 whatis("Keywords: Biology, Genomics, Mapping")
-whatis("Description: RUM - RNAseq Unified Mapper")
-whatis("URL: http://cbil.upenn.edu/RUM/")
+whatis("Description: Celera assembler - de novo whole-genome shotgun (WGS) DNA sequence assembler")
+whatis("URL: http://sourceforge.net/apps/mediawiki/wgs-assembler")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
-prepend_path("PATH"       ,"%{INSTALL_DIR}/bin/")
+prepend_path("PATH"       ,"%{INSTALL_DIR}/")
+
+prereq ("bwa")
+prereq ("samtools")
+prereq ("abyss")
 
 EOF
 
@@ -115,12 +127,5 @@ EOF
 cd /tmp
 
 # Remove the installation files now that the RPM has been generated
-<<<<<<< HEAD
-<<<<<<< HEAD
 rm -rf $RPM_BUILD_ROOT
-=======
-rm -rf $RPM_BUILD_ROOT
->>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
-=======
-rm -rf $RPM_BUILD_ROOT
->>>>>>> 70df240576caec52f0109c83e777cad8c319b73d
+

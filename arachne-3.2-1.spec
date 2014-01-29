@@ -1,13 +1,13 @@
-Summary:    Rum
-Name:       rum
-Version:    2.0.5
+Summary:    Arachne
+Name:       arachne
+Version:    3.2
 Release:    1
-License:    GPL
-Vendor:     PCBI UPenn
+License:    Broad Institute
+Vendor:     Broad Institute
 Group: Applications/Life Sciences
-Source:     rum-2.0.5.tar.gz
+Source:     arachne-3.2.tar.gz
 Packager:   TACC - wonaya@tacc.utexas.edu
-BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
+BuildRoot:  /scratch/02114/wonaya/tmp/%{name}-%{version}-buildroot
 
 #------------------------------------------------
 # BASIC DEFINITIONS
@@ -25,35 +25,35 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 %define PNAME %{name}
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
-%define MODULE_VAR TACC_RUM
+%define MODULE_VAR TACC_ARACHNE
 
 %description
-RUM is an RNA-Seq alignment pipeline. 
+Arachne is a toolkit developed for Whole Genome Shotgun Assembly.
 
 ## PREP
 %prep
 rm -rf $RPM_BUILD_ROOT
 
 %setup -n %{PNAME}-%{version}
+
 %build
+
 %install
+
 %include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 70df240576caec52f0109c83e777cad8c319b73d
-module load perl
+module purge
+module load TACC
+#module unload $TACC_FAMILY_COMPILER
+#module load gcc/4.7.1
 module load python
 
-perl Makefile.PL
-module unload perl
-module unload python
-=======
+./configure --prefix=$PWD
+make
 
-perl Makefile.PL
->>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
-cp -r * $RPM_BUILD_ROOT/%{INSTALL_DIR}
+module unload python
+
+cp -r bin $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
@@ -61,23 +61,23 @@ cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 
 help (
 [[
-This module loads %{PNAME}, which uses perl.
-To startup this program, use '$TACC_RUM_DIR/bin/rum_runner' in the command line. 
-Documentation for %{PNAME} is available online at the publisher website: https://github.com/itmat/rum/wiki
+To startup this program, use go to %{MODULE_VAR}_DIR/bin/ in the command line to see all the available tools. 
+Documentation for %{PNAME} is available online at the publisher website: http://www.broadinstitute.org/crd/wiki/index.php/Arachne
 For convenience %{MODULE_VAR}_DIR points to the installation directory. 
 PATH has been updated to include %{PNAME}.
+
 Version %{version}
 ]])
 
 whatis("Name: ${PNAME}")
 whatis("Version: %{version}")
 whatis("Category: computational biology, genomics")
-whatis("Keywords: Biology, Genomics, Mapping")
-whatis("Description: RUM - RNAseq Unified Mapper")
-whatis("URL: http://cbil.upenn.edu/RUM/")
+whatis("Keywords: Biology, Genomics")
+whatis("Description: Arachne - a toolkit developed for Whole Genome Shotgun Assembly")
+whatis("URL: http://www.broadinstitute.org/crd/wiki/index.php/Arachne")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
-prepend_path("PATH"       ,"%{INSTALL_DIR}/bin/")
+prepend_path("PATH"       ,"%{INSTALL_DIR}/")
 
 EOF
 
@@ -115,12 +115,5 @@ EOF
 cd /tmp
 
 # Remove the installation files now that the RPM has been generated
-<<<<<<< HEAD
-<<<<<<< HEAD
 rm -rf $RPM_BUILD_ROOT
-=======
-rm -rf $RPM_BUILD_ROOT
->>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
-=======
-rm -rf $RPM_BUILD_ROOT
->>>>>>> 70df240576caec52f0109c83e777cad8c319b73d
+

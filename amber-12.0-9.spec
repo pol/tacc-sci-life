@@ -1,7 +1,7 @@
 Summary: Amber Toolkit and parallel modules.
 Name:      amber 
 Version:   12.0
-Release:   8
+Release:   9
 License:   UCSF
 Vendor:    Amber
 Group: Applications/Life Sciences 

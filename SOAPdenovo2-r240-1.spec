@@ -1,11 +1,11 @@
-Summary:    Rum
-Name:       rum
-Version:    2.0.5
+Summary:    SOAP de novo 2 - Short Oligonucleotide Analysis Package
+Name:       SOAPdenovo2
+Version:    r240
 Release:    1
-License:    GPL
-Vendor:     PCBI UPenn
+License:    GPLv3
+Vendor:     BGI
 Group: Applications/Life Sciences
-Source:     rum-2.0.5.tar.gz
+Source:     http://downloads.sourceforge.net/project/soapdenovo2/SOAPdenovo2/src/r240/SOAPdenovo2-src-r240.tgz 
 Packager:   TACC - wonaya@tacc.utexas.edu
 BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 
@@ -22,38 +22,36 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 # %include mpi-defines.inc
 # Other defs
 
-%define PNAME %{name}
+%define PNAME soapdenovo2
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
-%define MODULE_VAR TACC_RUM
+%define MODULE_VAR TACC_SOAPDENOVO2
 
 %description
-RUM is an RNA-Seq alignment pipeline. 
+SOAPdenovo2, a short read de novo assembly tool, is a package for assembling short oligonucleotide into contigs and scaffolds.
 
 ## PREP
 %prep
 rm -rf $RPM_BUILD_ROOT
 
-%setup -n %{PNAME}-%{version}
+%setup -n %{name}-src-%{version}
+
 %build
+
 %install
+
 %include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 70df240576caec52f0109c83e777cad8c319b73d
-module load perl
-module load python
+module purge
+module load TACC
+module unload $TACC_FAMILY_COMPILER
+module load gcc
 
-perl Makefile.PL
-module unload perl
+make 
+
 module unload python
-=======
 
-perl Makefile.PL
->>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
-cp -r * $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp -r SOAPdenovo-127mer SOAPdenovo-63mer $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
@@ -61,23 +59,25 @@ cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 
 help (
 [[
-This module loads %{PNAME}, which uses perl.
-To startup this program, use '$TACC_RUM_DIR/bin/rum_runner' in the command line. 
-Documentation for %{PNAME} is available online at the publisher website: https://github.com/itmat/rum/wiki
+This module loads %{PNAME}. SOAPdenovo2 resolves more repeat regions in contig assembly, increases coverage and length in scaffold construction, improves gap closing, and optimizes for large genome. 
+
+The %{PNAME} directory is added to the PATH when the module is loaded. To startup this program, use either SOAPdenovo-127mer or SOAPdenovo-63mer in the command line. 
 For convenience %{MODULE_VAR}_DIR points to the installation directory. 
-PATH has been updated to include %{PNAME}.
+
+Publication for %{PNAME} is available online at the publisher website: http://www.gigasciencejournal.com/content/1/1/18/
+
 Version %{version}
 ]])
 
-whatis("Name: ${PNAME}")
+whatis("Name: %{name}")
 whatis("Version: %{version}")
 whatis("Category: computational biology, genomics")
-whatis("Keywords: Biology, Genomics, Mapping")
-whatis("Description: RUM - RNAseq Unified Mapper")
-whatis("URL: http://cbil.upenn.edu/RUM/")
+whatis("Keywords: Biology, Genomics, Assembly")
+whatis("Description: soapdenovo2 - novel short-read assembly method that can build a de novo draft assembly for the human-sized genomes")
+whatis("URL: http://soap.genomics.org.cn/soapdenovo.html")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
-prepend_path("PATH"       ,"%{INSTALL_DIR}/bin/")
+prepend_path("PATH"       ,"%{INSTALL_DIR}/")
 
 EOF
 
@@ -93,8 +93,6 @@ cat > $RPM_BUILD_ROOT%{MODULE_DIR}/.version.%{version} << 'EOF'
 
 set     ModulesVersion      "%{version}"
 EOF
-
-
 
 #------------------------------------------------
 # FILES SECTION
@@ -115,12 +113,5 @@ EOF
 cd /tmp
 
 # Remove the installation files now that the RPM has been generated
-<<<<<<< HEAD
-<<<<<<< HEAD
 rm -rf $RPM_BUILD_ROOT
-=======
-rm -rf $RPM_BUILD_ROOT
->>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
-=======
-rm -rf $RPM_BUILD_ROOT
->>>>>>> 70df240576caec52f0109c83e777cad8c319b73d
+
