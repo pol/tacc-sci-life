@@ -1,47 +1,37 @@
 #
-# R-3.02.spec 2013-11-05 13:59:00 vaughn@tacc.utexas.edu
+# R-3.0.2.spec 2013-11-05 13:59:00 vaughn@tacc.utexas.edu
 #
 # See http://www.r-project.org/
 
 Summary:    R is a free software environment for statistical computing and graphics.
-Name:       R
-Version:    3.02    
+Name:       Rstats
+Version:    3.0.2    
 Release:    1 
 License:    GPLv2
 Vendor:     R Foundation for Statistical Computing
 Group:      Applications/Statistics
 Source:     %{name}-%{version}.tar.gz
 Packager:   TACC - vaughn@tacc.utexas.edu
-BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
-
-# This is the actual installation directory - Careful
 
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
-%define _topdir /home1/0000/build/rpms/
 
 %include rpm-dir.inc
-
 %include ../system-defines.inc
 %include compiler-defines.inc
 %include mpi-defines.inc
 
-%define PNAME R
+%define PNAME Rstats
 %define MODULE_VAR TACC_R
 %define INSTALL_DIR %{APPS}/%{comp_fam_ver}/%{mpi_fam_ver}/%{PNAME}/%{version}
 %define MODULE_DIR %{APPS}/%{comp_fam_ver}/%{mpi_fam_ver}/%{MODULES}/%{PNAME}
 %define PACKAGE_NAME %{name}-%{version}-%{comp_fam_ver}-%{mpi_fam_ver}
-#-----------------------------------------------
-# PACKAGE
-#-----------------------------------------------
+
 %package -n %{PACKAGE_NAME}
 Summary: The R statistical computing environment 
 Group:  Applications/Statistics
 
-#------------------------------------------------
-# DESCRIPTION
-#------------------------------------------------
 %description
 %description -n %{PACKAGE_NAME} 
 R provides a wide variety of statistical (linear and nonlinear 
@@ -49,20 +39,12 @@ modelling, classical statistical tests, time-series analysis,
 classification, clustering, ...) and graphical techniques, and 
 is highly extensible. 
 
-#------------------------------------------------
-# PREPARATION SECTION
-#------------------------------------------------
 %prep
 rm -rf $RPM_BUILD_ROOT
 
-# We handle setup entirely ourselves
 # %setup 
 
-#------------------------------------------------
-# BUILD SECTION
-#------------------------------------------------
 %build
-# BUILD is empty now
 
 %install
 %include ../system-load.inc
@@ -72,7 +54,6 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 module purge
 module load TACC
-
 module load intel
 module load mkl
 module swap mvapich2 mvapich2/1.8
@@ -96,9 +77,12 @@ export R_HOME MKL_HOME CUDA_HOME
 export SRC_DIR=${R_HOME}/src
 mkdir -p ${SRC_DIR}
 cd ${SRC_DIR}
-tar xjf %{_topdir}/SOURCES/R-3.0.2.tar.gz --strip-components=1
 
-./configure --prefix=${INSTALL_DIR} \
+wget 'http://mirrors.nics.utk.edu/cran/src/base/R-3/R-3.0.2.tar.gz'
+tar zxf R-3.0.2.tar.gz
+cd R-3.0.2
+
+./configure --prefix=%{INSTALL_DIR} \
   --enable-R-shlib --enable-shared \
   --with-blas --with-lapack --with-pic \
   --without-readline \
@@ -121,11 +105,16 @@ tar xjf %{_topdir}/SOURCES/R-3.0.2.tar.gz --strip-components=1
   CXXFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} "\
   FCFLAGS="-fPIC -openmp -mkl=parallel -O3 -xHost -pthread -L${TACC_MKL_LIB} "
 
-make -j10
+make
 make install
 
-export PATH=${INSTALL_DIR}/bin:$PATH
-export LD_LIBRARY_PATH=${INSTALL_DIR}/lib64:${INSTALL_DIR}/lib:$LD_LIBRARY_PATH
+export PATH=%{INSTALL_DIR}/bin:$PATH
+export LD_LIBRARY_PATH=%{INSTALL_DIR}/lib64:%{INSTALL_DIR}/lib:$LD_LIBRARY_PATH
+
+#############################################################
+# Hand-install a set of modules that require specific compiler
+# behavior and flags
+#############################################################
 
 #############################################################
 # RMPI
@@ -137,17 +126,6 @@ wget 'http://www.stats.uwo.ca/faculty/yu/Rmpi/download/linux/Rmpi_0.6-3.tar.gz'
 
 R CMD INSTALL Rmpi_0.6-3.tar.gz --configure-args="--with-Rmpi-include=/opt/apps/intel11_1/mvapich2/1.8/include --with-Rmpi-libpath=/opt/apps/intel11_1/mvapich2/1.8/lib --with-Rmpi-type=MPICH2"
 
-
-#############################################################
-# SNOW
-#############################################################
-# patch needs to be applied, after or before installation. After is easier.
-
-cd ${SRC_DIR}
-wget 'http://cran.r-project.org/src/contrib/snow_0.3-13.tar.gz'
-R CMD INSTALL snow_0.3-13.tar.gz
-
-
 #############################################################
 # pdbMPI pbdSLAP pbdBASE pbdDMAT pbdDEMO pbdNCDF4 pmclust
 #############################################################
@@ -156,122 +134,42 @@ wget 'http://cran.r-project.org/src/contrib/rlecuyer_0.3-3.tar.gz'
 sleep 5
 wget 'http://cran.r-project.org/src/contrib/pbdMPI_0.2-1.tar.gz'
 sleep 5
-wget 'http://cran.r-project.org/src/contrib/pbdSLAP_0.1-6.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/pbdBASE_0.2-2.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/pbdDMAT_0.2-2.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/pbdDEMO_0.1-1.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/pbdNCDF4_0.1-1.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/pmclust_0.1-5.tar.gz'
 
 R CMD INSTALL rlecuyer_0.3-3.tar.gz
 R CMD INSTALL pbdMPI_0.2-1.tar.gz --configure-args=" --with-mpi-include=/opt/apps/intel11_1/mvapich2/1.8/include --with-mpi-libpath=/opt/apps/intel11_1/mvapich2/1.8/lib --with-mpi-type=MPICH2"
-R CMD INSTALL pbdSLAP_0.1-6.tar.gz
-R CMD INSTALL pbdBASE_0.2-2.tar.gz
-R CMD INSTALL pbdDMAT_0.2-2.tar.gz
-R CMD INSTALL pbdDEMO_0.1-1.tar.gz
-R CMD INSTALL pbdNCDF4_0.1-1.tar.gz
-R CMD INSTALL pmclust_0.1-5.tar.gz
 
-# we are skipping profiling, no profiler installed on stampede
-
-
-###########################################################
-# snowfall
-###########################################################
-wget 'http://cran.r-project.org/src/contrib/snowfall_1.84-4.tar.gz'
-R CMD INSTALL snowfall_1.84-4.tar.gz
-
-###########################################################
-# foreach
-###########################################################
-wget 'http://cran.r-project.org/src/contrib/iterators_1.0.6.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/foreach_1.4.1.tar.gz'
-
-R CMD INSTALL iterators_1.0.6.tar.gz
-R CMD INSTALL foreach_1.4.1.tar.gz
-
-###########################################################
-# multicore
-###########################################################
-wget 'http://cran.r-project.org/src/contrib/multicore_0.1-7.tar.gz'
-R CMD INSTALL multicore_0.1-7.tar.gz
-
-###########################################################
-# The do* packages
-###########################################################
-wget 'http://cran.r-project.org/src/contrib/doMC_1.3.0.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/doSNOW_1.0.7.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/doMPI_0.2.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/doParallel_1.0.3.tar.gz'
-
-R CMD INSTALL doMC_1.3.0.tar.gz
-R CMD INSTALL doSNOW_1.0.7.tar.gz
-R CMD INSTALL doMPI_0.2.tar.gz
-R CMD INSTALL doParallel_1.0.3.tar.gz
-
-###########################################################
-# the big* packages
-###########################################################
-wget 'http://cran.r-project.org/src/contrib/BH_1.51.0-3.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/bigmemory.sri_0.1.2.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/bigmemory_4.4.3.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/biganalytics_1.1.1.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/bigtabulate_1.1.1.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/synchronicity_1.1.0.tar.gz'
-
-R CMD INSTALL BH_1.51.0-3.tar.gz
-R CMD INSTALL bigmemory.sri_0.1.2.tar.gz
-R CMD INSTALL bigmemory_4.4.3.tar.gz
-R CMD INSTALL biganalytics_1.1.1.tar.gz
-R CMD INSTALL bigtabulate_1.1.1.tar.gz
-R CMD INSTALL synchronicity_1.1.0.tar.gz
-
-
-###########################################################
-# Other parallel packages and applications
-###########################################################
-wget 'http://cran.r-project.org/src/contrib/Rdsm_2.0.2.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/fork_1.2.4.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/SparseM_1.03.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/slam_0.1-30.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/cluster_1.14.4.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/randomForest_4.6-7.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/bit_1.1-10.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/ff_2.2-12.tar.gz'
-sleep 5
-wget 'http://cran.r-project.org/src/contrib/mchof_0.3.tar.gz'
-
-R CMD INSTALL Rdsm_2.0.2.tar.gz
-R CMD INSTALL fork_1.2.4.tar.gz
-R CMD INSTALL SparseM_1.03.tar.gz
-R CMD INSTALL slam_0.1-30.tar.gz
-R CMD INSTALL cluster_1.14.4.tar.gz
-R CMD INSTALL randomForest_4.6-7.tar.gz
-R CMD INSTALL bit_1.1-10.tar.gz
-R CMD INSTALL ff_2.2-12.tar.gz
-R CMD INSTALL mchof_0.3.tar.gz
-
+echo 'options("repos" = c(CRAN="http://cran.fhcrc.org"))
+install.packages("ggplot2");
+install.packages("snow");
+install.packages("pbdSLAP");
+install.packages("pbdBASE");
+install.packages("pbdDMAT");
+install.packages("pbdDEMO");
+install.packages("pbdNCDF4");
+install.packages("pmclust");
+install.packages("snowfall");
+install.packages("iterators");
+install.packages("foreach");
+install.packages("multicore");
+install.packages("doMC");
+install.packages("doSNOW");
+install.packages("doMPI");
+install.packages("doParallel");
+install.packages("BH");
+install.packages("bigmemory.sri");
+install.packages("bigmemory");
+install.packages("biganalytics");
+install.packages("bigtabulate");
+install.packages("synchronicity");
+install.packages("Rdsm");
+install.packages("SparseM");
+install.packages("slam");
+install.packages("cluster");
+install.packages("randomForest");
+install.packages("bit");
+install.packages("ff");
+install.packages("mchof"); ' > optional.R
+Rscript optional.R
 
 ###########################################################
 # Bioconductor
@@ -279,10 +177,7 @@ R CMD INSTALL mchof_0.3.tar.gz
 # create the script for bioconductor
 echo 'source("http://bioconductor.org/biocLite.R");
 biocLite();
-biocLite("ShortRead");
-biocLite("RankProd");
-biocLite("multtest");
-biocLite("IRanges"); ' > bio.R
+biocLite(c("ggplot2","ShortRead","RankProd","multtest","IRanges","edgeR","Biostrings","GenomicFeatures","bioDist","GenomicRanges"));' > bio.R
 Rscript bio.R
 
 #----------------------------------------------------------
@@ -308,7 +203,7 @@ mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat >    $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 help(
 [[
-This is the R statistics package built on %(date +'%B %d, %Y').
+This is the R statistics (Rstats) package built on %(date +'%B %d, %Y').
 
 It includes the following accessory packages:
 Rmpi, snow, snowfall
@@ -319,8 +214,8 @@ BH, bigmemory, biganalytics, bigtabulate, synchronicity
 Rdsm, fork, SparseM, slam, cluster, randomForest, bit, ff, mchof
 BioConductor (base installation)
 
-The R modulefile defines the environment variables %TACC_R_DIR, %TACC_R_BIN,
-%TACC_R_LIB and extends the %PATH and %LD_LIBRARY_PATH paths as appropriate.
+The R modulefile defines the environment variables TACC_R_DIR, TACC_R_BIN,
+TACC_R_LIB and extends the PATH and LD_LIBRARY_PATH paths as appropriate.
 
 Version %{version}
 ]]
@@ -348,6 +243,7 @@ setenv("TACC_R_BIN", r_bin)
 setenv("TACC_R_INC", r_inc)
 setenv("TACC_R_LIB", r_lib)
 setenv("TACC_R_MAN", r_man)
+setenv("MV2_SUPPORT_DPM", 1)
 
 append_path("PATH", r_bin)
 append_path("MANPATH", r_man)
