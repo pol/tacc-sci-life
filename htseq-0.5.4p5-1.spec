@@ -7,7 +7,6 @@ Vendor:     EMBL
 Group: Applications/Life Sciences
 Source:     HTSeq-%{version}.tar.gz
 Packager:   TACC - wonaya@tacc.utexas.edu
-BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 
 #------------------------------------------------
 # BASIC DEFINITIONS
@@ -55,6 +54,7 @@ rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 
+
 help (
 [[
 This module loads %{PNAME}, which depends on python and numpy.
@@ -93,6 +93,7 @@ set     ModulesVersion      "%{version}"
 EOF
 
 
+module unload python
 
 #------------------------------------------------
 # FILES SECTION
