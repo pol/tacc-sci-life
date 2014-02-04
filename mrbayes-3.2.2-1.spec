@@ -42,10 +42,13 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %include ../system-load.inc
 module purge
 module load TACC
+module unload intel
+module load gcc
+
 cd src/
 autoconf
-./configure --prefix=$RPM_BUILD_ROOT/%{INSTALL_DIR} --with-beagle=no
-make  
+./configure --prefix=$RPM_BUILD_ROOT/%{INSTALL_DIR} --with-beagle=no LDFLAGS=" -Wl,-rpath,$GCC_LIB "
+make 
 
 cd ..
 
