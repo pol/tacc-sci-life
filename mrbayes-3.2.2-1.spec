@@ -7,16 +7,14 @@ Version:   3.2.2
 Release:   1
 License:   GNU GPL
 Group: Applications/Life Sciences
-Source:    mrbayes-3.2.2.tar.gz
+Source:    %{name}-%{version}.tar.gz
 Packager:  TACC - mattcowp@tacc.utexas.edu
-BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 %include ../rpm-dir.inc
 %include ../system-defines.inc
-%include ../compiler-defines.inc
+#%include ../compiler-defines.inc
 
 %define debug_package %{nil}
-%define _unpack_name mrbayes_3.2.2
 
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
@@ -38,6 +36,9 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %setup -n mrbayes_3.2.2
 
 %build
+
+%install
+
 %include ../system-load.inc
 module purge
 module load TACC
@@ -46,7 +47,8 @@ autoconf
 ./configure --prefix=$RPM_BUILD_ROOT/%{INSTALL_DIR} --with-beagle=no
 make  
 
-%install
+cd ..
+
 #make install
 mkdir $RPM_BUILD_ROOT/%{INSTALL_DIR}/bin
 cp src/mb $RPM_BUILD_ROOT/%{INSTALL_DIR}/bin/
@@ -90,7 +92,7 @@ cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/.version.%{version} << 'EOF'
 set     ModulesVersion      "%{version}"
 EOF
 
-%files -n %{name}-%{version}
+%files 
 %defattr(755,root,install)
 %{INSTALL_DIR}
 %{MODULE_DIR}
