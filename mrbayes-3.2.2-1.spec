@@ -12,12 +12,11 @@ Packager:  TACC - mattcowp@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 
 %include ../rpm-dir.inc
-
-%define APPS /opt/apps
-%define MODULES modulefiles
-%define _unpack_name mrbayes_3.2.2
-
 %include ../system-defines.inc
+%include ../compiler-defines.inc
+
+%define debug_package %{nil}
+%define _unpack_name mrbayes_3.2.2
 
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
@@ -40,7 +39,8 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 %build
 %include ../system-load.inc
-module load intel
+module purge
+module load TACC
 cd src/
 autoconf
 ./configure --prefix=$RPM_BUILD_ROOT/%{INSTALL_DIR} --with-beagle=no
