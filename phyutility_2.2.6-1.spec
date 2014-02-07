@@ -6,19 +6,14 @@ License: GPLv3
 Vendor: Stephen Smith and Casey Dunn
 Group: Applications/Life Sciences
 Source: phyutility_2_2_6.tar.gz
-Packager: TACC - gendlerk@tacc.utexas.edu
+Packager: TACC - mattcowp@tacc.utexas.edu
 #Buildroot: /var/tmp/%{name}-%{version}-buildroot
 
-%include rpm-dir.inc
+%include ../rpm-dir.inc
 %include ../system-defines.inc
+%include ../compiler-defines.inc
 
-%define _unpack_name phyutility
-
-# Compiler Family Definitions
-# %include compiler-defines.inc
-# MPI Family Definitions
-# %include mpi-defines.inc
-# Other defs
+%define debug_package %{nil}
 
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
