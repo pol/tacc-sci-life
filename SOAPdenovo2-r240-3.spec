@@ -1,12 +1,13 @@
-Summary:    HTSeq
-Name:       htseq
-Version:    0.5.4p5
-Release:    1
-License:    GPL
-Vendor:     EMBL
+Summary:    SOAP de novo 2 - Short Oligonucleotide Analysis Package
+Name:       SOAPdenovo2
+Version:    r240
+Release:    3
+License:    GPLv3
+Vendor:     BGI
 Group: Applications/Life Sciences
-Source:     HTSeq-%{version}.tar.gz
+Source:     SOAPdenovo2-src-r240.tgz
 Packager:   TACC - wonaya@tacc.utexas.edu
+BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 
 #------------------------------------------------
 # BASIC DEFINITIONS
@@ -21,60 +22,59 @@ Packager:   TACC - wonaya@tacc.utexas.edu
 # %include mpi-defines.inc
 # Other defs
 
-%define PNAME htseq
+%define PNAME soapdenovo2
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
-%define MODULE_VAR TACC_HTSEQ
+%define MODULE_VAR TACC_SOAPDENOVO2
 
 %description
-HTSeq is a Python package that provides infrastructure to process data from high-throughput sequencing assays
+SOAPdenovo2, a short read de novo assembly tool, is a package for assembling short oligonucleotide into contigs and scaffolds.
 
 ## PREP
-# Use -n <name> if source file different from <name>-<version>.tar.gz
 %prep
-rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
+rm -rf $RPM_BUILD_ROOT
 
-## SETUP
-%setup -n HTSeq-0.5.4p5
+%setup -n %{name}-src-%{version}
+
 %build
+
 %install
+
 %include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
+module purge
+module load TACC
+module swap intel gcc
 
-module load python
-export PYTHONPATH=$PWD/lib/python2.7/site-packages/
-python setup.py build
-mkdir -p $PWD/lib/python2.7/site-packages/
-python setup.py install --user
+make LDFLAGS="-Wl,-rpath,$GCC_LIB"
 
-cp -r lib $HOME/.local/bin/htseq-count $HOME/.local/bin/htseq-qa VERSION README $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp -r SOAPdenovo-127mer SOAPdenovo-63mer $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 
-
 help (
 [[
-This module loads %{PNAME}, which depends on python and numpy.
-To call this function, use htseq-count
-Documentation for %{PNAME} is available online at the publisher website: http://www-huber.embl.de/users/anders/HTSeq/doc/overview.html
+This module loads %{PNAME}. SOAPdenovo2 resolves more repeat regions in contig assembly, increases coverage and length in scaffold construction, improves gap closing, and optimizes for large genome. 
+
+The %{PNAME} directory is added to the PATH when the module is loaded. To startup this program, use either SOAPdenovo-127mer or SOAPdenovo-63mer in the command line. 
 For convenience %{MODULE_VAR}_DIR points to the installation directory. 
-PYTHONPATH has been prepended to include the HTSeq library.
+
+Publication for %{PNAME} is available online at the publisher website: http://www.gigasciencejournal.com/content/1/1/18/
+
 Version %{version}
 ]])
 
-whatis("Name: ${PNAME}")
+whatis("Name: %{name}")
 whatis("Version: %{version}")
 whatis("Category: computational biology, genomics")
-whatis("Keywords: Biology, Genomics, High-throughput Sequencing")
-whatis("Description: HTSeq - Analysing high-throughput sequencing data with Python")
-whatis("URL: https://pypi.python.org/pypi/HTSeq")
+whatis("Keywords: Biology, Genomics, Assembly")
+whatis("Description: soapdenovo2 - novel short-read assembly method that can build a de novo draft assembly for the human-sized genomes")
+whatis("URL: http://soap.genomics.org.cn/soapdenovo.html")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
-prepend_path("PYTHONPATH"       ,"%{INSTALL_DIR}/lib/python2.7/site-packages/")
-
-prereq("python")
+prepend_path("PATH"       ,"%{INSTALL_DIR}/")
 
 EOF
 
@@ -90,9 +90,6 @@ cat > $RPM_BUILD_ROOT%{MODULE_DIR}/.version.%{version} << 'EOF'
 
 set     ModulesVersion      "%{version}"
 EOF
-
-
-module unload python
 
 #------------------------------------------------
 # FILES SECTION

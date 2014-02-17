@@ -42,9 +42,9 @@ rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 module load python
-echo "Setting python paths"
 python setup.py install --prefix $PWD
-export PYTHONPATH=$PWD/:$PYTHONPATH
+export PYTHONPATH=$PWD
+module unload python
 
 cp -r bin/* lib MACS2  README.rst $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
