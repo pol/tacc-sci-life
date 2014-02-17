@@ -5,11 +5,11 @@ Version: 2.2.0
 Release: 1
 License: GPL
 Group: Applications/Life Sciences
-Source:  bowtie2-2.2.0-source.zip
+Source:  http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.0/bowtie2-2.2.0-source.zip
 Packager: TACC - jcarson@tacc.utexas.edu
 Summary: Memory-efficient short read (NGS) aligner
 
-# http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.0/bowtie2-2.2.0-source.zip
+
 
 #------------------------------------------------
 # BASIC DEFINITIONS
