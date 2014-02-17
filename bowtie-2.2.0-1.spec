@@ -16,7 +16,9 @@ Summary: Memory-efficient short read (NGS) aligner
 #------------------------------------------------
 # This will define the correct _topdir and turn of building a debug package
 %define debug_package %{nil}
-%include rpm-dir.inc
+%include ../rpm-dir.inc
+%include ../system-defines.inc
+#%include ../system-load.inc
 
 # Compiler Family Definitions
 # %include compiler-defines.inc
@@ -76,7 +78,7 @@ module swap $TACC_FAMILY_COMPILER gcc
 # Since LDFLAGS is not used in compilation, we hijack EXTRA_FLAGS to carry the rpath payload
 make EXTRA_FLAGS="-Wl,-rpath,$GCC_LIB"
 
-cp -R ./bowtie2 ./bowtie2-align ./bowtie2-build ./bowtie2-inspect ./doc ./scripts $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp -R ./* $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # ADD ALL MODULE STUFF HERE
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
