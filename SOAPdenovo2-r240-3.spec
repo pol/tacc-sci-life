@@ -44,7 +44,7 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 module purge
 module load TACC
-module swap intel gcc
+module swap intel gcc/4.4.6
 
 make LDFLAGS="-Wl,-rpath,$GCC_LIB"
 
