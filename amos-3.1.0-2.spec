@@ -64,7 +64,7 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 module purge
 module load TACC
 module unload $TACC_FAMILY_COMPILER
-module load gcc/4.7.1
+module load gcc/4.4.5
 module load boost
 module load perl
 

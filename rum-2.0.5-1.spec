@@ -39,10 +39,20 @@ rm -rf $RPM_BUILD_ROOT
 %install
 %include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 70df240576caec52f0109c83e777cad8c319b73d
 module load perl
 module load python
 
 perl Makefile.PL
+module unload perl
+module unload python
+=======
+
+perl Makefile.PL
+>>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
 cp -r * $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
@@ -105,4 +115,12 @@ EOF
 cd /tmp
 
 # Remove the installation files now that the RPM has been generated
+<<<<<<< HEAD
+<<<<<<< HEAD
 rm -rf $RPM_BUILD_ROOT
+=======
+rm -rf $RPM_BUILD_ROOT
+>>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
+=======
+rm -rf $RPM_BUILD_ROOT
+>>>>>>> 70df240576caec52f0109c83e777cad8c319b73d

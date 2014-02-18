@@ -76,7 +76,7 @@ whatis("URL: http://soap.genomics.org.cn/soapdenovo.html")
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
 prepend_path("PATH"       ,"%{INSTALL_DIR}/")
 
-prereq ("gcc/4.4.6")
+prereq("gcc/4.4.6")
 
 EOF
 

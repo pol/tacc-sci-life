@@ -51,6 +51,10 @@ module load gcc
 sed -i s/-Wl// makefile
 make python=python2.7
 
+<<<<<<< HEAD
+module unload python
+=======
+>>>>>>> d6c1cb5b22b254f6ee31c6ffe8d7d3f5d30772bf
 cp -r build ext makefile maptools.so plugins README.txt Stampy stampy.py $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
