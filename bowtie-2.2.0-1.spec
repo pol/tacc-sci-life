@@ -9,6 +9,7 @@ Source:  bowtie2-2.2.0-source.zip
 Packager: TACC - jcarson@tacc.utexas.edu
 Summary: Memory-efficient short read (NGS) aligner
 
+# Based off of John Fonner's spec file bowtie-2.1.0-2
 # http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.0/
 
 #------------------------------------------------
@@ -108,6 +109,8 @@ whatis("Description: Ultrafast, memory-efficient short read aligner")
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}")
 setenv("%{MODULE_VAR}_SCRIPTS","%{INSTALL_DIR}/scripts")
 prepend_path("PATH"       ,"%{INSTALL_DIR}")
+
+prereq(“perl”)
 
 EOF
 
