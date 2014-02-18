@@ -1,16 +1,13 @@
 # $Id$
 
 Name: bowtie
-Version: 2.2.0
+Version: 2.1.0
 Release: 1
 License: GPL
 Group: Applications/Life Sciences
-Source:  bowtie2-2.2.0-source.zip
-Packager: TACC - jcarson@tacc.utexas.edu
+Source:  bowtie2-2.1.0-source.zip
+Packager: TACC - jfonner@tacc.utexas.edu
 Summary: Memory-efficient short read (NGS) aligner
-
-# Based off of John Fonner's spec file bowtie-2.1.0-2
-# http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.0/
 
 #------------------------------------------------
 # BASIC DEFINITIONS
@@ -18,8 +15,6 @@ Summary: Memory-efficient short read (NGS) aligner
 # This will define the correct _topdir and turn of building a debug package
 %define debug_package %{nil}
 %include ../rpm-dir.inc
-#%include ../system-defines.inc
-#%include ../system-load.inc
 
 # Compiler Family Definitions
 # %include compiler-defines.inc
@@ -109,8 +104,6 @@ whatis("Description: Ultrafast, memory-efficient short read aligner")
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}")
 setenv("%{MODULE_VAR}_SCRIPTS","%{INSTALL_DIR}/scripts")
 prepend_path("PATH"       ,"%{INSTALL_DIR}")
-
-prereq(“perl”)
 
 EOF
 
