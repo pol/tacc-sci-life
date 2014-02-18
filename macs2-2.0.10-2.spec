@@ -74,6 +74,10 @@ whatis("URL: https://github.com/taoliu/MACS")
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
 prepend_path("PYTHONPATH"       ,"%{INSTALL_DIR}/lib/python2.7/site-packages/")
 prepend_path("PATH"       ,"%{INSTALL_DIR}/")
+<<<<<<< HEAD
+=======
+
+>>>>>>> ab5d67f58051e5a968300389af6ffb19acf82c8b
 prereq("python")
 
 EOF
