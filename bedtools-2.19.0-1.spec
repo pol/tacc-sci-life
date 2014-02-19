@@ -15,7 +15,7 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 #------------------------------------------------
 %define debug-package %{nil}
 # This will define the correct _topdir
-%include rpm-dir.inc
+%include ../rpm-dir.inc
 %include ../system-defines.inc
 # Compiler Family Definitions
 # %include compiler-defines.inc
@@ -52,7 +52,6 @@ BEDTools is a software suite for the comparison, manipulation and annotation of 
 
 # Remove older attempts
 rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
-mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # Unpack source
 # This will unpack the source to /tmp/BUILD/BEDTools-Version-%{version}
@@ -64,6 +63,7 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %build
 
 %install
+mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %include ../system-load.inc
 
 module purge
