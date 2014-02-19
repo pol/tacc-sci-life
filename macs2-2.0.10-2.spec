@@ -46,7 +46,6 @@ module load TACC
 module swap intel gcc
 module load python
 python setup.py install --prefix=$PWD
-export PYTHONPATH=$PWD/lib/python2.7/site-packages
 module unload python
 
 cp -r bin/* lib MACS2  README.rst $RPM_BUILD_ROOT/%{INSTALL_DIR}
@@ -74,7 +73,11 @@ whatis("URL: https://github.com/taoliu/MACS")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
 prepend_path("PYTHONPATH"       ,"%{INSTALL_DIR}/lib/python2.7/site-packages/")
+prepend_path("PATH"       ,"%{INSTALL_DIR}/")
+<<<<<<< HEAD
+=======
 
+>>>>>>> ab5d67f58051e5a968300389af6ffb19acf82c8b
 prereq("python")
 
 EOF
