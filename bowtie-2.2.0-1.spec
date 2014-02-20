@@ -110,7 +110,8 @@ setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}")
 setenv("%{MODULE_VAR}_SCRIPTS","%{INSTALL_DIR}/scripts")
 prepend_path("PATH"       ,"%{INSTALL_DIR}")
 
-prereq(“perl”)
+prereq("perl")
+
 
 EOF
 
