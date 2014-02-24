@@ -69,8 +69,11 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 module purge
 module load TACC
+module swap intel gcc
 
-make
+sed -i s/-static// ./mk
+make ENV_LINK_OPTS="-Wl,-rpath=$GCC_LIB"
+cp -r ./* $RPM_BUILD_ROOT%{INSTALL_DIR} 
 
 # ADD ALL MODULE STUFF HERE
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
