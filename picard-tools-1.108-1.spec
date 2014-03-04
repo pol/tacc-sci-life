@@ -1,14 +1,14 @@
 ## Picard tools is Java and is distributed compiled
-## http://downloads.sourceforge.net/project/picard/picard-tools/1.71/picard-tools-1.107.zip
+## http://downloads.sourceforge.net/project/picard/picard-tools/1.71/picard-tools-1.108.zip
 
 Summary: Picard - Manipulate SAM files
 Name: picard
-Version: 1.107
+Version: 1.108
 Release: 1
 License: MIT License
 Vendor: Broad Institute
 Group: Applications/Life Sciences
-Source0:  picard-tools-1.107.zip
+Source0:  picard-tools-1.108.zip
 Packager: TACC - mattcowp@tacc.utexas.edu
 BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 
@@ -26,7 +26,7 @@ Picard comprises Java-based command-line utilities that manipulate SAM files, an
 
 %prep
 rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
-%setup -n picard-tools-1.107
+%setup -n picard-tools-1.108
 
 %build
 
