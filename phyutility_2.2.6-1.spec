@@ -11,7 +11,6 @@ Packager: TACC - mattcowp@tacc.utexas.edu
 
 %include ../rpm-dir.inc
 %include ../system-defines.inc
-%include ../compiler-defines.inc
 
 %define debug_package %{nil}
 

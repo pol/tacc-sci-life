@@ -51,7 +51,6 @@ MAKER is a portable and easily configurable genome annotation pipeline. It's pur
 
 # Remove older attempts
 rm   -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
-mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # Unpack source
 # This will unpack the source to /tmp/BUILD/***
@@ -59,6 +58,7 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 %build   
 %install
+mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %include ../system-load.inc          
     
 # Load additional modules here (as needed)

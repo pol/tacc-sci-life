@@ -18,8 +18,7 @@ Summary: Memory-efficient short read (NGS) aligner
 # This will define the correct _topdir and turn of building a debug package
 %define debug_package %{nil}
 %include ../rpm-dir.inc
-#%include ../system-defines.inc
-#%include ../system-load.inc
+%include ../system-defines.inc
 
 # Compiler Family Definitions
 # %include compiler-defines.inc
@@ -64,6 +63,7 @@ rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 ##
 %install
 
+%include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 # Start with a clean environment
@@ -110,7 +110,8 @@ setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}")
 setenv("%{MODULE_VAR}_SCRIPTS","%{INSTALL_DIR}/scripts")
 prepend_path("PATH"       ,"%{INSTALL_DIR}")
 
-prereq(“perl”)
+prereq("perl")
+
 
 EOF
 
