@@ -42,12 +42,12 @@ rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 module load python
-export PYTHONPATH=$PWD/lib/python2.7/site-packages/
 python setup.py build
 mkdir -p $PWD/lib/python2.7/site-packages/
 python setup.py install --user
+cp -r /home1/02114/wonaya/.local/lib/python2.7/site-packages/HTSeq-0.5.4p5-py2.7-linux-x86_64.egg $PWD/lib/python2.7/site-packages/.
 
-cp -r lib $HOME/.local/bin/htseq-count $HOME/.local/bin/htseq-qa VERSION README $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp -r * $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
