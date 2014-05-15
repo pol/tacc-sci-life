@@ -1,17 +1,17 @@
-Summary:    HTSeq
-Name:       htseq
-Version:    0.5.4p5
+Summary:    MACS2
+Name:       macs2
+Version:    2.0.10
 Release:    3
 License:    GPL
-Vendor:     EMBL
+Vendor:     DFCI
 Group: Applications/Life Sciences
-Source:     HTSeq-%{version}.tar.gz
-Packager:   TACC - jawon@tacc.utexas.edu
+Source:     macs2-%{version}.zip
+Packager:   TACC - wonaya@tacc.utexas.edu
+BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 
 #------------------------------------------------
 # BASIC DEFINITIONS
 #------------------------------------------------
-# This will define the correct _topdir and turn of building a debug package
 %include ../rpm-dir.inc
 %include ../system-defines.inc
 
@@ -21,45 +21,44 @@ Packager:   TACC - jawon@tacc.utexas.edu
 # %include mpi-defines.inc
 # Other defs
 
-%define PNAME htseq
+%define PNAME macs2
 %define INSTALL_DIR %{APPS}/%{PNAME}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{PNAME}
-%define MODULE_VAR TACC_HTSEQ
+%define MODULE_VAR TACC_MACS2
 
 %description
-HTSeq is a Python package that provides infrastructure to process data from high-throughput sequencing assays
+MACS2 empirically models the length of the sequenced ChIP fragments and uses it to improve the spatial resolution of predicted binding sites
 
 ## PREP
-# Use -n <name> if source file different from <name>-<version>.tar.gz
+# Use -n <name> if source file different from <name>-<version>.zip
 %prep
 rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 ## SETUP
-%setup -n HTSeq-0.5.4p5
+%setup -n MACS-master
 %build
 %install
 %include ../system-load.inc
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
+module purge
+module load TACC
+module swap intel gcc
 module load python
-python setup.py build
-mkdir -p $PWD/lib/python2.7/site-packages/
 python setup.py install --user
-cp -r /home1/02114/wonaya/.local/lib/python2.7/site-packages/HTSeq-0.5.4p5-py2.7-linux-x86_64.egg $PWD/lib/python2.7/site-packages/.
-cp -r $PWD/scripts/* $PWD
-cp -r * $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp -r bin/* lib README.rst $RPM_BUILD_ROOT/%{INSTALL_DIR}
+cp -r /home1/02114/wonaya/.local/lib/python2.7/site-packages/MACS2 $RPM_BUILD_ROOT/%{INSTALL_DIR}/lib/.
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 
-
 help (
 [[
-This module loads %{PNAME}, which depends on python and numpy.
-To call this function, use htseq-count
-Documentation for %{PNAME} is available online at the publisher website: http://www-huber.embl.de/users/anders/HTSeq/doc/overview.html
+This module loads %{PNAME}.
+To call this function, type %{PNAME} on the command line.
+Documentation for %{PNAME} is available online at the publisher website: https://github.com/taoliu/MACS/
 For convenience %{MODULE_VAR}_DIR points to the installation directory. 
-PYTHONPATH has been prepended to include the HTSeq library.
+PYTHONPATH has been prepended to include the MACS2 library.
 Version %{version}
 ]])
 
@@ -67,12 +66,16 @@ whatis("Name: ${PNAME}")
 whatis("Version: %{version}")
 whatis("Category: computational biology, genomics")
 whatis("Keywords: Biology, Genomics, High-throughput Sequencing")
-whatis("Description: HTSeq - Analysing high-throughput sequencing data with Python")
-whatis("URL: https://pypi.python.org/pypi/HTSeq")
+whatis("Description: MACS2 - Model-based Analysis of ChIP-Seq")
+whatis("URL: https://github.com/taoliu/MACS")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
-prepend_path("PYTHONPATH","%{INSTALL_DIR}/lib/python2.7/site-packages/")
-prepend_path("PATH","%{INSTALL_DIR}")
+prepend_path("PYTHONPATH"       ,"%{INSTALL_DIR}/lib/")
+prepend_path("PATH"       ,"%{INSTALL_DIR}/")
+<<<<<<< HEAD
+=======
+
+>>>>>>> ab5d67f58051e5a968300389af6ffb19acf82c8b
 prereq("python")
 
 EOF
@@ -80,7 +83,6 @@ EOF
 #--------------
 #  Version file.
 #--------------
-
 cat > $RPM_BUILD_ROOT%{MODULE_DIR}/.version.%{version} << 'EOF'
 #%Module3.1.1#################################################
 ##
@@ -89,9 +91,6 @@ cat > $RPM_BUILD_ROOT%{MODULE_DIR}/.version.%{version} << 'EOF'
 
 set     ModulesVersion      "%{version}"
 EOF
-
-
-module unload python
 
 #------------------------------------------------
 # FILES SECTION

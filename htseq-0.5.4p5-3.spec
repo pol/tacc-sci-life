@@ -35,7 +35,7 @@ HTSeq is a Python package that provides infrastructure to process data from high
 rm -rf $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
 ## SETUP
-%setup -n HTSeq-0.5.4p5
+%setup -n HTSeq-%{version}
 %build
 %install
 %include ../system-load.inc
@@ -71,7 +71,7 @@ whatis("Description: HTSeq - Analysing high-throughput sequencing data with Pyth
 whatis("URL: https://pypi.python.org/pypi/HTSeq")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
-prepend_path("PYTHONPATH","%{INSTALL_DIR}/lib/python2.7/site-packages/")
+prepend_path("PYTHONPATH","%{INSTALL_DIR}/lib/python2.7/site-packages/HTSeq-0.5.4p5-py2.7-linux-x86_64.egg/")
 prepend_path("PATH","%{INSTALL_DIR}")
 prereq("python")
 
