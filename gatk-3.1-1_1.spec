@@ -16,7 +16,7 @@ BuildRoot: /var/tmp/%{name}_%{version}-buildroot
 %include ../system-defines.inc
 
 %description
-The GATK is a structured software library that makes writing efficient analysis tools using next-generation sequencing data very easy, and second it's a suite of tools for working with human medical resequencing projects such as 1000 Genomes and The Cancer Genome Atlas. These tools include things like a depth of coverage analyzers, a quality score recalibrator, a SNP/indel caller and a local realigner.
+The GATK is a structured software library that makes writing efficient analysis tools using next-generation sequencing data very easy, and second it is a suite of tools for working with human medical resequencing projects such as 1000 Genomes and The Cancer Genome Atlas. These tools include things like a depth of coverage analyzers, a quality score recalibrator, a SNP/indel caller and a local realigner.
 %define INSTALL_DIR %{APPS}/%{name}/%{version}
 %define MODULE_DIR  %{APPS}/%{MODULES}/%{name}
 %define MODULE_VAR TACC_GATK
@@ -51,22 +51,7 @@ help(
 [[
 The %{name} module file defines the following environment variables:
 %{MODULE_VAR}_DIR for the location of the %{name} distribution.
-
-
-Invoke as follows:
-
-java <jvm-args> -jar $%{MODULE_VAR}_DIR/GenomeAnalysisTK.jar -T <function>  [opts]
-
-Version %{version}
-]]
-)
-
-whatis("Name: GenomeAnalysisTK")
-whatis("Version: %{version}")
-whatis("Category: computational biology, genomics");
-whatis("Keywords:  Biology, Genomics, Genotyping, Resequencing, SNP")
-whatis("URL: http://www.broadinstitute.org/gsa/wiki/index.php/The_Genome_Analysis_Toolkit")
-whatis("The GATK is a structured software library that makes writing efficient analysis tools using next-generation sequencing data very easy, and second it's a suite of tools for working with human medical resequencing projects such as 1000 Genomes and The Cancer Genome Atlas. These tools include things like a depth of coverage analyzers, a quality score recalibrator, a SNP/indel caller and a local realigner.
+"The GATK is a structured software library that makes writing efficient analysis tools using next-generation sequencing data very easy, and second it is a suite of tools for working with human medical resequencing projects such as 1000 Genomes and The Cancer Genome Atlas. These tools include things like a depth of coverage analyzers, a quality score recalibrator, a SNP/indel caller and a local realigner.
 
 GATK 3.1 is a special build released, co-developed by the Broad Institute and Intel, as part of an ongoing effort to improve the performance of GATK.
 
@@ -78,7 +63,20 @@ A final note, in limited testing TACC staff were experiencing a ~2X performance 
 
 For more information:  http://www.broadinstitute.org/gatk/blog?id=3930
 
-")
+Invoke as follows:
+
+	java <jvm-args> -jar $%{MODULE_VAR}_DIR/GenomeAnalysisTK.jar -T <function>  [opts]
+
+Version %{version}
+]]
+)
+
+whatis("Name: GenomeAnalysisTK")
+whatis("Version: %{version}")
+whatis("Category: computational biology, genomics");
+whatis("Keywords:  Biology, Genomics, Genotyping, Resequencing, SNP")
+whatis("URL: http://www.broadinstitute.org/gsa/wiki/index.php/The_Genome_Analysis_Toolkit")
+whatis("The GATK is a structured software library that makes writing efficient analysis tools using next-generation sequencing data very easy, and second it is a suite of tools for working with human medical resequencing projects such as 1000 Genomes and The Cancer Genome Atlas. These tools include things like a depth of coverage analyzers, a quality score recalibrator, a SNP/indel caller and a local realigner.")
 
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}/")
 
