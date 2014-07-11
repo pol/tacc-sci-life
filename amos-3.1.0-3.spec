@@ -118,6 +118,11 @@ setenv("%{MODULE_VAR}_MAN","%{INSTALL_DIR}/man")
 prepend_path("PATH"       ,"%{INSTALL_DIR}/bin")
 prepend_path("MANPATH"       ,"%{INSTALL_DIR}/man")
 
+prereq ("boost")
+prereq ("perl")
+prereq ("mummer")
+prereq ("blat")
+
 EOF
 
 #--------------
