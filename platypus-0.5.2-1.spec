@@ -1,6 +1,6 @@
 ## Platypus
 Summary: Platypus - A Haplotype-Based Variant Caller For Next Generation Sequence Data
-Name: platypus
+Name: Platypus
 Version: 0.5.2
 Release: 1
 License: GPL
@@ -24,7 +24,7 @@ Platypus (http://www.well.ox.ac.uk/platypus) is a haplotype-based variant caller
 rm   -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 
-%setup
+%setup -n %{name}_%{version} 
 
 %build
 
