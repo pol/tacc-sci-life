@@ -33,9 +33,14 @@ mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
 %include ../system-load.inc
 module purge
 module load TACC
+module load python
 
 mkdir -p $RPM_BUILD_ROOT%{INSTALL_DIR}
 cp -R ./* $RPM_BUILD_ROOT/%{INSTALL_DIR}
+
+echo "Hello echo"
+echo $LD_LIBRARY_PATH
+
 ./buildPlatypus.sh
 
 #-----------------
@@ -59,6 +64,8 @@ whatis("URL: http://www.well.ox.ac.uk/platypus")
 whatis("Platypus is a haplotype-based variant caller.")
 
 setenv (     "%{MODULE_VAR}_DIR", "%{INSTALL_DIR}/")
+append_path("PATH",              "%{INSTALL_DIR}/")
+prereq ("python")
 
 EOF
 
