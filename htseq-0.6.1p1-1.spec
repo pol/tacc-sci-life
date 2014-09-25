@@ -44,8 +44,8 @@ module load python
 python setup.py build
 mkdir -p $PWD/lib/python2.7/site-packages/
 python setup.py install --user
-cp -r /home1/02114/wonaya/.local/lib/python2.7/site-packages/HTSeq-0.5.4p5-py2.7-linux-x86_64.egg $PWD/lib/python2.7/site-packages/.
-cp -r $PWD/scripts/* $PWD
+cp -r /home1/02114/wonaya/.local/lib/python2.7/site-packages/HTSeq-%{version}-py2.7-linux-x86_64.egg $PWD/lib/python2.7/site-packages/.
+chmod a+rx $PWD/scripts/*
 cp -r * $RPM_BUILD_ROOT/%{INSTALL_DIR}
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
@@ -70,8 +70,8 @@ whatis("Description: HTSeq - Analysing high-throughput sequencing data with Pyth
 whatis("URL: https://pypi.python.org/pypi/HTSeq")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
-prepend_path("PYTHONPATH","%{INSTALL_DIR}/lib/python2.7/site-packages/HTSeq-0.5.4p5-py2.7-linux-x86_64.egg/")
-prepend_path("PATH","%{INSTALL_DIR}")
+prepend_path("PYTHONPATH","%{INSTALL_DIR}/lib/python2.7/site-packages/HTSeq-%{version}-py2.7-linux-x86_64.egg/")
+prepend_path("PATH","%{INSTALL_DIR}/scripts")
 prereq("python")
 
 EOF
