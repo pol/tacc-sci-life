@@ -44,7 +44,7 @@ module purge
 module load TACC
 module load python
 python setup.py build 
-python setup install --prefix $RPM_BUILD_ROOT/%{INSTALL_DIR}
+python setup.py install --prefix $RPM_BUILD_ROOT/%{INSTALL_DIR}
 rm   -rf $RPM_BUILD_ROOT/%{MODULE_DIR}
 mkdir -p $RPM_BUILD_ROOT/%{MODULE_DIR}
 cat > $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
