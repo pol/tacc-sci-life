@@ -39,7 +39,8 @@ BSMAP is a short reads mapping program for bisulfite sequencing in DNA methylati
 %build
 %include ../system-load.inc
 module load samtools
-make
+module load intel
+make CC=icc
 
 %install
 mkdir -p $RPM_BUILD_ROOT/%{INSTALL_DIR}
@@ -72,8 +73,7 @@ whatis("URL: https://code.google.com/p/bsmap/")
 
 setenv("%{MODULE_VAR}_DIR","%{INSTALL_DIR}/")
 prepend_path("PATH"       ,"%{INSTALL_DIR}/")
-prereq("samtools")
-prereq("python")
+prereq("samtools","python")
 EOF
 
 #--------------
