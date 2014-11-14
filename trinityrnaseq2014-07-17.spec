@@ -47,18 +47,18 @@ module load TACC
 if [[ `hostname` == *.stampede.tacc.utexas.edu ]]
 then
 	module load intel/14.0.1.106
-	make inchworm_target TRINITY_COMPILER=intel INCHWORM_CONFIGURE_FLAGS='CXXFLAGS="-mkl -fast" CXX=icpc'
-	make chrysalis_target TRINITY_COMPILER=intel SYS_OPT=-mkl
+	make inchworm_target TRINITY_COMPILER=intel INCHWORM_CONFIGURE_FLAGS='CXXFLAGS="-mkl -rpath" CXX=icpc'
+	make chrysalis_target TRINITY_COMPILER=intel SYS_OPT="-mkl -rpath"
 	module swap intel gcc/4.7.1
-	make plugins
+	make plugins LDFLAGS="-lpthread -all-static -rpath"
 	module swap gcc intel/14.0.1.106
 	make all
 else
 	module load intel
-	make inchworm_target TRINITY_COMPILER=intel
-	make chrysalis_target TRINITY_COMPILER=intel
+	make inchworm_target TRINITY_COMPILER=intel INCHWORM_CONFIGURE_FLAGS='CXXFLAGS="-rpath" CXX=icpc'
+	make chrysalis_target TRINITY_COMPILER=intel SYS_OPT="-rpath"
 	module swap intel gcc/4.7.1
-	make plugins
+	make plugins LDFLAGS="-lpthread -all-static -rpath"
 	module swap gcc intel
 	make all
 fi
@@ -109,8 +109,14 @@ setenv("%{MODULE_VAR}_INCHWORM"	, "%{INSTALL_DIR}/Inchworm")
 setenv("%{MODULE_VAR}_INCHWORM_BIN", "%{INSTALL_DIR}/Inchworm/bin")
 setenv("%{MODULE_VAR}_UTIL"	, "%{INSTALL_DIR}/util")
 setenv("%{MODULE_VAR}_PLUGINS"	, "%{INSTALL_DIR}/trinity-plugins")
-setenv("MKL_MIC_ENABLE"	, "1")
 EOF
+
+if [[ `hostname` == *.stampede.tacc.utexas.edu ]]
+then
+	cat >> $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
+	setenv("MKL_MIC_ENABLE"	, "1")
+	EOF
+fi
 
 #--------------
 #  Version file.
