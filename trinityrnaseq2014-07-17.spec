@@ -44,22 +44,42 @@ Trinity, developed at the Broad Institute and the Hebrew University of Jerusalem
 %include ../system-load.inc
 module purge
 module load TACC
-if [[ `hostname` == *.stampede.tacc.utexas.edu ]]
+if [[ `hostname` == *.ls4.tacc.utexas.edu ]]
 then
-	module load intel/14.0.1.106
-	make inchworm_target TRINITY_COMPILER=intel INCHWORM_CONFIGURE_FLAGS='CXXFLAGS="-mkl -rpath" CXX=icpc'
-	make chrysalis_target TRINITY_COMPILER=intel SYS_OPT="-mkl -rpath"
 	module swap intel gcc/4.7.1
-	make plugins LDFLAGS="-lpthread -all-static -rpath"
-	module swap gcc intel/14.0.1.106
-	make all
+	make -j 4
 else
-	module load intel
-	make inchworm_target TRINITY_COMPILER=intel INCHWORM_CONFIGURE_FLAGS='CXXFLAGS="-rpath" CXX=icpc'
-	make chrysalis_target TRINITY_COMPILER=intel SYS_OPT="-rpath"
-	module swap intel gcc/4.7.1
-	make plugins LDFLAGS="-lpthread -all-static -rpath"
-	module swap gcc intel
+	module load intel/14.0.1.106
+	# make inchworm
+	make inchworm_target TRINITY_COMPILER=intel INCHWORM_CONFIGURE_FLAGS='CXXFLAGS="-fast -mkl" CXX=icpc'
+	# make chrysalis
+	make chrysalis_target TRINITY_COMPILER=intel SYS_OPT="-fast" SYS_LIBS="-mkl -pthread"
+	# make plugins
+	cd trinity-plugins/
+	# make jellyfish
+	JELLYFISH_CODE=jellyfish-2.1.3
+	tar -zxvf ${JELLYFISH_CODE}.tar.gz && ln -sf ${JELLYFISH_CODE} tmp.jellyfish
+        cd ./tmp.jellyfish/ && ./configure CC=icc CXX=icpc --enable-static --disable-shared --prefix=`pwd` && make LDFLAGS="-lpthread -static" AM_CPPFLAGS="-Wall -Wnon-virtual-dtor -mkl -fast -std=c++11 -I"`pwd`"/include"
+	cd ..
+        mv tmp.jellyfish jellyfish
+	# make rsem
+	RSEM_CODE=rsem-1.2.15
+	tar -zxvf ${RSEM_CODE}.tar.gz && ln -sf ${RSEM_CODE} tmp.rsem
+        cd ./tmp.rsem && make CC=icc CFLAGS="-Wall -c -I. -mkl -static" COFLAGS="-Wall -fast -mkl -c -static -I."
+	cd ..
+        mv tmp.rsem rsem
+	# make transdecoder
+	# make parafly
+	cd TransDecoder_r20140704/3rd_party/parafly
+	./configure --prefix=$PWD/../../util CC=icc CXX=icpc
+	make install CPPFLAGS="-fast"
+	cd ../../../
+	# make cdhit
+	cd TransDecoder_r20140704/3rd_party/cd-hit
+	make CXXFLAGS="-openmp -mkl -O3" LDFLAGS="-o" CC=icpc
+	make install PREFIX=../../util/bin
+	cd ../../../../
+	# make tests
 	make all
 fi
 
@@ -111,11 +131,21 @@ setenv("%{MODULE_VAR}_UTIL"	, "%{INSTALL_DIR}/util")
 setenv("%{MODULE_VAR}_PLUGINS"	, "%{INSTALL_DIR}/trinity-plugins")
 EOF
 
+echo "Finished first cat\n"
+
 if [[ `hostname` == *.stampede.tacc.utexas.edu ]]
 then
 	cat >> $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
-	setenv("MKL_MIC_ENABLE"	, "1")
-	EOF
+setenv("MKL_MIC_ENABLE"	, "1")
+setenv("OMP_NUM_THREADS","16")
+setenv("MIC_OMP_NUM_THREADS","240")
+prereq("intel/14.0.1.106","bowtie/1.0.0")
+EOF
+else
+	cat >> $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
+setenv("OMP_NUM_THREADS","12")
+prereq("gcc/4.7.1","bowtie/1.0.0")
+EOF
 fi
 
 #--------------
