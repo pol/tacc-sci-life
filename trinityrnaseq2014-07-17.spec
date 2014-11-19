@@ -28,6 +28,12 @@ BuildRoot:  /var/tmp/%{name}-%{version}-buildroot
 %define PNAME %{name}
 %define MODULE_VAR TACC_TRINITY
 
+%define __os_install_post    \
+    /usr/lib/rpm/redhat/brp-compress \
+    %{!?__debug_package:/usr/lib/rpm/redhat/brp-strip %{__strip}} \
+    /usr/lib/rpm/redhat/brp-strip-static-archive %{__strip} \
+    /usr/lib/rpm/redhat/brp-strip-comment-note %{__strip} %{__objdump} \
+%{nil}
 # Turn off dependency checking. Trinity bundles so much that it's 
 # frankly preposterous to do this
 AutoReqProv: no
@@ -51,15 +57,15 @@ then
 else
 	module load intel/14.0.1.106
 	# make inchworm
-	make inchworm_target TRINITY_COMPILER=intel INCHWORM_CONFIGURE_FLAGS='CXXFLAGS="-fast -mkl" CXX=icpc'
+	make inchworm_target TRINITY_COMPILER=intel INCHWORM_CONFIGURE_FLAGS='CXXFLAGS="-mkl" CXX=icpc'
 	# make chrysalis
-	make chrysalis_target TRINITY_COMPILER=intel SYS_OPT="-fast" SYS_LIBS="-mkl -pthread"
+	make chrysalis_target TRINITY_COMPILER=intel SYS_OPT="" SYS_LIBS="-mkl -pthread"
 	# make plugins
 	cd trinity-plugins/
 	# make jellyfish
 	JELLYFISH_CODE=jellyfish-2.1.3
 	tar -zxvf ${JELLYFISH_CODE}.tar.gz && ln -sf ${JELLYFISH_CODE} tmp.jellyfish
-        cd ./tmp.jellyfish/ && ./configure CC=icc CXX=icpc --enable-static --disable-shared --prefix=`pwd` && make LDFLAGS="-lpthread -static" AM_CPPFLAGS="-Wall -Wnon-virtual-dtor -mkl -fast -std=c++11 -I"`pwd`"/include"
+        cd ./tmp.jellyfish/ && ./configure CC=icc CXX=icpc --enable-static --disable-shared --prefix=`pwd` && make LDFLAGS="-pthread" AM_CPPFLAGS="-Wall -Wnon-virtual-dtor -mkl -std=c++11 -I"`pwd`"/include"
 	cd ..
         mv tmp.jellyfish jellyfish
 	# make rsem
@@ -69,6 +75,9 @@ else
 	cd ..
         mv tmp.rsem rsem
 	# make transdecoder
+	TRANSDECODER_CODE=TransDecoder_r20140704
+	tar -zxvf ${TRANSDECODER_CODE}.tar.gz && ln -sf ${TRANSDECODER_CODE} tmp.transdecoder
+        mv ./tmp.transdecoder transdecoder
 	# make parafly
 	cd TransDecoder_r20140704/3rd_party/parafly
 	./configure --prefix=$PWD/../../util CC=icc CXX=icpc
@@ -139,12 +148,12 @@ then
 setenv("MKL_MIC_ENABLE"	, "1")
 setenv("OMP_NUM_THREADS","16")
 setenv("MIC_OMP_NUM_THREADS","240")
-prereq("intel/14.0.1.106","bowtie/1.0.0")
+prereq("intel/14.0.1.106","bowtie/1.1.1","samtools")
 EOF
 else
 	cat >> $RPM_BUILD_ROOT/%{MODULE_DIR}/%{version}.lua << 'EOF'
 setenv("OMP_NUM_THREADS","12")
-prereq("gcc/4.7.1","bowtie/1.0.0")
+prereq("samtools","gcc/4.7.1","bowtie/1.1.1")
 EOF
 fi
 
